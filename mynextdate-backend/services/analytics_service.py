@@ -23,41 +23,50 @@ def compute_analytics(
         }
 
     total = len(dates)
-    ratings = [d["rating"] for d in dates]
 
-    # Average of last 5 ratings
-    last_five = ratings[:5]
-    avg_last_five = round(sum(last_five) / len(last_five), 2)
+    # Separate rated vs unrated dates
+    rated_dates = [d for d in dates if d["rating"] and d["rating"] > 0]
+    ratings = [d["rating"] for d in rated_dates]
 
-    # Success rate (>= 3 stars)
+    # Average of last 5 rated dates
+    last_five = ratings[:5] if ratings else []
+    avg_last_five = round(sum(last_five) / len(last_five), 2) if last_five else 0.0
+
+    # Success rate (>= 3 stars) — only from rated dates
+    rated_count = len(rated_dates)
     successful = [r for r in ratings if r >= 3]
-    success_rate = round(len(successful) / total * 100, 1)
+    success_rate = round(len(successful) / rated_count * 100, 1) if rated_count > 0 else 0.0
 
-    # Compute avg vector of successful vs failed dates
-    success_vecs = []
-    fail_vecs = []
+    # Compute weighted dimension averages from ALL dates with vectors
+    # Rated dates are weighted by rating, unrated dates get neutral weight
+    all_vecs = []
+    all_weights = []
     for d in dates:
         aid = d["activity_id"]
         if aid not in activity_vectors:
             continue
         vec = activity_vectors[aid]
-        if d["rating"] >= 3:
-            success_vecs.append(vec)
+        rating = d["rating"]
+        if rating and rating > 0:
+            weight = rating / 5.0
         else:
-            fail_vecs.append(vec)
+            weight = 0.5  # neutral weight for unrated
+        all_vecs.append(np.array(vec) * weight)
+        all_weights.append(weight)
 
     dim_averages = {}
-    if success_vecs:
-        avg_success = np.mean(success_vecs, axis=0)
+    if all_vecs and sum(all_weights) > 0:
+        weighted_avg = np.sum(all_vecs, axis=0) / sum(all_weights)
+        weighted_avg = np.clip(weighted_avg, 0.0, 1.0)
         for i, label in enumerate(VECTOR_LABELS):
-            dim_averages[label] = round(float(avg_success[i]), 3)
+            dim_averages[label] = round(float(weighted_avg[i]), 3)
     else:
         dim_averages = {label: 0.5 for label in VECTOR_LABELS}
 
     # Generate insight summary
     summary = _generate_summary(dim_averages, success_rate, avg_last_five)
 
-    # Trend: compare last 3 vs previous 3
+    # Trend: compare last 3 vs previous 3 (rated only)
     trend = "neutral"
     if len(ratings) >= 6:
         recent_avg = sum(ratings[:3]) / 3

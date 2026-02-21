@@ -10,5 +10,35 @@ services:
       - DOCKER_DEFAULT_PLATFORM=linux/amd64
     restart: unless-stopped
 
+  backend:
+    build:
+      context: .
+      dockerfile: mynextdate-backend/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - mynextdate-backend/.env
+    environment:
+      - ACTIAN_HOST=vectoraidb:50051
+    depends_on:
+      - vectoraidb
+    volumes:
+      - ./mynextdate-backend:/app
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./mynextdate-frontend
+    ports:
+      - "5173:5173"
+    env_file:
+      - mynextdate-frontend/.env
+    depends_on:
+      - backend
+    volumes:
+      - ./mynextdate-frontend:/app
+      - /app/node_modules
+    restart: unless-stopped
+
 volumes:
   actian_data:
