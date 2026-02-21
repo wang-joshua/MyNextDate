@@ -82,4 +82,4 @@ ACTIAN_CONNECTION_STRING=
 ```
 
 ## Team
-Built at a hackathon by Shreyansh Bhalani and Joshua Wang.
+Built at Hackalytics 2026 by Joshua Wang, Shreyansh Bhalani, Jay Daftari, and Akshat Mishra.
