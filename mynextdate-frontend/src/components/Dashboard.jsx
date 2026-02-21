@@ -1,12 +1,25 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { Heart, LogOut, Plus, History, BarChart3 } from 'lucide-react'
+import { Heart, LogOut, Plus, History, BarChart3, ChevronDown } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import RecommendButton from './RecommendButton'
 import DateHistory from './DateHistory'
 import AddDateModal from './AddDateModal'
 import Analytics from './Analytics'
 import { getDateHistory } from '../lib/api'
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30, scale: 0.97 },
+  visible: {
+    opacity: 1, y: 0, scale: 1,
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
+  }
+}
+
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08, delayChildren: 0.15 } }
+}
 
 export default function Dashboard() {
   const { user, signOut } = useAuth()
@@ -25,36 +38,54 @@ export default function Dashboard() {
   }, [refreshKey])
 
   return (
-    <div className="min-h-screen">
-      {/* Header */}
+    <div className="snap-container">
+      {/* ============ FIXED HEADER ============ */}
       <motion.header
-        className="sticky top-0 z-40 bg-[#0f0d15]/70 backdrop-blur-2xl border-b border-[#2d2840]/50"
-        initial={{ y: -60 }}
-        animate={{ y: 0 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className="fixed top-0 left-0 right-0 z-40"
+        style={{
+          background: 'rgba(10, 8, 18, 0.6)',
+          backdropFilter: 'blur(40px)',
+          WebkitBackdropFilter: 'blur(40px)',
+          borderBottom: '1px solid rgba(109, 44, 142, 0.1)',
+        }}
+        initial={{ y: -60, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <motion.div
-              className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-lg shadow-pink-500/20"
+              className="w-10 h-10 rounded-xl flex items-center justify-center"
+              style={{
+                background: 'linear-gradient(135deg, #8b5cf6, #6d2c8e)',
+                boxShadow: '0 4px 20px rgba(139, 92, 246, 0.25)',
+              }}
               whileHover={{ scale: 1.1, rotate: 5 }}
             >
               <Heart className="w-5 h-5 text-white fill-white" />
             </motion.div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+            <h1
+              className="font-serif text-xl font-bold"
+              style={{
+                background: 'linear-gradient(135deg, #c084fc, #8b5cf6)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
               MyNextDate
             </h1>
           </div>
 
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-400 hidden sm:block">
+            <span className="text-sm hidden sm:block" style={{ color: '#6b5f7e' }}>
               {user?.email}
             </span>
             <motion.button
               onClick={signOut}
-              className="p-2.5 text-gray-400 hover:text-white hover:bg-[#1a1725] rounded-xl transition-all"
+              className="p-2.5 rounded-xl transition-all"
+              style={{ color: '#6b5f7e' }}
               title="Sign out"
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05, color: '#f0ecf9', background: 'rgba(109, 44, 142, 0.15)' }}
               whileTap={{ scale: 0.95 }}
             >
               <LogOut className="w-5 h-5" />
@@ -63,65 +94,137 @@ export default function Dashboard() {
         </div>
       </motion.header>
 
-      {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-        {/* Recommend Section */}
-        <motion.section
-          className="mb-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
+      {/* ============ SECTION 1: HERO / RECOMMEND ============ */}
+      <section className="snap-section px-4 sm:px-6 pt-20">
+        <motion.div
+          className="max-w-3xl mx-auto flex flex-col items-center justify-center h-full text-center"
+          variants={stagger}
+          initial="hidden"
+          animate="visible"
         >
-          <RecommendButton onDateAdded={refresh} />
-        </motion.section>
+          <motion.p className="label-editorial mb-4" variants={fadeUp}>
+            Your personal date curator
+          </motion.p>
 
-        {/* Split Dashboard */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left: Date History */}
-          <motion.section
-            className="bg-[#1a1725]/80 backdrop-blur-sm rounded-3xl border border-[#2d2840] p-6"
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2, type: 'spring', stiffness: 200, damping: 25 }}
+          <motion.h2
+            className="heading-hero text-4xl sm:text-5xl lg:text-6xl mb-6"
+            variants={fadeUp}
           >
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2">
-                <History className="w-5 h-5 text-gray-400" />
-                <h2 className="text-lg font-semibold">Date History</h2>
-                {dates.length > 0 && (
-                  <span className="text-xs bg-[#2d2840] text-gray-400 px-2 py-0.5 rounded-full">
-                    {dates.length}
-                  </span>
-                )}
+            <span style={{
+              background: 'linear-gradient(135deg, #f0ecf9, #c084fc)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}>
+              Discover Your
+            </span>
+            <br />
+            <span style={{
+              background: 'linear-gradient(135deg, #8b5cf6, #6d2c8e)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}>
+              Perfect Evening
+            </span>
+          </motion.h2>
+
+          <motion.p
+            className="text-lg mb-10 max-w-lg font-serif italic"
+            style={{ color: '#9a8fad' }}
+            variants={fadeUp}
+          >
+            Let AI craft your next unforgettable experience
+          </motion.p>
+
+          <motion.div className="w-full max-w-xl" variants={fadeUp}>
+            <RecommendButton onDateAdded={refresh} dateCount={dates.length} onAddDate={() => setShowAddModal(true)} />
+          </motion.div>
+
+          {/* Scroll indicator */}
+          <motion.div
+            className="mt-auto pb-8 flex flex-col items-center gap-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 0.8 }}
+          >
+            <span className="label-editorial" style={{ fontSize: '0.6rem' }}>Scroll to explore</span>
+            <motion.div
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <ChevronDown className="w-5 h-5" style={{ color: '#6b5f7e' }} />
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* ============ SECTION 2: HISTORY + ANALYTICS ============ */}
+      <section className="snap-section px-4 sm:px-6 py-8 pt-20">
+        <div className="max-w-6xl mx-auto h-full flex flex-col justify-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 max-h-[calc(100vh-8rem)]">
+            {/* Left: Date History */}
+            <motion.div
+              className="glass-card rounded-3xl p-6 flex flex-col min-h-0"
+              initial={{ opacity: 0, x: -30, scale: 0.97 }}
+              whileInView={{ opacity: 1, x: 0, scale: 1 }}
+              viewport={{ once: true, margin: '-100px' }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-3">
+                  <History className="w-5 h-5" style={{ color: '#6b5f7e' }} />
+                  <h2 className="heading-section text-xl">Date History</h2>
+                  {dates.length > 0 && (
+                    <span
+                      className="label-editorial px-2 py-0.5 rounded-full"
+                      style={{ background: 'rgba(109, 44, 142, 0.15)', fontSize: '0.65rem' }}
+                    >
+                      {dates.length}
+                    </span>
+                  )}
+                </div>
+                <motion.button
+                  onClick={() => setShowAddModal(true)}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
+                  style={{
+                    background: 'rgba(139, 92, 246, 0.1)',
+                    color: '#c084fc',
+                    border: '1px solid rgba(139, 92, 246, 0.2)',
+                  }}
+                  whileHover={{
+                    scale: 1.05,
+                    background: 'rgba(139, 92, 246, 0.2)',
+                    boxShadow: '0 0 20px rgba(139, 92, 246, 0.15)',
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Date
+                </motion.button>
               </div>
-              <motion.button
-                onClick={() => setShowAddModal(true)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-pink-500/10 text-pink-400 rounded-xl hover:bg-pink-500/20 transition-all text-sm font-medium border border-pink-500/20"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Plus className="w-4 h-4" />
-                Add Date
-              </motion.button>
-            </div>
-            <DateHistory dates={dates} onUpdate={refresh} />
-          </motion.section>
+              <div className="flex-1 min-h-0 overflow-hidden">
+                <DateHistory dates={dates} onUpdate={refresh} />
+              </div>
+            </motion.div>
 
-          {/* Right: Analytics */}
-          <motion.section
-            className="bg-[#1a1725]/80 backdrop-blur-sm rounded-3xl border border-[#2d2840] p-6"
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3, type: 'spring', stiffness: 200, damping: 25 }}
-          >
-            <div className="flex items-center gap-2 mb-5">
-              <BarChart3 className="w-5 h-5 text-gray-400" />
-              <h2 className="text-lg font-semibold">Your Analytics</h2>
-            </div>
-            <Analytics refreshTrigger={refreshKey} />
-          </motion.section>
+            {/* Right: Analytics */}
+            <motion.div
+              className="glass-card rounded-3xl p-6 flex flex-col min-h-0"
+              initial={{ opacity: 0, x: 30, scale: 0.97 }}
+              whileInView={{ opacity: 1, x: 0, scale: 1 }}
+              viewport={{ once: true, margin: '-100px' }}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="flex items-center gap-3 mb-5">
+                <BarChart3 className="w-5 h-5" style={{ color: '#6b5f7e' }} />
+                <h2 className="heading-section text-xl">Your Analytics</h2>
+              </div>
+              <div className="flex-1 min-h-0 overflow-y-auto">
+                <Analytics refreshTrigger={refreshKey} />
+              </div>
+            </motion.div>
+          </div>
         </div>
-      </main>
+      </section>
 
       {/* Add Date Modal */}
       <AddDateModal

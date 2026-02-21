@@ -26,15 +26,13 @@ def _warm_cache():
     if _vector_cache:
         return
     client = get_client()
-    records, _ = client.scroll(COLLECTION_NAME, limit=250)
+    records, _ = client.scroll(COLLECTION_NAME, limit=250, with_vectors=True)
     for record in records:
-        rid = record.id if hasattr(record, "id") else None
-        if rid is None:
-            continue
-        vec = record.vector if hasattr(record, "vector") else None
-        payload = record.payload if hasattr(record, "payload") else {}
+        rid = record.id
+        vec = record.vector
+        payload = record.payload or {}
         if vec is not None:
-            _vector_cache[rid] = list(vec)
+            _vector_cache[rid] = [float(v) for v in vec]
         _payload_cache[rid] = dict(payload)
     print(f"Cached {len(_vector_cache)} activity vectors in memory.")
 

@@ -1,79 +1,83 @@
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { TrendingUp, TrendingDown, Minus, BarChart3, Loader2, Heart, Target, Zap } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { TrendingUp, TrendingDown, Minus, Loader2, Heart, Target, Zap } from 'lucide-react'
 import { getAnalytics } from '../lib/api'
 
 const DIMENSION_DISPLAY = {
-  cost: { label: 'Budget', low: 'Affordable', high: 'Luxury', icon: '💰', color: 'from-green-400 to-emerald-500' },
-  indoor_outdoor: { label: 'Setting', low: 'Indoor', high: 'Outdoor', icon: '🏠', color: 'from-blue-400 to-cyan-500' },
-  energy: { label: 'Energy', low: 'Relaxed', high: 'Active', icon: '⚡', color: 'from-yellow-400 to-orange-500' },
-  social_density: { label: 'Social', low: 'Private', high: 'Social', icon: '👥', color: 'from-violet-400 to-purple-500' },
-  time_of_day: { label: 'Time', low: 'Morning', high: 'Evening', icon: '🌅', color: 'from-amber-400 to-orange-500' },
-  duration: { label: 'Length', low: 'Quick', high: 'Extended', icon: '⏱️', color: 'from-teal-400 to-cyan-500' },
-  surprise: { label: 'Novelty', low: 'Familiar', high: 'Adventurous', icon: '🎲', color: 'from-rose-400 to-pink-500' },
-  romance_intensity: { label: 'Romance', low: 'Casual', high: 'Intense', icon: '💕', color: 'from-pink-400 to-rose-500' },
-  conversation_depth: { label: 'Convo', low: 'Activity-based', high: 'Deep talks', icon: '💬', color: 'from-indigo-400 to-blue-500' },
+  cost: { label: 'Budget', low: 'Affordable', high: 'Luxury', color: 'from-emerald-400 to-teal-500' },
+  indoor_outdoor: { label: 'Setting', low: 'Indoor', high: 'Outdoor', color: 'from-sky-400 to-blue-500' },
+  energy: { label: 'Energy', low: 'Relaxed', high: 'Active', color: 'from-amber-400 to-orange-400' },
+  social_density: { label: 'Social', low: 'Private', high: 'Social', color: 'from-violet-400 to-purple-500' },
+  time_of_day: { label: 'Time', low: 'Morning', high: 'Evening', color: 'from-fuchsia-400 to-violet-500' },
+  duration: { label: 'Length', low: 'Quick', high: 'Extended', color: 'from-cyan-400 to-teal-500' },
+  surprise: { label: 'Novelty', low: 'Familiar', high: 'Adventurous', color: 'from-rose-400 to-pink-500' },
+  romance_intensity: { label: 'Romance', low: 'Casual', high: 'Intense', color: 'from-pink-400 to-violet-500' },
+  conversation_depth: { label: 'Convo', low: 'Activity-based', high: 'Deep talks', color: 'from-indigo-400 to-violet-500' },
 }
 
 function StatCard({ value, label, icon: Icon, color, delay = 0 }) {
   return (
     <motion.div
-      className="bg-[#0f0d15] rounded-2xl p-5 text-center border border-[#2d2840]/50 hover:border-[#2d2840] transition-all duration-300"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, type: 'spring', stiffness: 300, damping: 25 }}
-      whileHover={{ y: -3, boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}
+      className="glass-card rounded-2xl p-5 text-center"
+      initial={{ opacity: 0, y: 30, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{
+        y: -4,
+        boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.1)',
+        borderColor: 'rgba(139, 92, 246, 0.3)',
+      }}
     >
-      <Icon className={`w-5 h-5 mx-auto mb-2 ${color}`} />
+      <Icon className="w-5 h-5 mx-auto mb-2" style={{ color }} />
       <motion.p
-        className={`text-3xl font-bold ${color}`}
+        className="font-serif text-4xl font-bold"
+        style={{ color }}
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        transition={{ delay: delay + 0.2, type: 'spring', stiffness: 200 }}
+        transition={{ delay: delay + 0.3, type: 'spring', stiffness: 200 }}
       >
         {value}
       </motion.p>
-      <p className="text-xs text-gray-500 mt-1.5 font-medium">{label}</p>
+      <p className="label-editorial mt-2">{label}</p>
     </motion.div>
   )
 }
 
-function DimensionBar({ dimKey, value, delay = 0 }) {
-  const display = DIMENSION_DISPLAY[dimKey]
+function DimensionBar({ dimension, value, delay = 0 }) {
+  const display = DIMENSION_DISPLAY[dimension]
   if (!display) return null
-
   const percentage = Math.round(value * 100)
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -10 }}
+      className="space-y-1.5"
+      initial={{ opacity: 0, x: -15 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ delay }}
+      transition={{ delay, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="flex justify-between text-xs mb-1.5">
-        <span className="text-gray-500">{display.low}</span>
-        <span className="text-gray-300 font-medium flex items-center gap-1">
-          <span>{display.icon}</span>
-          {display.label}
-        </span>
-        <span className="text-gray-500">{display.high}</span>
+      <div className="flex justify-between text-xs">
+        <span style={{ color: '#6b5f7e' }}>{display.low}</span>
+        <span className="font-serif font-medium" style={{ color: '#f0ecf9' }}>{display.label}</span>
+        <span style={{ color: '#6b5f7e' }}>{display.high}</span>
       </div>
-      <div className="h-2.5 bg-[#0f0d15] rounded-full overflow-hidden relative">
+      <div
+        className="h-2 rounded-full overflow-hidden relative"
+        style={{ background: 'rgba(10, 8, 18, 0.8)', border: '1px solid rgba(109, 44, 142, 0.08)' }}
+      >
         <motion.div
           className={`h-full bg-gradient-to-r ${display.color} rounded-full relative`}
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
-          transition={{ delay: delay + 0.1, duration: 0.8, ease: 'easeOut' }}
+          transition={{ delay: delay + 0.1, duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Shine effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         </motion.div>
-        {/* Marker dot */}
         <motion.div
-          className="absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-white rounded-full shadow-lg border-2 border-[#0f0d15]"
+          className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full"
+          style={{ boxShadow: '0 0 10px rgba(139, 92, 246, 0.4), 0 0 4px white' }}
           initial={{ left: '0%' }}
-          animate={{ left: `calc(${percentage}% - 7px)` }}
-          transition={{ delay: delay + 0.1, duration: 0.8, ease: 'easeOut' }}
+          animate={{ left: `calc(${percentage}% - 6px)` }}
+          transition={{ delay: delay + 0.1, duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
         />
       </div>
     </motion.div>
@@ -99,97 +103,96 @@ export default function Analytics({ refreshTrigger }) {
           animate={{ rotate: 360 }}
           transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
         >
-          <Loader2 className="w-8 h-8 text-purple-500" />
+          <Loader2 className="w-8 h-8" style={{ color: '#8b5cf6' }} />
         </motion.div>
-        <p className="text-sm text-gray-500 mt-3">Crunching your dating data...</p>
+        <p className="text-sm mt-3 font-serif italic" style={{ color: '#6b5f7e' }}>
+          Analyzing your patterns...
+        </p>
       </div>
     )
   }
 
   if (!analytics || analytics.total_dates === 0) {
     return (
-      <motion.div
-        className="text-center py-16 text-gray-500"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-      >
-        <motion.div
-          animate={{ y: [0, -5, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <BarChart3 className="w-12 h-12 mx-auto mb-4 opacity-30" />
-        </motion.div>
-        <p className="text-lg font-medium text-gray-400">No analytics yet</p>
-        <p className="text-sm mt-1">Add and rate some dates to see insights!</p>
-      </motion.div>
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <Target className="w-10 h-10 mb-3 opacity-30" style={{ color: '#6b5f7e' }} />
+        <p className="heading-section text-lg" style={{ color: '#9a8fad' }}>No analytics yet</p>
+        <p className="text-sm mt-1 font-serif italic" style={{ color: '#6b5f7e' }}>
+          Rate some dates to unlock insights
+        </p>
+      </div>
     )
   }
 
   const TrendIcon = analytics.trend === 'improving' ? TrendingUp
     : analytics.trend === 'declining' ? TrendingDown : Minus
 
-  const trendColor = analytics.trend === 'improving' ? 'text-green-400'
-    : analytics.trend === 'declining' ? 'text-red-400' : 'text-gray-400'
-
   return (
     <div className="space-y-6">
-      {/* Stats Row */}
+      {/* Stats Grid */}
       <div className="grid grid-cols-3 gap-3">
         <StatCard
           value={analytics.avg_last_five}
           label="Avg Last 5"
           icon={Heart}
-          color="text-pink-400"
+          color="#c084fc"
           delay={0}
         />
         <StatCard
           value={`${analytics.success_rate}%`}
           label="Success Rate"
           icon={Target}
-          color="text-purple-400"
+          color="#8b5cf6"
           delay={0.1}
         />
         <StatCard
-          value={analytics.trend === 'improving' ? 'Up' : analytics.trend === 'declining' ? 'Down' : 'Steady'}
+          value={analytics.trend === 'improving' ? 'Rising' : analytics.trend === 'declining' ? 'Falling' : 'Steady'}
           label="Trend"
-          icon={Zap}
-          color={trendColor}
+          icon={TrendIcon}
+          color={analytics.trend === 'improving' ? '#4ade80' : analytics.trend === 'declining' ? '#f87171' : '#c084fc'}
           delay={0.2}
         />
       </div>
 
-      {/* Preference Summary */}
-      <motion.div
-        className="relative overflow-hidden bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl p-5 border border-pink-500/20"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-      >
+      {/* Insight Card */}
+      {analytics.preference_summary && (
         <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-pink-500/5 to-transparent"
-          animate={{ x: ['-100%', '100%'] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-        />
-        <p className="text-sm text-gray-200 leading-relaxed relative">
-          <span className="text-pink-400 font-semibold">Insight: </span>
-          {analytics.preference_summary}
-        </p>
-      </motion.div>
+          className="relative overflow-hidden rounded-2xl p-5 glass-card"
+          style={{
+            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(109, 44, 142, 0.06))',
+            border: '1px solid rgba(139, 92, 246, 0.15)',
+          }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <motion.div
+            className="absolute inset-0"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.05), transparent)' }}
+            animate={{ x: ['-100%', '100%'] }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
+          />
+          <p className="text-sm leading-relaxed relative" style={{ color: '#f0ecf9' }}>
+            <span className="font-serif font-semibold" style={{ color: '#c084fc' }}>Insight: </span>
+            {analytics.preference_summary}
+          </p>
+        </motion.div>
+      )}
 
       {/* Dimension Bars */}
-      <div className="space-y-4">
-        <motion.h4
-          className="text-sm font-semibold text-gray-400 uppercase tracking-widest"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-        >
-          Your Preference Profile
-        </motion.h4>
-        {Object.entries(analytics.dimension_averages).map(([key, value], i) => (
-          <DimensionBar key={key} dimKey={key} value={value} delay={0.4 + i * 0.06} />
-        ))}
-      </div>
+      {analytics.dimension_averages && (
+        <div className="space-y-4">
+          <h4 className="label-editorial">Your Preference Profile</h4>
+          {Object.entries(analytics.dimension_averages).map(([dim, val], i) => (
+            <DimensionBar
+              key={dim}
+              dimension={dim}
+              value={val}
+              delay={0.4 + i * 0.06}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

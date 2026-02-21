@@ -5,43 +5,48 @@ import HeartRating from './HeartRating'
 import { rateDate, deleteDate } from '../lib/api'
 
 export default function DateHistory({ dates, onUpdate }) {
-  const [deletingId, setDeletingId] = useState(null)
+  const [deleting, setDeleting] = useState(null)
+  const [rating, setRating] = useState(null)
 
-  const handleRate = async (dateId, rating) => {
+  const handleRate = async (dateId, value) => {
+    setRating(dateId)
     try {
-      await rateDate(dateId, rating)
+      await rateDate(dateId, value)
       onUpdate?.()
     } catch (err) {
       console.error(err)
     }
+    setRating(null)
   }
 
   const handleDelete = async (dateId) => {
-    setDeletingId(dateId)
+    setDeleting(dateId)
     try {
       await deleteDate(dateId)
       onUpdate?.()
     } catch (err) {
       console.error(err)
     }
-    setDeletingId(null)
+    setDeleting(null)
   }
 
   if (!dates || dates.length === 0) {
     return (
       <motion.div
-        className="text-center py-16 text-gray-500"
+        className="flex flex-col items-center justify-center py-16"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
         <motion.div
-          animate={{ y: [0, -5, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          animate={{ y: [0, -8, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <Clock className="w-12 h-12 mx-auto mb-4 opacity-30" />
+          <Clock className="w-12 h-12 mx-auto mb-4 opacity-30" style={{ color: '#6b5f7e' }} />
         </motion.div>
-        <p className="text-lg font-medium text-gray-400">No dates yet</p>
-        <p className="text-sm mt-1">Add your first date to get started!</p>
+        <p className="heading-section text-xl" style={{ color: '#9a8fad' }}>No dates yet</p>
+        <p className="text-sm mt-2 font-serif italic" style={{ color: '#6b5f7e' }}>
+          Add your first date to begin your journey
+        </p>
       </motion.div>
     )
   }
@@ -57,65 +62,77 @@ export default function DateHistory({ dates, onUpdate }) {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20, height: 0 }}
             transition={{ delay: i * 0.05, type: 'spring', stiffness: 300, damping: 25 }}
-            className="flex items-center gap-4 p-4 bg-[#0f0d15] rounded-xl border border-[#2d2840]/50 group hover:border-[#2d2840] transition-all duration-200"
+            className="flex items-center gap-4 p-4 rounded-xl group transition-all duration-300"
+            style={{
+              background: 'rgba(10, 8, 18, 0.6)',
+              border: '1px solid rgba(109, 44, 142, 0.1)',
+            }}
+            whileHover={{
+              borderColor: 'rgba(139, 92, 246, 0.3)',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+            }}
           >
-            {/* Date number indicator */}
-            <div className="w-8 h-8 rounded-lg bg-[#1a1725] flex items-center justify-center text-xs text-gray-500 font-mono shrink-0">
+            {/* Number */}
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-mono shrink-0"
+              style={{ background: 'rgba(109, 44, 142, 0.1)', color: '#6b5f7e' }}
+            >
               {dates.length - i}
             </div>
 
+            {/* Info */}
             <div className="flex-1 min-w-0">
-              <p className="font-medium truncate">
+              <p className="font-serif font-medium truncate" style={{ color: '#f0ecf9' }}>
                 {date.activity_name || `Activity #${date.activity_id}`}
               </p>
               <div className="flex items-center gap-1.5 mt-1">
-                <Calendar className="w-3 h-3 text-gray-600" />
-                <p className="text-xs text-gray-500">
+                <Calendar className="w-3 h-3" style={{ color: '#6b5f7e' }} />
+                <span className="text-xs" style={{ color: '#6b5f7e' }}>
                   {new Date(date.created_at).toLocaleDateString('en-US', {
-                    month: 'short', day: 'numeric', year: 'numeric'
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
                   })}
-                </p>
+                </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              {date.rating === null ? (
-                <div className="flex items-center gap-2">
-                  <motion.span
-                    className="text-xs text-amber-400/80 bg-amber-400/10 px-2.5 py-1 rounded-lg font-medium"
-                    animate={{ opacity: [1, 0.6, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    Rate it!
-                  </motion.span>
-                  <HeartRating
-                    rating={0}
-                    onChange={(r) => handleRate(date.id, r)}
-                    size={16}
-                  />
-                </div>
-              ) : (
+            {/* Rating */}
+            <div className="shrink-0">
+              {date.rating ? (
                 <HeartRating
                   rating={date.rating}
-                  onChange={(r) => handleRate(date.id, r)}
+                  onChange={(v) => handleRate(date.id, v)}
                   size={16}
                 />
+              ) : (
+                <motion.span
+                  className="text-xs px-2.5 py-1 rounded-full font-medium"
+                  style={{ color: '#c084fc', background: 'rgba(139, 92, 246, 0.1)' }}
+                  animate={{ opacity: [1, 0.5, 1] }}
+                  transition={{ duration: 2.5, repeat: Infinity }}
+                  onClick={() => handleRate(date.id, 3)}
+                >
+                  Rate it!
+                </motion.span>
               )}
-
-              <motion.button
-                onClick={() => handleDelete(date.id)}
-                disabled={deletingId === date.id}
-                className="p-2 text-gray-600 hover:text-red-400 transition opacity-0 group-hover:opacity-100"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                {deletingId === date.id ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Trash2 className="w-4 h-4" />
-                )}
-              </motion.button>
             </div>
+
+            {/* Delete */}
+            <motion.button
+              onClick={() => handleDelete(date.id)}
+              disabled={deleting === date.id}
+              className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg shrink-0"
+              style={{ color: '#6b5f7e' }}
+              whileHover={{ color: '#f87171', scale: 1.1, background: 'rgba(239, 68, 68, 0.1)' }}
+              whileTap={{ scale: 0.9 }}
+            >
+              {deleting === date.id ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Trash2 className="w-4 h-4" />
+              )}
+            </motion.button>
           </motion.div>
         ))}
       </AnimatePresence>

@@ -3,15 +3,21 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, HeartCrack, Loader2, Plus, Heart, X } from 'lucide-react'
 import { getRecommendations, getWorstRecommendations, addDate } from '../lib/api'
 
-export default function RecommendButton({ onDateAdded }) {
+export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate }) {
   const [recs, setRecs] = useState(null)
   const [loading, setLoading] = useState(false)
   const [mode, setMode] = useState(null)
   const [adding, setAdding] = useState(null)
   const [showPulse, setShowPulse] = useState(false)
   const [skippedIds, setSkippedIds] = useState([])
+  const [needsHistory, setNeedsHistory] = useState(false)
 
   const handleRecommend = async (breakup = false) => {
+    if (dateCount === 0) {
+      setNeedsHistory(true)
+      return
+    }
+    setNeedsHistory(false)
     setLoading(true)
     setShowPulse(true)
     setMode(breakup ? 'breakup' : 'good')
@@ -25,7 +31,7 @@ export default function RecommendButton({ onDateAdded }) {
       console.error(err)
     }
     setLoading(false)
-    setTimeout(() => setShowPulse(false), 500)
+    setTimeout(() => setShowPulse(false), 600)
   }
 
   const handleAddDate = async (activityId) => {
@@ -46,17 +52,16 @@ export default function RecommendButton({ onDateAdded }) {
 
   return (
     <div className="space-y-6">
-      {/* Main Recommend Section */}
       <div className="relative">
-        {/* Glow effect behind button */}
         <AnimatePresence>
           {showPulse && (
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-2xl blur-xl"
+              className="absolute inset-0 rounded-2xl blur-xl"
+              style={{ background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(109, 44, 142, 0.2))' }}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1.1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.6 }}
             />
           )}
         </AnimatePresence>
@@ -65,21 +70,25 @@ export default function RecommendButton({ onDateAdded }) {
           <motion.button
             onClick={() => handleRecommend(false)}
             disabled={loading}
-            className="flex-1 py-5 bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 rounded-2xl font-bold text-lg text-white disabled:opacity-50 flex items-center justify-center gap-3 shadow-lg shadow-pink-500/20 relative overflow-hidden"
-            whileHover={{ scale: 1.02, boxShadow: '0 20px 50px rgba(236, 72, 153, 0.35)' }}
+            className="flex-1 py-5 rounded-2xl font-bold text-lg text-white disabled:opacity-50 flex items-center justify-center gap-3 relative overflow-hidden tracking-wide"
+            style={{
+              background: 'linear-gradient(135deg, #8b5cf6, #6d2c8e, #4c1d95)',
+              backgroundSize: '200% 200%',
+              boxShadow: '0 8px 30px rgba(139, 92, 246, 0.25)',
+            }}
+            whileHover={{ scale: 1.02, boxShadow: '0 12px 50px rgba(139, 92, 246, 0.4)' }}
             whileTap={{ scale: 0.98 }}
+            animate={!loading ? { backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] } : {}}
+            transition={!loading ? { backgroundPosition: { duration: 8, repeat: Infinity, ease: 'linear' } } : {}}
           >
-            {/* Shimmer effect */}
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+              className="absolute inset-0"
+              style={{ background: 'linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.15), transparent)' }}
               animate={{ x: ['-100%', '100%'] }}
-              transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+              transition={{ duration: 4, repeat: Infinity, repeatDelay: 2 }}
             />
             {loading && mode === 'good' ? (
-              <motion.span
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-              >
+              <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
                 <Loader2 className="w-6 h-6" />
               </motion.span>
             ) : (
@@ -88,20 +97,17 @@ export default function RecommendButton({ onDateAdded }) {
             <span className="relative">What's My Next Date?</span>
           </motion.button>
 
-          {/* Secret Breakup Button */}
           <motion.button
             onClick={() => handleRecommend(true)}
             disabled={loading}
             title="Secret breakup button"
-            className="px-5 py-5 bg-[#1a1725] border border-[#2d2840] rounded-2xl text-gray-500 hover:text-red-400 hover:border-red-500/30 hover:bg-red-950/20 transition-all duration-300"
-            whileHover={{ scale: 1.05 }}
+            className="px-5 py-5 rounded-2xl transition-all duration-300"
+            style={{ background: 'rgba(17, 14, 26, 0.8)', border: '1px solid rgba(109, 44, 142, 0.15)', color: '#6b5f7e' }}
+            whileHover={{ scale: 1.05, borderColor: 'rgba(239, 68, 68, 0.3)', color: '#f87171', background: 'rgba(127, 29, 29, 0.2)' }}
             whileTap={{ scale: 0.95 }}
           >
             {loading && mode === 'breakup' ? (
-              <motion.span
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-              >
+              <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
                 <Loader2 className="w-6 h-6" />
               </motion.span>
             ) : (
@@ -111,7 +117,37 @@ export default function RecommendButton({ onDateAdded }) {
         </div>
       </div>
 
-      {/* Results */}
+      <AnimatePresence>
+        {needsHistory && (
+          <motion.div
+            className="glass-card rounded-2xl p-5 text-center"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <p className="font-serif text-lg mb-2" style={{ color: '#f0ecf9' }}>
+              We need to know you first!
+            </p>
+            <p className="text-sm mb-4" style={{ color: '#9a8fad' }}>
+              Add at least one date — ideal or experienced — so we can learn your preferences and recommend the perfect next date.
+            </p>
+            <motion.button
+              onClick={() => { setNeedsHistory(false); onAddDate?.() }}
+              className="px-5 py-2.5 rounded-xl text-sm font-medium tracking-wide"
+              style={{
+                background: 'linear-gradient(135deg, #8b5cf6, #6d2c8e)',
+                boxShadow: '0 4px 20px rgba(139, 92, 246, 0.2)',
+              }}
+              whileHover={{ scale: 1.03, boxShadow: '0 8px 30px rgba(139, 92, 246, 0.35)' }}
+              whileTap={{ scale: 0.97 }}
+            >
+              + Add Your First Date
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence mode="wait">
         {recs && recs.length > 0 && (
           <motion.div
@@ -121,14 +157,9 @@ export default function RecommendButton({ onDateAdded }) {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.4 }}
           >
-            <motion.h3
-              className="text-sm font-medium text-gray-400 uppercase tracking-widest"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.1 }}
-            >
+            <h3 className="label-editorial">
               {mode === 'breakup' ? 'Worst Possible Dates' : 'Recommended For You'}
-            </motion.h3>
+            </h3>
             <AnimatePresence>
               {recs.map((rec, i) => (
                 <motion.div
@@ -139,10 +170,10 @@ export default function RecommendButton({ onDateAdded }) {
                   exit={{ opacity: 0, x: 20, height: 0, marginBottom: 0, padding: 0 }}
                   transition={{ delay: 0.2 + i * 0.15, type: 'spring', stiffness: 300, damping: 25 }}
                   whileHover={{ scale: 1.01, y: -2 }}
-                  className={`p-6 rounded-2xl border transition-all duration-300 ${
+                  className={`p-6 rounded-2xl transition-all duration-300 ${
                     mode === 'breakup'
-                      ? 'bg-red-950/20 border-red-500/20 hover:border-red-500/40'
-                      : 'bg-[#1a1725] border-[#2d2840] hover:border-pink-500/30 hover:shadow-lg hover:shadow-pink-500/5'
+                      ? 'bg-red-950/20 border border-red-500/20 hover:border-red-500/40'
+                      : 'glass-card'
                   }`}
                 >
                   <div className="flex items-start justify-between">
@@ -151,17 +182,17 @@ export default function RecommendButton({ onDateAdded }) {
                         {mode === 'breakup' ? (
                           <HeartCrack className="w-4 h-4 text-red-400" />
                         ) : (
-                          <Heart className="w-4 h-4 text-pink-400 fill-pink-400" />
+                          <Heart className="w-4 h-4 fill-violet-400" style={{ color: '#c084fc' }} />
                         )}
-                        <h4 className="font-semibold text-lg">{rec.name}</h4>
+                        <h4 className="font-serif font-semibold text-lg">{rec.name}</h4>
                       </div>
-                      <p className="text-gray-400 text-sm mt-1 leading-relaxed">{rec.description}</p>
+                      <p className="text-sm mt-1 leading-relaxed" style={{ color: '#9a8fad' }}>{rec.description}</p>
                       <div className="flex items-center gap-2 mt-3">
                         <div className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                          mode === 'breakup'
-                            ? 'bg-red-500/10 text-red-400'
-                            : 'bg-pink-500/10 text-pink-400'
-                        }`}>
+                          mode === 'breakup' ? 'bg-red-500/10 text-red-400' : ''
+                        }`}
+                          style={mode !== 'breakup' ? { background: 'rgba(139, 92, 246, 0.1)', color: '#c084fc' } : {}}
+                        >
                           {Math.round(rec.score * 100)}% match
                         </div>
                       </div>
@@ -171,22 +202,20 @@ export default function RecommendButton({ onDateAdded }) {
                         <motion.button
                           onClick={() => handleAddDate(rec.id)}
                           disabled={adding === rec.id}
-                          className="p-3 bg-pink-500/10 rounded-xl text-pink-400 hover:bg-pink-500/20 transition-all"
-                          whileHover={{ scale: 1.1 }}
+                          className="p-3 rounded-xl transition-all"
+                          style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#c084fc' }}
+                          whileHover={{ scale: 1.1, boxShadow: '0 0 15px rgba(139, 92, 246, 0.2)' }}
                           whileTap={{ scale: 0.9 }}
                           title="Add to date history"
                         >
-                          {adding === rec.id ? (
-                            <Loader2 className="w-5 h-5 animate-spin" />
-                          ) : (
-                            <Plus className="w-5 h-5" />
-                          )}
+                          {adding === rec.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
                         </motion.button>
                       )}
                       <motion.button
                         onClick={() => handleSkip(rec.id)}
-                        className="p-3 bg-gray-500/10 rounded-xl text-gray-500 hover:text-gray-300 hover:bg-gray-500/20 transition-all"
-                        whileHover={{ scale: 1.1 }}
+                        className="p-3 rounded-xl transition-all"
+                        style={{ background: 'rgba(107, 95, 126, 0.1)', color: '#6b5f7e' }}
+                        whileHover={{ scale: 1.1, color: '#f0ecf9', background: 'rgba(107, 95, 126, 0.2)' }}
                         whileTap={{ scale: 0.9 }}
                         title="Skip — show me something else"
                       >
