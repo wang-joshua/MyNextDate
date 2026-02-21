@@ -1,7 +1,11 @@
 import json
 import numpy as np
 from cortex import CortexClient, DistanceMetric
+from cortex.transport.pool import PoolConfig
 from config import ACTIAN_HOST, COLLECTION_NAME, VECTOR_DIMENSION
+
+# Reduce keepalive ping frequency to avoid ENHANCE_YOUR_CALM from server
+PoolConfig.keepalive_time_ms = 300000  # 5 minutes
 
 # Persistent client — reused across all requests
 _client: CortexClient | None = None
