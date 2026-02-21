@@ -33,7 +33,7 @@ async def get_analytics(user: dict = Depends(get_current_user)):
     dates_with_names = [
         {
             "activity_id": d["activity_id"],
-            "rating": d["rating"] or 0,
+            "rating": d["rating"],
             "created_at": d.get("created_at", ""),
             "activity_name": d.get("activity_name", ""),
         }
