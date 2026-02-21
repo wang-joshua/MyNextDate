@@ -21,22 +21,34 @@ app.include_router(analytics_router)
 
 @app.on_event("startup")
 async def startup():
-    """Seed the Actian DB (if needed) and warm the vector cache on boot."""
+    """Wait for Actian DB, seed if needed, and warm the vector cache."""
     import os
+    import json
+    import asyncio
     from services.actian_service import get_client, init_collection, seed_activities, ensure_cache
+    from config import COLLECTION_NAME
 
-    try:
-        client = get_client()
-        # Create collection + seed if it's empty
-        init_collection(client)
-        stats = client.describe_collection("date_activities")
-        count = getattr(stats, "point_count", 0) or getattr(stats, "vectors_count", 0) or 0
-        if count == 0:
-            activities_path = os.path.join(os.path.dirname(__file__), "data", "activities.json")
-            seed_activities(client, activities_path)
-        ensure_cache()
-    except Exception as e:
-        print(f"Warning: Startup init failed: {e}")
+    activities_path = os.path.join(os.path.dirname(__file__), "data", "activities.json")
+    with open(activities_path) as f:
+        expected = len(json.load(f))
+
+    for attempt in range(1, 13):
+        try:
+            client = get_client()
+            init_collection(client)
+            count = client.get_vector_count(COLLECTION_NAME)
+            if count < expected:
+                print(f"DB has {count} activities, JSON has {expected} — seeding...")
+                seed_activities(client, activities_path)
+            ensure_cache()
+            print("Startup complete.")
+            return
+        except Exception as e:
+            print(f"Startup attempt {attempt}/12 failed: {e}")
+            if attempt < 12:
+                await asyncio.sleep(5)
+
+    print("Warning: Could not connect to Actian DB after 12 attempts. Requests will fail until DB is available.")
 
 
 @app.get("/api/health")

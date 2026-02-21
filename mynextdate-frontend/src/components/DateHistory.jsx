@@ -99,7 +99,7 @@ export default function DateHistory({ dates, onUpdate }) {
 
             {/* Rating */}
             <div className="shrink-0">
-              {date.rating ? (
+              {date.rating != null ? (
                 <HeartRating
                   rating={date.rating}
                   onChange={(v) => handleRate(date.id, v)}

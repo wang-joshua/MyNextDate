@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { TrendingUp, TrendingDown, Minus, Loader2, Heart, Target, Zap } from 'lucide-react'
+import { TrendingUp, TrendingDown, Minus, Loader2, Heart, Target, Zap, Calendar } from 'lucide-react'
 import { getAnalytics } from '../lib/api'
 
 const DIMENSION_DISPLAY = {
@@ -130,12 +130,12 @@ export default function Analytics({ refreshTrigger }) {
   return (
     <div className="space-y-6">
       {/* Stats Grid */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3 mb-3">
         <StatCard
-          value={analytics.avg_last_five}
-          label="Avg Last 5"
-          icon={Heart}
-          color="#c084fc"
+          value={analytics.total_dates}
+          label="Total Dates"
+          icon={Calendar}
+          color="#a78bfa"
           delay={0}
         />
         <StatCard
@@ -145,12 +145,21 @@ export default function Analytics({ refreshTrigger }) {
           color="#8b5cf6"
           delay={0.1}
         />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <StatCard
+          value={analytics.avg_last_five}
+          label="Avg Last 5"
+          icon={Heart}
+          color="#c084fc"
+          delay={0.2}
+        />
         <StatCard
           value={analytics.trend === 'improving' ? 'Rising' : analytics.trend === 'declining' ? 'Falling' : 'Steady'}
           label="Trend"
           icon={TrendIcon}
           color={analytics.trend === 'improving' ? '#4ade80' : analytics.trend === 'declining' ? '#f87171' : '#c084fc'}
-          delay={0.2}
+          delay={0.3}
         />
       </div>
 

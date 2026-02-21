@@ -29,7 +29,7 @@ async def get_recommendations(
 
     result = sb.table("date_history").select("*").eq(
         "user_id", user["id"]
-    ).order("created_at", desc=True).execute()
+    ).order("created_at", desc=True).limit(50).execute()
 
     dates = result.data or []
     activity_ids = [d["activity_id"] for d in dates]
@@ -44,7 +44,10 @@ async def get_recommendations(
     pref_vector = compute_preference_vector(rated_dates, activity_vectors)
     pref_vector = apply_repeat_penalty(pref_vector, activity_ids, activity_vectors)
 
-    exclude = list(set(activity_ids + skip_ids))
+    # Exclude only recent history (last 20) so old favourites can resurface,
+    # but always honour the client's explicit skip list in full.
+    recent_ids = activity_ids[:20]
+    exclude = list(set(recent_ids + skip_ids))
     recommendations = search_similar(pref_vector, top_k=2, exclude_ids=exclude)
 
     return {
@@ -60,7 +63,7 @@ async def get_worst_recommendations(user: dict = Depends(get_current_user)):
 
     result = sb.table("date_history").select("*").eq(
         "user_id", user["id"]
-    ).order("created_at", desc=True).execute()
+    ).order("created_at", desc=True).limit(50).execute()
 
     dates = result.data or []
     activity_ids = [d["activity_id"] for d in dates]
@@ -73,7 +76,8 @@ async def get_worst_recommendations(user: dict = Depends(get_current_user)):
     ]
 
     pref_vector = compute_preference_vector(rated_dates, activity_vectors)
-    worst = search_worst(pref_vector, top_k=2)
+    recent_ids = activity_ids[:20]
+    worst = search_worst(pref_vector, top_k=2, exclude_ids=recent_ids)
 
     return {
         "recommendations": worst,

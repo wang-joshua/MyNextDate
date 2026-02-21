@@ -48,8 +48,11 @@ def compute_preference_vector(
 
         total_weight += weight
 
-    if total_weight > 0:
-        pref /= total_weight
+    if total_weight == 0:
+        # All rated activities were missing from cache — fall back to neutral
+        return [0.5] * VECTOR_DIMENSION
+
+    pref /= total_weight
 
     # Clamp to [0, 1]
     pref = np.clip(pref, 0.0, 1.0)

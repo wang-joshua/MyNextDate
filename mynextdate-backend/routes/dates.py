@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from middleware.auth import get_current_user
 from services.actian_service import get_client, search_similar, ensure_cache
 from services.text_to_vector import text_to_vector
@@ -27,6 +27,13 @@ class AddDateRequest(BaseModel):
     activity_id: int
     rating: float | None = None
 
+    @field_validator("rating")
+    @classmethod
+    def rating_must_be_valid(cls, v):
+        if v is not None and not (0 <= v <= 5):
+            raise ValueError("Rating must be between 0 and 5")
+        return v
+
 
 class RateDateRequest(BaseModel):
     rating: float  # 0-5
@@ -48,6 +55,8 @@ async def add_date_by_description(body: AddDateByTextRequest, user: dict = Depen
     """Add a date by describing it in text. Uses Groq to extract a 9D vector, then matches to closest activity in Actian."""
     if not body.description.strip():
         raise HTTPException(status_code=400, detail="Description cannot be empty")
+    if len(body.description.strip()) < 20:
+        raise HTTPException(status_code=400, detail="Please describe your date in at least 20 characters for a better match")
 
     try:
         query_vector = await text_to_vector(body.description)

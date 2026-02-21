@@ -1,5 +1,6 @@
 """Convert free-text date descriptions to 9D vectors using Groq (Llama 3.3 70B)."""
 import json
+import re
 from groq import Groq
 from config import GROQ_API_KEY
 
@@ -36,18 +37,20 @@ async def text_to_vector(description: str) -> list[float]:
     )
     text = response.choices[0].message.content.strip()
 
-    # Parse the JSON array from response
-    # Handle cases where LLM might wrap in markdown code blocks
-    if "```" in text:
-        text = text.split("```")[1]
-        if text.startswith("json"):
-            text = text[4:]
+    # Strip markdown code fences if present (e.g. ```json\n[...]\n```)
+    fence = re.search(r"```(?:json)?\s*([\s\S]*?)```", text)
+    if fence:
+        text = fence.group(1).strip()
+    else:
         text = text.strip()
 
-    vector = json.loads(text)
+    try:
+        vector = json.loads(text)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"LLM returned non-JSON output: {text[:200]}") from e
 
-    if len(vector) != 9:
-        raise ValueError(f"Expected 9 dimensions, got {len(vector)}")
+    if not isinstance(vector, list) or len(vector) != 9:
+        raise ValueError(f"Expected a JSON array of 9 numbers, got: {vector}")
 
     # Clamp values to [0, 1]
     vector = [max(0.0, min(1.0, float(v))) for v in vector]

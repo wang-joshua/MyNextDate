@@ -34,7 +34,7 @@ export default function AddDateModal({ isOpen, onClose, onDateAdded }) {
   }
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && e.metaKey) handleSubmit()
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleSubmit()
   }
 
   return (
@@ -111,7 +111,7 @@ export default function AddDateModal({ isOpen, onClose, onDateAdded }) {
 
                   <div className="flex items-center justify-between">
                     <span className="text-xs" style={{ color: '#6b5f7e' }}>
-                      {description.length > 0 ? `${description.length} chars` : 'Cmd+Enter to submit'}
+                      {description.length > 0 ? `${description.length} chars` : 'Ctrl+Enter to submit'}
                     </span>
                     <motion.button
                       onClick={handleSubmit}

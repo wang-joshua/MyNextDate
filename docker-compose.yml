@@ -9,6 +9,12 @@ services:
     environment:
       - DOCKER_DEFAULT_PLATFORM=linux/amd64
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/50051' 2>/dev/null && echo healthy || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
 
   backend:
     build:
@@ -20,8 +26,10 @@ services:
       - mynextdate-backend/.env
     environment:
       - ACTIAN_HOST=vectoraidb:50051
+      - PYTHONUNBUFFERED=1
     depends_on:
-      - vectoraidb
+      vectoraidb:
+        condition: service_healthy
     volumes:
       - ./mynextdate-backend:/app
     restart: unless-stopped

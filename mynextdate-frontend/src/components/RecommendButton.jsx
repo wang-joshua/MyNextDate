@@ -1,7 +1,14 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, HeartCrack, Loader2, Plus, Heart, X } from 'lucide-react'
-import { getRecommendations, getWorstRecommendations, addDate } from '../lib/api'
+import { Sparkles, HeartCrack, Loader2, Plus, Heart, X, RefreshCw } from 'lucide-react'
+import { getRecommendations, getWorstRecommendations, addDate, rateDate } from '../lib/api'
+import HeartRating from './HeartRating'
+
+const STORAGE_KEY = 'mnd_skipped_ids'
+
+function loadSkipped() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') } catch { return [] }
+}
 
 export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate }) {
   const [recs, setRecs] = useState(null)
@@ -9,8 +16,9 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
   const [mode, setMode] = useState(null)
   const [adding, setAdding] = useState(null)
   const [showPulse, setShowPulse] = useState(false)
-  const [skippedIds, setSkippedIds] = useState([])
+  const [skippedIds, setSkippedIds] = useState(loadSkipped)
   const [needsHistory, setNeedsHistory] = useState(false)
+  const [justAdded, setJustAdded] = useState(null) // {activityId, dateId}
 
   const handleRecommend = async (breakup = false) => {
     if (dateCount === 0) {
@@ -22,6 +30,7 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
     setShowPulse(true)
     setMode(breakup ? 'breakup' : 'good')
     setRecs(null)
+    setJustAdded(null)
     try {
       const data = breakup
         ? await getWorstRecommendations()
@@ -37,7 +46,8 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
   const handleAddDate = async (activityId) => {
     setAdding(activityId)
     try {
-      await addDate(activityId)
+      const data = await addDate(activityId)
+      setJustAdded({ activityId, dateId: data.date?.id })
       onDateAdded?.()
     } catch (err) {
       console.error(err)
@@ -45,8 +55,21 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
     setAdding(null)
   }
 
+  const handleRateAdded = async (rating) => {
+    if (!justAdded?.dateId) { setJustAdded(null); return }
+    try {
+      await rateDate(justAdded.dateId, rating)
+      onDateAdded?.()
+    } catch (err) {
+      console.error(err)
+    }
+    setJustAdded(null)
+  }
+
   const handleSkip = (activityId) => {
-    setSkippedIds((prev) => [...prev, activityId])
+    const next = [...skippedIds, activityId]
+    setSkippedIds(next)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
     setRecs((prev) => prev?.filter((r) => r.id !== activityId) || null)
   }
 
@@ -149,6 +172,31 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
       </AnimatePresence>
 
       <AnimatePresence mode="wait">
+        {/* Empty state after all recs skipped */}
+        {recs && recs.length === 0 && (
+          <motion.div
+            className="glass-card rounded-2xl p-5 text-center"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <p className="font-serif text-lg mb-1" style={{ color: '#f0ecf9' }}>All caught up!</p>
+            <p className="text-sm mb-4" style={{ color: '#9a8fad' }}>
+              You've skipped all suggestions. Want a fresh set?
+            </p>
+            <motion.button
+              onClick={() => handleRecommend(false)}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium mx-auto tracking-wide"
+              style={{ background: 'linear-gradient(135deg, #8b5cf6, #6d2c8e)', boxShadow: '0 4px 20px rgba(139, 92, 246, 0.2)' }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <RefreshCw className="w-4 h-4" /> Get New Suggestions
+            </motion.button>
+          </motion.div>
+        )}
+
         {recs && recs.length > 0 && (
           <motion.div
             className="space-y-3"
@@ -187,7 +235,7 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
                         <h4 className="font-serif font-semibold text-lg">{rec.name}</h4>
                       </div>
                       <p className="text-sm mt-1 leading-relaxed" style={{ color: '#9a8fad' }}>{rec.description}</p>
-                      <div className="flex items-center gap-2 mt-3">
+                      <div className="flex flex-wrap items-center gap-2 mt-3">
                         <div className={`text-xs px-2.5 py-1 rounded-full font-medium ${
                           mode === 'breakup' ? 'bg-red-500/10 text-red-400' : ''
                         }`}
@@ -195,21 +243,37 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
                         >
                           {Math.round(rec.score * 100)}% match
                         </div>
+                        {mode !== 'breakup' && rec.match_reasons?.map((reason) => (
+                          <span
+                            key={reason}
+                            className="text-xs px-2 py-0.5 rounded-full"
+                            style={{ background: 'rgba(109, 44, 142, 0.12)', color: '#9a8fad' }}
+                          >
+                            {reason}
+                          </span>
+                        ))}
                       </div>
                     </div>
                     <div className="flex items-center gap-2 ml-4">
                       {mode !== 'breakup' && (
-                        <motion.button
-                          onClick={() => handleAddDate(rec.id)}
-                          disabled={adding === rec.id}
-                          className="p-3 rounded-xl transition-all"
-                          style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#c084fc' }}
-                          whileHover={{ scale: 1.1, boxShadow: '0 0 15px rgba(139, 92, 246, 0.2)' }}
-                          whileTap={{ scale: 0.9 }}
-                          title="Add to date history"
-                        >
-                          {adding === rec.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
-                        </motion.button>
+                        justAdded?.activityId === rec.id ? (
+                          <div className="flex flex-col items-end gap-1.5">
+                            <span className="text-xs" style={{ color: '#9a8fad' }}>Rate it!</span>
+                            <HeartRating rating={0} onChange={handleRateAdded} size={14} />
+                          </div>
+                        ) : (
+                          <motion.button
+                            onClick={() => handleAddDate(rec.id)}
+                            disabled={adding === rec.id}
+                            className="p-3 rounded-xl transition-all"
+                            style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#c084fc' }}
+                            whileHover={{ scale: 1.1, boxShadow: '0 0 15px rgba(139, 92, 246, 0.2)' }}
+                            whileTap={{ scale: 0.9 }}
+                            title="Add to date history"
+                          >
+                            {adding === rec.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+                          </motion.button>
+                        )
                       )}
                       <motion.button
                         onClick={() => handleSkip(rec.id)}

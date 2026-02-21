@@ -3198,5 +3198,455 @@
       0.7,
       0.4
     ]
+  },
+  {
+    "id": 200,
+    "name": "Neighborhood Street Art Walk",
+    "description": "Explore murals, graffiti, and hidden urban art together — photograph your favourites and debate the meanings over coffee.",
+    "vector": [0.0, 1.0, 0.35, 0.3, 0.5, 0.25, 0.4, 0.4, 0.5]
+  },
+  {
+    "id": 201,
+    "name": "Public Library Book Exchange",
+    "description": "Each person picks a book for the other to borrow, then sit in a quiet corner and read the first chapter aloud to each other.",
+    "vector": [0.0, 0.0, 0.1, 0.1, 0.5, 0.25, 0.2, 0.35, 0.75]
+  },
+  {
+    "id": 202,
+    "name": "Free Museum Admission Day",
+    "description": "Take advantage of free museum days to wander galleries, linger at favourite pieces, and invent backstories for the strangest exhibits.",
+    "vector": [0.0, 0.0, 0.35, 0.4, 0.35, 0.55, 0.3, 0.35, 0.65]
+  },
+  {
+    "id": 203,
+    "name": "Spontaneous City Photography Walk",
+    "description": "Wander your city with phone cameras, competing to capture the most unusual or beautiful shot, then review them over drinks.",
+    "vector": [0.0, 1.0, 0.4, 0.1, 0.5, 0.35, 0.5, 0.45, 0.4]
+  },
+  {
+    "id": 204,
+    "name": "DIY Rooftop Sunset Watch",
+    "description": "Bring a blanket, snacks, and a portable speaker to a rooftop or hill for a private sunset show — no reservations required.",
+    "vector": [0.05, 1.0, 0.1, 0.05, 0.75, 0.2, 0.35, 0.75, 0.7]
+  },
+  {
+    "id": 205,
+    "name": "Community Garden Stroll",
+    "description": "Walk through a public community garden, admire what people are growing, and talk about what you would plant if you had a plot.",
+    "vector": [0.0, 1.0, 0.25, 0.2, 0.25, 0.2, 0.25, 0.45, 0.6]
+  },
+  {
+    "id": 206,
+    "name": "Night City Skyline Walk",
+    "description": "Stroll through lit-up city streets after dark, stopping at viewpoints to admire the skyline and stumble upon night-life you never knew existed.",
+    "vector": [0.0, 1.0, 0.4, 0.3, 0.9, 0.45, 0.5, 0.65, 0.65]
+  },
+  {
+    "id": 207,
+    "name": "Library Café Reading Afternoon",
+    "description": "Settle into a library café for hours with books, hot drinks, and whispered commentary — an introvert's dream date.",
+    "vector": [0.1, 0.0, 0.1, 0.05, 0.5, 0.65, 0.15, 0.5, 0.65]
+  },
+  {
+    "id": 208,
+    "name": "Gaming Café Night",
+    "description": "Pick a gaming café with consoles, retro cabinets, and board games, and compete (or cooperate) over drinks until closing time.",
+    "vector": [0.3, 0.0, 0.5, 0.5, 0.8, 0.5, 0.4, 0.3, 0.3]
+  },
+  {
+    "id": 209,
+    "name": "VR Experience Center",
+    "description": "Try virtual reality together — from shared worlds to heart-pounding games — and laugh at each other's clueless first attempts.",
+    "vector": [0.55, 0.0, 0.65, 0.4, 0.6, 0.45, 0.9, 0.35, 0.2]
+  },
+  {
+    "id": 210,
+    "name": "Retro Arcade Date",
+    "description": "Feed quarters into vintage machines, challenge each other to beat high scores, and share a victory slice of pizza afterward.",
+    "vector": [0.25, 0.0, 0.55, 0.6, 0.75, 0.4, 0.5, 0.4, 0.3]
+  },
+  {
+    "id": 211,
+    "name": "Competitive Co-op Game Night",
+    "description": "Set up a proper tournament at home — two controllers, winner chooses the next activity, loser cooks dessert.",
+    "vector": [0.0, 0.0, 0.5, 0.0, 0.75, 0.55, 0.35, 0.45, 0.35]
+  },
+  {
+    "id": 212,
+    "name": "Hackathon-Style Build Night",
+    "description": "Pick a micro-project to build together in one evening — a playlist algorithm, a simple app, or a zine — then showcase your creation.",
+    "vector": [0.0, 0.0, 0.6, 0.05, 0.75, 0.7, 0.55, 0.25, 0.45]
+  },
+  {
+    "id": 213,
+    "name": "Ice Skating Rink Date",
+    "description": "Lace up at an outdoor or indoor rink, hold hands on the ice, and end with hot cocoa while your ankles recover.",
+    "vector": [0.3, 1.0, 0.6, 0.5, 0.65, 0.4, 0.4, 0.65, 0.3]
+  },
+  {
+    "id": 214,
+    "name": "Snowshoeing Forest Trail",
+    "description": "Strap on snowshoes and explore a snow-covered forest trail, enjoying the muffled silence and each other's company.",
+    "vector": [0.4, 1.0, 0.75, 0.1, 0.35, 0.6, 0.55, 0.5, 0.55]
+  },
+  {
+    "id": 215,
+    "name": "Cozy Cabin Fireplace Retreat",
+    "description": "Rent a remote cabin for a night — crackling fire, board games, and no obligations except being present with each other.",
+    "vector": [0.75, 0.0, 0.1, 0.05, 0.75, 0.85, 0.55, 0.85, 0.85]
+  },
+  {
+    "id": 216,
+    "name": "Winter Snow Sculpture Challenge",
+    "description": "Head to a snowy park and compete to build the most creative snow sculpture in 30 minutes — judge each other's masterpieces.",
+    "vector": [0.0, 1.0, 0.5, 0.1, 0.5, 0.35, 0.6, 0.45, 0.4]
+  },
+  {
+    "id": 217,
+    "name": "Holiday Hot Chocolate Bar",
+    "description": "Visit a seasonal hot chocolate bar with exotic flavours — chilli, salted caramel, white chocolate — paired with cosy indoor seating.",
+    "vector": [0.2, 0.0, 0.15, 0.4, 0.75, 0.25, 0.3, 0.5, 0.6]
+  },
+  {
+    "id": 218,
+    "name": "Frozen Lake Ice Fishing",
+    "description": "Bundle up and try ice fishing on a frozen lake — it's as much about the stillness and conversation as catching anything.",
+    "vector": [0.4, 1.0, 0.2, 0.1, 0.3, 0.7, 0.55, 0.45, 0.7]
+  },
+  {
+    "id": 219,
+    "name": "Korean BBQ Night",
+    "description": "Grill meat together at a tabletop Korean BBQ, sharing banchan and debating the perfect wrap ratio — an inherently collaborative meal.",
+    "vector": [0.6, 0.0, 0.25, 0.55, 0.75, 0.55, 0.45, 0.55, 0.55]
+  },
+  {
+    "id": 220,
+    "name": "Ethiopian Communal Dinner",
+    "description": "Share a large injera platter, eating with your hands from a single plate — intimate, tactile, and deeply communal.",
+    "vector": [0.45, 0.0, 0.15, 0.35, 0.75, 0.55, 0.6, 0.6, 0.65]
+  },
+  {
+    "id": 221,
+    "name": "Japanese Izakaya Evening",
+    "description": "Order a parade of small plates and sake at a lively izakaya — the noise and energy create an effortlessly fun, unstructured evening.",
+    "vector": [0.55, 0.0, 0.25, 0.55, 0.8, 0.6, 0.5, 0.6, 0.65]
+  },
+  {
+    "id": 222,
+    "name": "Spanish Tapas & Wine Bar Crawl",
+    "description": "Hit three or four tapas bars in a single evening, sampling jamón, patatas bravas, and local wines at each stop.",
+    "vector": [0.55, 0.0, 0.4, 0.6, 0.8, 0.65, 0.5, 0.55, 0.55]
+  },
+  {
+    "id": 223,
+    "name": "Omakase Sushi Experience",
+    "description": "Surrender the menu to a chef and experience a carefully curated sequence of nigiri — a deeply romantic, conversation-rich tasting dinner.",
+    "vector": [0.95, 0.0, 0.1, 0.15, 0.8, 0.55, 0.7, 0.85, 0.65]
+  },
+  {
+    "id": 224,
+    "name": "Mexican Street Taco Night Tour",
+    "description": "Wander a neighbourhood's taco scene — al pastor, birria, elote — eating from street carts under neon signs.",
+    "vector": [0.2, 0.5, 0.4, 0.7, 0.8, 0.4, 0.5, 0.4, 0.45]
+  },
+  {
+    "id": 225,
+    "name": "Lebanese Mezze Sharing Dinner",
+    "description": "Order a dozen mezze and share everything — hummus, fattoush, kibbeh — over unhurried conversation and good company.",
+    "vector": [0.45, 0.0, 0.15, 0.35, 0.75, 0.5, 0.45, 0.55, 0.6]
+  },
+  {
+    "id": 226,
+    "name": "Dim Sum Morning Date",
+    "description": "Start the day at a traditional dim sum restaurant, pointing at trolleys, trying every dumpling style, and arguing over the last har gow.",
+    "vector": [0.35, 0.0, 0.3, 0.6, 0.25, 0.45, 0.3, 0.4, 0.5]
+  },
+  {
+    "id": 227,
+    "name": "Sound Bath Meditation Session",
+    "description": "Lie side by side while a practitioner plays crystal bowls and gongs — the vibrations wash over you in a deeply calming shared experience.",
+    "vector": [0.5, 0.0, 0.05, 0.15, 0.75, 0.45, 0.65, 0.7, 0.3]
+  },
+  {
+    "id": 228,
+    "name": "Float Tank Sensory Deprivation",
+    "description": "Each float in a private saltwater pod, then debrief afterward — the contrast between isolation and reunion makes for fascinating conversation.",
+    "vector": [0.55, 0.0, 0.05, 0.0, 0.5, 0.45, 0.85, 0.6, 0.2]
+  },
+  {
+    "id": 229,
+    "name": "Forest Bathing (Shinrin-yoku)",
+    "description": "Walk slowly and silently through a forest, using all five senses — no phones, no destination, just presence and the smell of pine.",
+    "vector": [0.0, 1.0, 0.2, 0.1, 0.35, 0.55, 0.5, 0.65, 0.65]
+  },
+  {
+    "id": 230,
+    "name": "Sauna & Cold Plunge Circuit",
+    "description": "Alternate between sauna heat and cold plunge pools at a Nordic spa — intense, invigorating, and surprisingly bonding.",
+    "vector": [0.55, 0.0, 0.35, 0.2, 0.6, 0.5, 0.5, 0.65, 0.5]
+  },
+  {
+    "id": 231,
+    "name": "Partner Acro-Yoga Class",
+    "description": "Learn to balance and fly together in an acro-yoga class — trust, laughter, and a guaranteed story to tell afterwards.",
+    "vector": [0.35, 0.0, 0.75, 0.15, 0.5, 0.45, 0.65, 0.6, 0.35]
+  },
+  {
+    "id": 232,
+    "name": "Day-Long Meditation Retreat",
+    "description": "Join a guided silent retreat for the day, breaking the silence only over a shared mindful lunch — quietly transformative.",
+    "vector": [0.5, 0.5, 0.1, 0.1, 0.25, 0.9, 0.6, 0.7, 0.9]
+  },
+  {
+    "id": 233,
+    "name": "Rage Room Smash Session",
+    "description": "Suit up and smash electronics, crockery, and glass in a rage room — cathartic, hilarious, and nothing like a normal date.",
+    "vector": [0.45, 0.0, 0.95, 0.1, 0.5, 0.2, 0.9, 0.3, 0.15]
+  },
+  {
+    "id": 234,
+    "name": "Axe Throwing Bar",
+    "description": "Learn to throw axes at wooden targets, trash-talk over beer, and discover who has hidden lumberjack skills.",
+    "vector": [0.4, 0.0, 0.6, 0.5, 0.75, 0.4, 0.7, 0.4, 0.3]
+  },
+  {
+    "id": 235,
+    "name": "Indoor Trapeze Class",
+    "description": "Take a beginner trapeze lesson and learn to fly — the mix of adrenaline and teamwork creates an unforgettable afternoon.",
+    "vector": [0.65, 0.0, 0.9, 0.2, 0.5, 0.45, 0.85, 0.45, 0.2]
+  },
+  {
+    "id": 236,
+    "name": "Bouldering Gym Session",
+    "description": "Tackle colour-coded climbing problems side by side, coaching each other on technique and celebrating every summit reached.",
+    "vector": [0.35, 0.0, 0.85, 0.4, 0.5, 0.45, 0.6, 0.4, 0.35]
+  },
+  {
+    "id": 237,
+    "name": "Archery Range Session",
+    "description": "Try traditional or compound archery at a local range — quiet focus punctuated by competitive banter.",
+    "vector": [0.35, 0.5, 0.5, 0.3, 0.5, 0.3, 0.65, 0.4, 0.35]
+  },
+  {
+    "id": 238,
+    "name": "Indoor Skydiving (Wind Tunnel)",
+    "description": "Float in a vertical wind tunnel side by side — pure adrenaline, hilarious footage, and a shared story for life.",
+    "vector": [0.75, 0.0, 0.8, 0.4, 0.5, 0.2, 0.9, 0.45, 0.1]
+  },
+  {
+    "id": 239,
+    "name": "Midnight Ghost Tour",
+    "description": "Join a guided ghost walk through the oldest part of your city — eerie stories, dark alleys, and the perfect excuse to hold on tight.",
+    "vector": [0.35, 1.0, 0.35, 0.5, 0.95, 0.4, 0.85, 0.55, 0.45]
+  },
+  {
+    "id": 240,
+    "name": "Bottomless Brunch Date",
+    "description": "Reserve a bottomless brunch with unlimited mimosas or Bloody Marys and let a long, languid morning turn into early afternoon.",
+    "vector": [0.5, 0.0, 0.2, 0.6, 0.25, 0.65, 0.3, 0.5, 0.65]
+  },
+  {
+    "id": 241,
+    "name": "Pre-Dawn Trail Run",
+    "description": "Set headlamps, meet at a trailhead before sunrise, and run through the dark — arriving at a viewpoint just as the world lights up.",
+    "vector": [0.0, 1.0, 0.95, 0.05, 0.1, 0.45, 0.5, 0.4, 0.25]
+  },
+  {
+    "id": 242,
+    "name": "Morning Sea Swim",
+    "description": "Brave a bracing early-morning dip in the sea together — the shared cold shock and giddy recovery create instant closeness.",
+    "vector": [0.05, 1.0, 0.75, 0.15, 0.2, 0.25, 0.55, 0.55, 0.3]
+  },
+  {
+    "id": 243,
+    "name": "Specialty Coffee Cupping",
+    "description": "Visit a specialty roaster for a coffee cupping session — slurp, sniff, and argue over tasting notes like proper coffee nerds.",
+    "vector": [0.2, 0.0, 0.15, 0.4, 0.25, 0.25, 0.45, 0.35, 0.55]
+  },
+  {
+    "id": 244,
+    "name": "Sunrise Stand-Up Paddleboard",
+    "description": "Rent boards and paddle a calm lake or bay at sunrise — peaceful, photogenic, and just wobbly enough to be funny.",
+    "vector": [0.4, 1.0, 0.7, 0.1, 0.15, 0.4, 0.55, 0.55, 0.35]
+  },
+  {
+    "id": 245,
+    "name": "Spontaneous Coffee Shop Hop",
+    "description": "Walk from one independent café to the next, ordering a single drink at each and rating them — the date that fuels itself.",
+    "vector": [0.15, 0.0, 0.2, 0.5, 0.5, 0.3, 0.35, 0.35, 0.6]
+  },
+  {
+    "id": 246,
+    "name": "Independent Bookshop Wander",
+    "description": "Browse a small bookshop together, pull out books with interesting spines, and read passages to each other before buying one to share.",
+    "vector": [0.15, 0.0, 0.2, 0.2, 0.5, 0.35, 0.35, 0.45, 0.7]
+  },
+  {
+    "id": 247,
+    "name": "Flower Market Morning Visit",
+    "description": "Wander a bustling flower market at peak freshness, pick a bouquet together, and grab a pastry from the nearby bakery.",
+    "vector": [0.15, 1.0, 0.3, 0.5, 0.2, 0.2, 0.35, 0.55, 0.4]
+  },
+  {
+    "id": 248,
+    "name": "Artisan Ice Cream Tour",
+    "description": "Hit three artisan ice cream shops in one afternoon, comparing flavours and debating which scoop wins — seasonal, weird, and wonderful.",
+    "vector": [0.2, 0.5, 0.3, 0.5, 0.5, 0.25, 0.35, 0.45, 0.35]
+  },
+  {
+    "id": 249,
+    "name": "Vintage Record Store Browse",
+    "description": "Flip through crates at a used record shop, pull albums from the eras before you were born, and argue over who had worse taste.",
+    "vector": [0.15, 0.0, 0.15, 0.3, 0.5, 0.3, 0.4, 0.4, 0.55]
+  },
+  {
+    "id": 250,
+    "name": "Midnight Rooftop Stargazing",
+    "description": "Bring a sky-map app, a thermos of tea, and a blanket to a rooftop after midnight — the city sleeps while you find constellations.",
+    "vector": [0.05, 1.0, 0.15, 0.05, 1.0, 0.5, 0.6, 0.75, 0.7]
+  },
+  {
+    "id": 251,
+    "name": "Late-Night Ramen Bar",
+    "description": "Slide into a steaming bowl of tonkotsu after midnight — the best conversations happen over broth when the world has gone quiet.",
+    "vector": [0.25, 0.0, 0.15, 0.5, 0.9, 0.25, 0.35, 0.5, 0.55]
+  },
+  {
+    "id": 252,
+    "name": "2AM Food Truck Hunt",
+    "description": "Search for late-night food trucks on foot, eating tacos or loaded fries on a kerb while the city empties around you.",
+    "vector": [0.2, 1.0, 0.4, 0.6, 1.0, 0.3, 0.6, 0.45, 0.4]
+  },
+  {
+    "id": 253,
+    "name": "Late-Night Bookshop Reading",
+    "description": "Find a bookshop with late hours, grab armchairs in a quiet corner, and read aloud to each other from whatever catches your eye.",
+    "vector": [0.15, 0.0, 0.1, 0.1, 0.9, 0.5, 0.5, 0.55, 0.8]
+  },
+  {
+    "id": 254,
+    "name": "Night Market Adventure",
+    "description": "Dive into a vibrant night market — street food, incense, handmade goods, and the electric energy of a crowd under coloured lights.",
+    "vector": [0.2, 1.0, 0.45, 0.75, 0.8, 0.45, 0.55, 0.5, 0.4]
+  },
+  {
+    "id": 255,
+    "name": "Home Sushi Rolling Night",
+    "description": "Buy sushi-grade fish and nori, watch a tutorial, and roll together — messy, competitive, and surprisingly delicious.",
+    "vector": [0.25, 0.0, 0.45, 0.05, 0.75, 0.65, 0.45, 0.6, 0.55]
+  },
+  {
+    "id": 256,
+    "name": "DIY Cocktail Mixology Night",
+    "description": "Set up a home bar, watch technique videos, and craft three signature cocktails each — then rate and rename each other's creations.",
+    "vector": [0.35, 0.0, 0.3, 0.05, 0.75, 0.55, 0.5, 0.65, 0.65]
+  },
+  {
+    "id": 257,
+    "name": "Living Room Blanket Fort Cinema",
+    "description": "Build the ultimate blanket fort, dim all the lights, and watch a film inside your creation — cosy, playful, and deeply private.",
+    "vector": [0.05, 0.0, 0.05, 0.0, 0.85, 0.7, 0.4, 0.7, 0.65]
+  },
+  {
+    "id": 258,
+    "name": "Cook an Unfamiliar Cuisine Together",
+    "description": "Pick a cuisine neither of you has tried cooking — Georgian, Peruvian, Ethiopian — and spend the evening figuring it out from scratch.",
+    "vector": [0.35, 0.0, 0.45, 0.05, 0.75, 0.65, 0.6, 0.6, 0.55]
+  },
+  {
+    "id": 259,
+    "name": "Mutual Portrait Sketch Session",
+    "description": "Set a 20-minute timer and draw each other's portrait without looking at the paper — compare the hilariously abstract results.",
+    "vector": [0.0, 0.0, 0.2, 0.0, 0.5, 0.35, 0.5, 0.55, 0.55]
+  },
+  {
+    "id": 260,
+    "name": "Home Wine & Cheese Tasting Board",
+    "description": "Curate a selection of three wines and matching cheeses, taste blind, and keep tasting notes — elegant, affordable, and conversation-rich.",
+    "vector": [0.4, 0.0, 0.1, 0.05, 0.75, 0.5, 0.4, 0.7, 0.8]
+  },
+  {
+    "id": 261,
+    "name": "Tidal Pool Exploration",
+    "description": "Visit the coast at low tide and explore rock pools teeming with starfish, anemones, and tiny crabs — childlike wonder, no cost.",
+    "vector": [0.0, 1.0, 0.45, 0.15, 0.2, 0.45, 0.55, 0.5, 0.6]
+  },
+  {
+    "id": 262,
+    "name": "Cave Tour & Underground Adventure",
+    "description": "Take a guided tour through a cave system — stalactites, underground rivers, and the thrill of the deep dark together.",
+    "vector": [0.4, 1.0, 0.45, 0.4, 0.5, 0.45, 0.7, 0.5, 0.5]
+  },
+  {
+    "id": 263,
+    "name": "Waterfall Hike & Wild Swim",
+    "description": "Hike to a hidden waterfall through dense forest and reward yourselves with a swim in the pool below — earthy and exhilarating.",
+    "vector": [0.15, 1.0, 0.8, 0.1, 0.5, 0.65, 0.65, 0.6, 0.45]
+  },
+  {
+    "id": 264,
+    "name": "Dawn Bird Watching Walk",
+    "description": "Rise before the sun with binoculars and a field guide — the quiet companionship of watching nature wake up is unexpectedly romantic.",
+    "vector": [0.0, 1.0, 0.25, 0.1, 0.1, 0.5, 0.4, 0.5, 0.6]
+  },
+  {
+    "id": 265,
+    "name": "Night Sky Astrophotography",
+    "description": "Drive to a dark-sky location, set up a long-exposure shot of the Milky Way, and wait together in the dark while the universe poses.",
+    "vector": [0.15, 1.0, 0.15, 0.05, 1.0, 0.65, 0.65, 0.65, 0.6]
+  },
+  {
+    "id": 266,
+    "name": "Firefly Watching at Dusk",
+    "description": "Find a meadow or forest edge at dusk in summer and watch fireflies light up the evening — simple, free, and quietly magical.",
+    "vector": [0.0, 1.0, 0.2, 0.1, 0.8, 0.3, 0.7, 0.7, 0.6]
+  },
+  {
+    "id": 267,
+    "name": "Interactive Science Museum",
+    "description": "Spend an afternoon at a hands-on science museum — press every button, trigger every demo, and compete at who learns something more bizarre.",
+    "vector": [0.35, 0.0, 0.45, 0.5, 0.5, 0.55, 0.5, 0.3, 0.6]
+  },
+  {
+    "id": 268,
+    "name": "Planetarium Night Show",
+    "description": "Recline under a projected night sky as a narrator takes you from our solar system to the edge of the observable universe.",
+    "vector": [0.35, 0.0, 0.05, 0.45, 0.75, 0.4, 0.5, 0.55, 0.55]
+  },
+  {
+    "id": 269,
+    "name": "Language Exchange Café Date",
+    "description": "Each teaches the other five phrases in a language they know — practice, laugh at pronunciation, and leave with a shared secret vocabulary.",
+    "vector": [0.1, 0.0, 0.2, 0.15, 0.5, 0.5, 0.45, 0.45, 0.9]
+  },
+  {
+    "id": 270,
+    "name": "Blind Wine Tasting Challenge",
+    "description": "Cover the bottles, pour three reds and three whites, and attempt to identify grape and region — smugness is mandatory for correct guesses.",
+    "vector": [0.35, 0.0, 0.1, 0.05, 0.75, 0.45, 0.55, 0.6, 0.8]
+  },
+  {
+    "id": 271,
+    "name": "Self-Guided Architecture Walk",
+    "description": "Research five notable buildings in your city and walk between them, debating each facade — free, educational, and surprisingly opinionated.",
+    "vector": [0.0, 1.0, 0.4, 0.1, 0.5, 0.5, 0.35, 0.4, 0.7]
+  },
+  {
+    "id": 272,
+    "name": "Cherry Blossom Picnic",
+    "description": "Spread a blanket under cherry blossom trees at peak bloom, sip sake or tea, and watch petals fall — fleeting, beautiful, and romantic.",
+    "vector": [0.15, 1.0, 0.2, 0.35, 0.5, 0.45, 0.5, 0.7, 0.6]
+  },
+  {
+    "id": 273,
+    "name": "Apple Orchard & Cider Tasting",
+    "description": "Pick apples at a working orchard, then tour the cider house and taste several varieties — autumnal, wholesome, and slightly tipsifying.",
+    "vector": [0.35, 1.0, 0.45, 0.35, 0.5, 0.55, 0.4, 0.5, 0.5]
+  },
+  {
+    "id": 274,
+    "name": "Autumn Leaf Peeping Hike",
+    "description": "Time a hike to peak autumn colour — a blaze of reds and golds, crisp air, and a thermos of something warm at the summit.",
+    "vector": [0.05, 1.0, 0.7, 0.1, 0.5, 0.7, 0.4, 0.55, 0.55]
   }
 ]

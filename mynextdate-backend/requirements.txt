@@ -13,4 +13,4 @@ grpcio-tools==1.78.1
 protobuf==6.33.5
 groq==1.0.0
 google-genai==1.64.0
-actiancortex @ file:///C:/Users/aksha/Videos/MyNextDate/actiancortex-0.1.0b1-py3-none-any.whl
+# actiancortex is installed directly in the Dockerfile from the local .whl

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
-import { Heart } from 'lucide-react'
+import { Heart, Mail } from 'lucide-react'
 import VideoCards from './VideoCards'
 
 const floatingElements = Array.from({ length: 10 }, (_, i) => ({
@@ -19,6 +19,7 @@ export default function AuthPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [emailSent, setEmailSent] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -29,6 +30,7 @@ export default function AuthPage() {
         ? await signUp(email, password)
         : await signIn(email, password)
       if (err) setError(err.message)
+      else if (isSignUp) setEmailSent(true)
     } catch (err) {
       setError(err.message)
     }
@@ -121,8 +123,42 @@ export default function AuthPage() {
         AI-powered date recommendations
       </motion.p>
 
+      {/* Email sent confirmation */}
+      <AnimatePresence>
+        {emailSent && (
+          <motion.div
+            className="glass-heavy rounded-3xl p-8 w-full max-w-sm relative z-10 text-center"
+            initial={{ opacity: 0, y: 30, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <motion.div
+              className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+              style={{ background: 'linear-gradient(135deg, #8b5cf6, #6d2c8e)', boxShadow: '0 8px 30px rgba(139,92,246,0.3)' }}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
+            >
+              <Mail className="w-8 h-8 text-white" />
+            </motion.div>
+            <h2 className="heading-section text-2xl mb-2">Check your inbox</h2>
+            <p className="text-sm font-serif italic mb-6" style={{ color: '#9a8fad' }}>
+              We sent a confirmation link to <span style={{ color: '#c084fc' }}>{email}</span>.
+              Click it to activate your account.
+            </p>
+            <button
+              onClick={() => { setEmailSent(false); setIsSignUp(false) }}
+              className="text-sm font-medium transition-colors"
+              style={{ color: '#c084fc' }}
+            >
+              Back to sign in
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Form card */}
-      <motion.div
+      {!emailSent && <motion.div
         className="glass-heavy rounded-3xl p-8 w-full max-w-sm relative z-10"
         initial={{ opacity: 0, y: 30, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -204,7 +240,7 @@ export default function AuthPage() {
             {isSignUp ? 'Sign in' : 'Create one'}
           </button>
         </p>
-      </motion.div>
+      </motion.div>}
     </div>
   )
 }
