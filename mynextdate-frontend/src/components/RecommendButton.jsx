@@ -23,12 +23,16 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
     setMode(breakup ? 'breakup' : 'good')
     setRecs(null)
     try {
+      const currentSkipped = [...skippedIds]
       const data = breakup
         ? await getWorstRecommendations()
-        : await getRecommendations(skippedIds)
+        : await getRecommendations(currentSkipped)
       setRecs(data.recommendations)
+      // Reset skipped IDs after successful fetch — fresh batch, fresh skips
+      setSkippedIds([])
     } catch (err) {
       console.error(err)
+      setRecs(null)
     }
     setLoading(false)
     setTimeout(() => setShowPulse(false), 600)

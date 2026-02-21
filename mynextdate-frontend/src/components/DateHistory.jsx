@@ -7,6 +7,7 @@ import { rateDate, deleteDate } from '../lib/api'
 export default function DateHistory({ dates, onUpdate }) {
   const [deleting, setDeleting] = useState(null)
   const [rating, setRating] = useState(null)
+  const [ratingOpen, setRatingOpen] = useState(null)
 
   const handleRate = async (dateId, value) => {
     setRating(dateId)
@@ -99,19 +100,21 @@ export default function DateHistory({ dates, onUpdate }) {
 
             {/* Rating */}
             <div className="shrink-0">
-              {date.rating ? (
+              {date.rating || ratingOpen === date.id ? (
                 <HeartRating
-                  rating={date.rating}
-                  onChange={(v) => handleRate(date.id, v)}
+                  rating={date.rating || 0}
+                  onChange={(v) => { handleRate(date.id, v); setRatingOpen(null) }}
                   size={16}
                 />
               ) : (
                 <motion.span
-                  className="text-xs px-2.5 py-1 rounded-full font-medium"
+                  className="text-xs px-2.5 py-1 rounded-full font-medium cursor-pointer"
                   style={{ color: '#c084fc', background: 'rgba(139, 92, 246, 0.1)' }}
                   animate={{ opacity: [1, 0.5, 1] }}
                   transition={{ duration: 2.5, repeat: Infinity }}
-                  onClick={() => handleRate(date.id, 3)}
+                  onClick={() => setRatingOpen(date.id)}
+                  whileHover={{ scale: 1.05, background: 'rgba(139, 92, 246, 0.2)' }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   Rate it!
                 </motion.span>

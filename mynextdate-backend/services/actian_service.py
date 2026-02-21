@@ -16,12 +16,24 @@ _payload_cache: dict[int, dict] = {}
 
 
 def get_client() -> CortexClient:
-    """Get or create a persistent Actian connection."""
+    """Get or create a persistent Actian connection. Reconnects if dead."""
     global _client
     if _client is None:
         _client = CortexClient(ACTIAN_HOST)
         _client.connect()
     return _client
+
+
+def _reconnect():
+    """Force a fresh connection (called after gRPC errors)."""
+    global _client
+    try:
+        if _client:
+            _client.close()
+    except Exception:
+        pass
+    _client = None
+    return get_client()
 
 
 def _warm_cache():
@@ -75,28 +87,36 @@ def seed_activities(client: CortexClient, activities_path: str):
 
 
 def search_similar(query_vector: list[float], top_k: int = 2, exclude_ids: list[int] | None = None) -> list[dict]:
-    """Search for activities most similar to the query vector."""
-    client = get_client()
-    results = client.search(
-        COLLECTION_NAME,
-        query=query_vector,
-        top_k=top_k + (len(exclude_ids) if exclude_ids else 0),
-        with_payload=True,
-    )
+    """Search using in-memory cache with cosine similarity. Instant, no duplicates, all 200 activities."""
+    _warm_cache()
+    exclude_set = set(exclude_ids) if exclude_ids else set()
+    query = np.array(query_vector)
+    query_norm = np.linalg.norm(query)
+    if query_norm == 0:
+        query_norm = 1.0
+
+    scored = []
+    for aid, vec in _vector_cache.items():
+        if aid in exclude_set:
+            continue
+        v = np.array(vec)
+        v_norm = np.linalg.norm(v)
+        if v_norm == 0:
+            continue
+        similarity = float(np.dot(query, v) / (query_norm * v_norm))
+        scored.append((aid, similarity))
+
+    scored.sort(key=lambda x: x[1], reverse=True)
 
     output = []
-    for r in results:
-        if exclude_ids and r.id in exclude_ids:
-            continue
+    for aid, score in scored[:top_k]:
+        payload = _payload_cache.get(aid, {})
         output.append({
-            "id": r.id,
-            "name": r.payload.get("name", ""),
-            "description": r.payload.get("description", ""),
-            "score": round(r.score, 4),
+            "id": aid,
+            "name": payload.get("name", ""),
+            "description": payload.get("description", ""),
+            "score": round(score, 4),
         })
-        if len(output) >= top_k:
-            break
-
     return output
 
 

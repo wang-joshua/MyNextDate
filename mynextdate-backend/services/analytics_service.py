@@ -38,21 +38,29 @@ def compute_analytics(
     success_rate = round(len(successful) / rated_count * 100, 1) if rated_count > 0 else 0.0
 
     # Compute weighted dimension averages from ALL dates with vectors
-    # Rated dates are weighted by rating, unrated dates get neutral weight
+    # Positive dates (rating >= 3) pull toward, negative push away, unrated are neutral
     all_vecs = []
     all_weights = []
     for d in dates:
         aid = d["activity_id"]
         if aid not in activity_vectors:
             continue
-        vec = activity_vectors[aid]
+        vec = np.array(activity_vectors[aid])
         rating = d["rating"]
         if rating and rating > 0:
-            weight = rating / 5.0
+            if rating >= 3:
+                # Positive: higher rating = stronger pull toward this vector
+                weight = rating / 5.0
+                all_vecs.append(vec * weight)
+            else:
+                # Negative: lower rating = stronger push AWAY
+                weight = (3.0 - rating) / 5.0
+                all_vecs.append((1.0 - vec) * weight)
+            all_weights.append(weight)
         else:
-            weight = 0.5  # neutral weight for unrated
-        all_vecs.append(np.array(vec) * weight)
-        all_weights.append(weight)
+            # Unrated: neutral contribution
+            all_vecs.append(vec * 0.3)
+            all_weights.append(0.3)
 
     dim_averages = {}
     if all_vecs and sum(all_weights) > 0:
@@ -86,59 +94,87 @@ def compute_analytics(
     }
 
 
+def _intensity_word(deviation: float) -> str:
+    """Return an intensity modifier based on how far a dimension leans from neutral."""
+    d = abs(deviation)
+    if d >= 0.25:
+        return "strongly"
+    if d >= 0.15:
+        return "clearly"
+    if d >= 0.08:
+        return "somewhat"
+    return "slightly"
+
+
 def _generate_summary(dim_avgs: dict, success_rate: float, avg_rating: float) -> str:
-    """Generate a human-readable preference summary."""
-    insights = []
+    """Generate a human-readable preference summary based on strongest dimensions."""
+    dimension_labels = {
+        "cost": ("budget-friendly", "upscale"),
+        "indoor_outdoor": ("indoor", "outdoor"),
+        "energy": ("relaxed", "active and energetic"),
+        "social_density": ("private and intimate", "social and lively"),
+        "time_of_day": ("morning", "evening"),
+        "duration": ("quick and spontaneous", "long and immersive"),
+        "surprise": ("familiar and comfortable", "adventurous"),
+        "romance_intensity": ("casual and lighthearted", "deeply romantic"),
+        "conversation_depth": ("activity-focused", "deep-conversation"),
+    }
 
-    cost = dim_avgs.get("cost", 0.5)
-    if cost < 0.3:
-        insights.append("budget-friendly")
-    elif cost > 0.7:
-        insights.append("upscale")
+    # Rank dimensions by deviation from neutral (0.5)
+    deviations = []
+    for dim, (low_label, high_label) in dimension_labels.items():
+        val = dim_avgs.get(dim, 0.5)
+        deviation = val - 0.5
+        label = high_label if deviation > 0 else low_label
+        deviations.append((deviation, label, dim))
 
-    indoor = dim_avgs.get("indoor_outdoor", 0.5)
-    if indoor < 0.3:
-        insights.append("indoor")
-    elif indoor > 0.7:
-        insights.append("outdoor")
+    deviations.sort(key=lambda x: abs(x[0]), reverse=True)
 
-    energy = dim_avgs.get("energy", 0.5)
-    if energy < 0.3:
-        insights.append("relaxed")
-    elif energy > 0.7:
-        insights.append("active and energetic")
+    # Pick top 3 with meaningful deviation
+    top = [(dev, label, dim) for dev, label, dim in deviations[:3] if abs(dev) > 0.03]
 
-    social = dim_avgs.get("social_density", 0.5)
-    if social < 0.3:
-        insights.append("private and intimate")
-    elif social > 0.7:
-        insights.append("social and lively")
-
-    time = dim_avgs.get("time_of_day", 0.5)
-    if time < 0.3:
-        insights.append("morning")
-    elif time > 0.7:
-        insights.append("evening")
-
-    romance = dim_avgs.get("romance_intensity", 0.5)
-    if romance > 0.7:
-        insights.append("deeply romantic")
-    elif romance < 0.3:
-        insights.append("casual and lighthearted")
-
-    convo = dim_avgs.get("conversation_depth", 0.5)
-    if convo > 0.7:
-        insights.append("deep-conversation")
-    elif convo < 0.3:
-        insights.append("activity-focused (less talking)")
-
-    if not insights:
+    if not top:
         return "You enjoy a well-balanced mix of date types. Keep exploring!"
 
-    pref_str = ", ".join(insights[:-1])
-    if len(insights) > 1:
-        pref_str += f" and {insights[-1]}"
-    else:
-        pref_str = insights[0]
+    # Build trait descriptions with intensity words
+    traits = [f"{_intensity_word(dev)} {label}" for dev, label, _ in top]
 
-    return f"You tend to prefer dates that are {pref_str}."
+    if len(traits) > 1:
+        pref_str = ", ".join(traits[:-1]) + f" and {traits[-1]}"
+    else:
+        pref_str = traits[0]
+
+    # Granular prefix based on avg rating (0.5 increments)
+    if avg_rating >= 4.5:
+        prefix = "You're absolutely loving your dates! Your vibe is"
+    elif avg_rating >= 4.0:
+        prefix = "Your dates are going great! You clearly gravitate toward"
+    elif avg_rating >= 3.5:
+        prefix = "You're having solid dates! You tend to enjoy"
+    elif avg_rating >= 3.0:
+        prefix = "Your dates are decent — you seem to prefer"
+    elif avg_rating >= 2.5:
+        prefix = "Your dates have been hit or miss. You lean toward"
+    elif avg_rating >= 2.0:
+        prefix = "Looks like recent dates haven't clicked. You might want to try more"
+    elif avg_rating >= 1.5:
+        prefix = "Your dates haven't been great lately. Consider shifting toward"
+    elif avg_rating >= 1.0:
+        prefix = "Time for a change! Your history suggests you'd prefer"
+    elif avg_rating >= 0.5:
+        prefix = "Most dates haven't landed well. You might enjoy something more"
+    elif avg_rating > 0:
+        prefix = "Let's turn things around — your patterns suggest"
+    else:
+        prefix = "Based on your dates so far, your profile leans"
+
+    # Add success rate context for extra flavor
+    suffix = ""
+    if success_rate >= 80:
+        suffix = " You're on a great streak!"
+    elif success_rate >= 60:
+        suffix = " Your hit rate is solid — keep it up."
+    elif success_rate <= 20 and avg_rating > 0:
+        suffix = " Try switching things up for better results."
+
+    return f"{prefix} {pref_str}.{suffix}"
