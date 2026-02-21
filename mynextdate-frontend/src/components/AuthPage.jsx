@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
-import { Heart } from 'lucide-react'
+import Logo from './Logo'
 import VideoCards from './VideoCards'
 
 const floatingElements = Array.from({ length: 10 }, (_, i) => ({
@@ -37,16 +37,8 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 relative overflow-hidden">
-      {/* Stacked floating video cards (Vylit-style) */}
+      {/* Fullscreen background video */}
       <VideoCards />
-
-      {/* Background blobs */}
-      <div className="absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full blur-[120px]"
-        style={{ background: 'rgba(109, 44, 142, 0.15)', animation: 'ambientOrb 8s ease-in-out infinite' }} />
-      <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] rounded-full blur-[150px]"
-        style={{ background: 'rgba(139, 92, 246, 0.1)', animation: 'ambientOrb 10s ease-in-out infinite 3s' }} />
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[350px] h-[350px] rounded-full blur-[100px]"
-        style={{ background: 'rgba(109, 44, 142, 0.08)', animation: 'ambientOrb 12s ease-in-out infinite 6s' }} />
 
       {/* Floating diamond shapes */}
       {floatingElements.map((el) => (
@@ -60,6 +52,7 @@ export default function AuthPage() {
             background: `rgba(139, 92, 246, ${0.1 + Math.random() * 0.15})`,
             transform: 'rotate(45deg)',
             borderRadius: '2px',
+            zIndex: 1,
           }}
           animate={{
             y: ['100vh', '-100px'],
@@ -76,22 +69,18 @@ export default function AuthPage() {
 
       {/* Logo */}
       <motion.div
-        className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6"
-        style={{
-          background: 'linear-gradient(135deg, #8b5cf6, #6d2c8e)',
-          boxShadow: '0 8px 40px rgba(139, 92, 246, 0.3)',
-        }}
+        className="inline-flex items-center justify-center w-28 h-28 mb-6 relative z-10"
         initial={{ scale: 0, rotate: -180 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
         whileHover={{ scale: 1.1, rotate: 5 }}
       >
-        <Heart className="w-10 h-10 text-white fill-white" />
+        <Logo className="w-28 h-28" />
       </motion.div>
 
       {/* Title with letter reveal */}
       <motion.h1
-        className="heading-hero text-5xl mb-2"
+        className="heading-hero text-5xl mb-2 relative z-10"
         style={{
           background: 'linear-gradient(135deg, #c084fc, #8b5cf6, #6d2c8e)',
           WebkitBackgroundClip: 'text',
@@ -112,7 +101,7 @@ export default function AuthPage() {
       </motion.h1>
 
       <motion.p
-        className="text-lg font-serif italic mb-10"
+        className="text-lg font-serif italic mb-10 relative z-10"
         style={{ color: '#9a8fad' }}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
