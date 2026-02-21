@@ -1,4 +1,5 @@
 import json
+import os
 import numpy as np
 from cortex import CortexClient, DistanceMetric
 from cortex.transport.pool import PoolConfig
@@ -30,7 +31,14 @@ def _warm_cache():
     if _vector_cache:
         return
     client = get_client()
+    init_collection(client)
     records, _ = client.scroll(COLLECTION_NAME, limit=250, with_vectors=True)
+    if not records:
+        activities_path = os.path.join(os.path.dirname(__file__), "..", "data", "activities.json")
+        if os.path.exists(activities_path):
+            print("Collection empty — auto-seeding from activities.json...")
+            seed_activities(client, activities_path)
+            records, _ = client.scroll(COLLECTION_NAME, limit=250, with_vectors=True)
     for record in records:
         rid = record.id
         vec = record.vector
