@@ -2,13 +2,14 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import { Heart } from 'lucide-react'
+import VideoCards from './VideoCards'
 
-const floatingHearts = Array.from({ length: 6 }, (_, i) => ({
+const floatingElements = Array.from({ length: 10 }, (_, i) => ({
   id: i,
   x: Math.random() * 100,
-  delay: Math.random() * 5,
-  duration: 6 + Math.random() * 4,
-  size: 12 + Math.random() * 16,
+  delay: Math.random() * 8,
+  duration: 8 + Math.random() * 4,
+  size: 4 + Math.random() * 8,
 }))
 
 export default function AuthPage() {
@@ -16,179 +17,193 @@ export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError('')
     setLoading(true)
-
-    const { error: authError } = isSignUp
-      ? await signUp(email, password)
-      : await signIn(email, password)
-
-    if (authError) {
-      setError(authError.message)
+    setError('')
+    try {
+      const { error: err } = isSignUp
+        ? await signUp(email, password)
+        : await signIn(email, password)
+      if (err) setError(err.message)
+    } catch (err) {
+      setError(err.message)
     }
     setLoading(false)
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Animated background gradient blobs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -left-40 w-80 h-80 bg-pink-500/10 rounded-full blur-[100px] animate-pulse" />
-        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-pink-600/5 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '4s' }} />
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 relative overflow-hidden">
+      {/* Stacked floating video cards (Vylit-style) */}
+      <VideoCards />
 
-      {/* Floating hearts */}
-      {floatingHearts.map((h) => (
+      {/* Background blobs */}
+      <div className="absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full blur-[120px]"
+        style={{ background: 'rgba(109, 44, 142, 0.15)', animation: 'ambientOrb 8s ease-in-out infinite' }} />
+      <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] rounded-full blur-[150px]"
+        style={{ background: 'rgba(139, 92, 246, 0.1)', animation: 'ambientOrb 10s ease-in-out infinite 3s' }} />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[350px] h-[350px] rounded-full blur-[100px]"
+        style={{ background: 'rgba(109, 44, 142, 0.08)', animation: 'ambientOrb 12s ease-in-out infinite 6s' }} />
+
+      {/* Floating diamond shapes */}
+      {floatingElements.map((el) => (
         <motion.div
-          key={h.id}
-          className="absolute pointer-events-none text-pink-500/20"
-          style={{ left: `${h.x}%` }}
+          key={el.id}
+          className="absolute pointer-events-none"
+          style={{
+            left: `${el.x}%`,
+            width: el.size,
+            height: el.size,
+            background: `rgba(139, 92, 246, ${0.1 + Math.random() * 0.15})`,
+            transform: 'rotate(45deg)',
+            borderRadius: '2px',
+          }}
           animate={{
-            y: [window.innerHeight, -100],
-            rotate: [0, h.id % 2 === 0 ? 20 : -20, 0],
-            opacity: [0, 0.4, 0],
+            y: ['100vh', '-100px'],
+            opacity: [0, 0.6, 0],
           }}
           transition={{
-            duration: h.duration,
+            duration: el.duration,
             repeat: Infinity,
-            delay: h.delay,
+            delay: el.delay,
             ease: 'linear',
           }}
-        >
-          <Heart size={h.size} fill="currentColor" />
-        </motion.div>
+        />
       ))}
 
+      {/* Logo */}
       <motion.div
-        className="w-full max-w-md relative z-10"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6"
+        style={{
+          background: 'linear-gradient(135deg, #8b5cf6, #6d2c8e)',
+          boxShadow: '0 8px 40px rgba(139, 92, 246, 0.3)',
+        }}
+        initial={{ scale: 0, rotate: -180 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
+        whileHover={{ scale: 1.1, rotate: 5 }}
       >
-        {/* Logo */}
-        <div className="text-center mb-8">
+        <Heart className="w-10 h-10 text-white fill-white" />
+      </motion.div>
+
+      {/* Title with letter reveal */}
+      <motion.h1
+        className="heading-hero text-5xl mb-2"
+        style={{
+          background: 'linear-gradient(135deg, #c084fc, #8b5cf6, #6d2c8e)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        }}
+      >
+        {"MyNextDate".split('').map((char, i) => (
+          <motion.span
+            key={i}
+            initial={{ opacity: 0, y: 20, rotateX: -10 }}
+            animate={{ opacity: 1, y: 0, rotateX: 0 }}
+            transition={{ delay: 0.4 + i * 0.05, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            style={{ display: 'inline-block' }}
+          >
+            {char}
+          </motion.span>
+        ))}
+      </motion.h1>
+
+      <motion.p
+        className="text-lg font-serif italic mb-10"
+        style={{ color: '#9a8fad' }}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.0, duration: 0.8 }}
+      >
+        AI-powered date recommendations
+      </motion.p>
+
+      {/* Form card */}
+      <motion.div
+        className="glass-heavy rounded-3xl p-8 w-full max-w-sm relative z-10"
+        initial={{ opacity: 0, y: 30, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ delay: 0.6, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.h2
+            key={isSignUp ? 'signup' : 'signin'}
+            className="heading-section text-2xl mb-6"
+            initial={{ opacity: 0, x: isSignUp ? 20 : -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: isSignUp ? -20 : 20 }}
+            transition={{ duration: 0.3 }}
+          >
+            {isSignUp ? 'Create Account' : 'Welcome Back'}
+          </motion.h2>
+        </AnimatePresence>
+
+        {error && (
           <motion.div
-            className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 mb-4 shadow-lg shadow-pink-500/25"
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
-            whileHover={{ scale: 1.1, rotate: 5 }}
+            className="mb-4 px-4 py-3 rounded-xl text-sm"
+            style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', color: '#f87171' }}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
           >
-            <Heart className="w-10 h-10 text-white fill-white" />
+            {error}
           </motion.div>
-          <motion.h1
-            className="text-4xl font-bold bg-gradient-to-r from-pink-400 via-rose-400 to-purple-400 bg-clip-text text-transparent"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="label-editorial block mb-2">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3.5 rounded-xl text-white placeholder-[#6b5f7e] transition-all duration-300"
+              style={{ background: 'rgba(10, 8, 18, 0.8)', border: '1px solid rgba(109, 44, 142, 0.15)' }}
+              placeholder="your@email.com"
+              required
+            />
+          </div>
+          <div>
+            <label className="label-editorial block mb-2">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3.5 rounded-xl text-white placeholder-[#6b5f7e] transition-all duration-300"
+              style={{ background: 'rgba(10, 8, 18, 0.8)', border: '1px solid rgba(109, 44, 142, 0.15)' }}
+              placeholder="Enter password"
+              required
+            />
+          </div>
+
+          <motion.button
+            type="submit"
+            disabled={loading}
+            className="w-full py-4 rounded-xl font-semibold text-white tracking-wide disabled:opacity-50 mt-2"
+            style={{
+              background: 'linear-gradient(135deg, #8b5cf6, #6d2c8e, #4c1d95)',
+              backgroundSize: '200% 200%',
+              boxShadow: '0 8px 30px rgba(139, 92, 246, 0.25)',
+            }}
+            whileHover={{ scale: 1.02, boxShadow: '0 12px 40px rgba(139, 92, 246, 0.4)' }}
+            whileTap={{ scale: 0.98 }}
           >
-            MyNextDate
-          </motion.h1>
-          <motion.p
-            className="text-gray-400 mt-2 text-lg"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
+            {loading ? 'Please wait...' : isSignUp ? 'Create Account' : 'Sign In'}
+          </motion.button>
+        </form>
+
+        <p className="text-center mt-6 text-sm" style={{ color: '#6b5f7e' }}>
+          {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+          <button
+            onClick={() => { setIsSignUp(!isSignUp); setError('') }}
+            className="font-medium transition-colors"
+            style={{ color: '#c084fc' }}
           >
-            AI-powered date recommendations
-          </motion.p>
-        </div>
-
-        {/* Form Card */}
-        <motion.div
-          className="bg-[#1a1725]/80 backdrop-blur-xl rounded-3xl p-8 border border-[#2d2840] shadow-2xl shadow-black/20"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-        >
-          <AnimatePresence mode="wait">
-            <motion.h2
-              key={isSignUp ? 'signup' : 'signin'}
-              className="text-xl font-semibold mb-6"
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 10 }}
-              transition={{ duration: 0.2 }}
-            >
-              {isSignUp ? 'Create Account' : 'Welcome Back'}
-            </motion.h2>
-          </AnimatePresence>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5 font-medium">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3.5 bg-[#0f0d15] border border-[#2d2840] rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500/30 transition-all duration-200"
-                placeholder="you@example.com"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5 font-medium">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3.5 bg-[#0f0d15] border border-[#2d2840] rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500/30 transition-all duration-200"
-                placeholder="••••••••"
-                required
-                minLength={6}
-              />
-            </div>
-
-            <AnimatePresence>
-              {error && (
-                <motion.p
-                  className="text-red-400 text-sm bg-red-400/10 px-3 py-2 rounded-lg"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                >
-                  {error}
-                </motion.p>
-              )}
-            </AnimatePresence>
-
-            <motion.button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3.5 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl font-semibold text-white disabled:opacity-50 shadow-lg shadow-pink-500/20"
-              whileHover={{ scale: 1.02, boxShadow: '0 20px 40px rgba(236, 72, 153, 0.3)' }}
-              whileTap={{ scale: 0.98 }}
-            >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <motion.span
-                    className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full inline-block"
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                  />
-                  Loading...
-                </span>
-              ) : isSignUp ? 'Create Account' : 'Sign In'}
-            </motion.button>
-          </form>
-
-          <p className="text-center text-gray-400 text-sm mt-6">
-            {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
-            <button
-              onClick={() => { setIsSignUp(!isSignUp); setError('') }}
-              className="text-pink-400 hover:text-pink-300 transition font-medium"
-            >
-              {isSignUp ? 'Sign In' : 'Sign Up'}
-            </button>
-          </p>
-        </motion.div>
+            {isSignUp ? 'Sign in' : 'Create one'}
+          </button>
+        </p>
       </motion.div>
     </div>
   )

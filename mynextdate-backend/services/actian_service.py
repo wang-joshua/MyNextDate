@@ -1,5 +1,4 @@
 import json
-import os
 import numpy as np
 from cortex import CortexClient, DistanceMetric
 from config import ACTIAN_HOST, COLLECTION_NAME, VECTOR_DIMENSION
@@ -22,27 +21,18 @@ def get_client() -> CortexClient:
 
 
 def _warm_cache():
-    """Load all 200 activity vectors into memory. Called once. Auto-seeds if empty."""
+    """Load all 200 activity vectors into memory. Called once."""
     global _vector_cache, _payload_cache
     if _vector_cache:
         return
     client = get_client()
-    init_collection(client)
-    records, _ = client.scroll(COLLECTION_NAME, limit=250)
-    if not records:
-        activities_path = os.path.join(os.path.dirname(__file__), "..", "data", "activities.json")
-        if os.path.exists(activities_path):
-            print("Collection empty — auto-seeding from activities.json...")
-            seed_activities(client, activities_path)
-            records, _ = client.scroll(COLLECTION_NAME, limit=250)
+    records, _ = client.scroll(COLLECTION_NAME, limit=250, with_vectors=True)
     for record in records:
-        rid = record.id if hasattr(record, "id") else None
-        if rid is None:
-            continue
-        vec = record.vector if hasattr(record, "vector") else None
-        payload = record.payload if hasattr(record, "payload") else {}
+        rid = record.id
+        vec = record.vector
+        payload = record.payload or {}
         if vec is not None:
-            _vector_cache[rid] = list(vec)
+            _vector_cache[rid] = [float(v) for v in vec]
         _payload_cache[rid] = dict(payload)
     print(f"Cached {len(_vector_cache)} activity vectors in memory.")
 
