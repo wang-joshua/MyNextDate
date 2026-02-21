@@ -1,0 +1,3202 @@
+[
+  {
+    "id": 0,
+    "name": "Sunset Cliffside Picnic",
+    "description": "Pack artisanal snacks, sparkling drinks, and a shared playlist for a sunset picnic at a scenic cliffside viewpoint. The dramatic backdrop enhances intimacy and cinematic romance.",
+    "vector": [
+      0.3,
+      1.0,
+      0.2,
+      0.2,
+      0.75,
+      0.35,
+      0.5,
+      0.65,
+      0.5
+    ]
+  },
+  {
+    "id": 1,
+    "name": "Underground Jazz Lounge Night",
+    "description": "Visit a hidden jazz lounge with candlelit tables and live improvisational music, encouraging slow conversation and subtle chemistry.",
+    "vector": [
+      0.5,
+      0.0,
+      0.2,
+      0.2,
+      0.75,
+      0.55,
+      0.5,
+      0.75,
+      0.8
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Sunrise Temple Visit",
+    "description": "Visit a historic temple or cathedral at sunrise, walking quietly through the architecture and reflecting on personal values and future dreams.",
+    "vector": [
+      0.0,
+      1.0,
+      0.2,
+      0.2,
+      0.25,
+      0.8,
+      0.2,
+      0.8,
+      0.8
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Street Art Exploration Walk",
+    "description": "Take a curated walking route through an arts district to explore graffiti murals and local installations, discussing creative interpretations.",
+    "vector": [
+      0.0,
+      1.0,
+      0.5,
+      0.8,
+      0.5,
+      0.35,
+      0.5,
+      0.4,
+      0.5
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Luxury Yacht Dinner Cruise",
+    "description": "Charter or join a small yacht dinner cruise featuring fine dining and city skyline views, creating an elevated romantic milestone experience.",
+    "vector": [
+      1.0,
+      1.0,
+      0.2,
+      0.5,
+      0.75,
+      0.55,
+      0.8,
+      0.95,
+      0.8
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Board Game Cafe Challenge",
+    "description": "Visit a board game caf\u00e9 and choose cooperative or competitive games to spark laughter, light rivalry, and playful bonding.",
+    "vector": [
+      0.3,
+      0.0,
+      0.5,
+      0.5,
+      0.5,
+      0.35,
+      0.2,
+      0.4,
+      0.5
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Cooking Class for Two",
+    "description": "Join a hands-on cooking class where you prepare a multi-course meal side by side, encouraging teamwork and flirtation.",
+    "vector": [
+      0.5,
+      0.0,
+      0.5,
+      0.5,
+      0.75,
+      0.55,
+      0.5,
+      0.65,
+      0.5
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Amusement Park Adventure",
+    "description": "Spend the day riding roller coasters, playing carnival games, and enjoying playful chaos together.",
+    "vector": [
+      0.5,
+      1.0,
+      0.8,
+      0.8,
+      0.5,
+      0.8,
+      0.5,
+      0.4,
+      0.25
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Stargazing Night",
+    "description": "Lay out blankets in a low-light area and identify constellations while sharing dreams and personal stories.",
+    "vector": [
+      0.0,
+      1.0,
+      0.2,
+      0.2,
+      0.9,
+      0.35,
+      0.2,
+      0.8,
+      0.8
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Pottery Workshop",
+    "description": "Get hands messy shaping clay together, fostering playful intimacy and creative collaboration.",
+    "vector": [
+      0.5,
+      0.0,
+      0.5,
+      0.5,
+      0.5,
+      0.35,
+      0.5,
+      0.4,
+      0.5
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Beach Bonfire Evening",
+    "description": "Enjoy a small bonfire by the beach with acoustic music, warm drinks, and storytelling under the stars.",
+    "vector": [
+      0.3,
+      1.0,
+      0.2,
+      0.5,
+      0.75,
+      0.55,
+      0.5,
+      0.65,
+      0.8
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Escape Room Challenge",
+    "description": "Enter a themed escape room and collaborate to solve clues and beat the clock.",
+    "vector": [
+      0.5,
+      0.0,
+      0.8,
+      0.8,
+      0.5,
+      0.8,
+      0.8,
+      0.4,
+      0.5
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Farmers Market Morning",
+    "description": "Walk through a vibrant market tasting samples, buying ingredients, and chatting with vendors.",
+    "vector": [
+      0.3,
+      1.0,
+      0.5,
+      0.5,
+      0.25,
+      0.35,
+      0.2,
+      0.2,
+      0.5
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Couples Spa Retreat",
+    "description": "Book a couples spa session including massage, sauna, and relaxation lounge time.",
+    "vector": [
+      1.0,
+      0.0,
+      0.2,
+      0.2,
+      0.5,
+      0.55,
+      0.5,
+      0.75,
+      0.25
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Kayaking Adventure",
+    "description": "Rent a tandem kayak and explore a lake or river, enjoying nature and cooperative rhythm.",
+    "vector": [
+      0.5,
+      1.0,
+      0.8,
+      0.8,
+      0.25,
+      0.35,
+      0.5,
+      0.4,
+      0.25
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Rooftop Cinema Night",
+    "description": "Attend an open-air rooftop movie screening with cozy seating, blankets, and skyline views.",
+    "vector": [
+      0.5,
+      1.0,
+      0.2,
+      0.5,
+      0.75,
+      0.8,
+      0.5,
+      0.65,
+      0.25
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Wine Tasting Tour",
+    "description": "Visit a vineyard to taste curated wines while learning about flavor profiles and pairing.",
+    "vector": [
+      0.5,
+      1.0,
+      0.2,
+      0.5,
+      0.5,
+      0.55,
+      0.2,
+      0.75,
+      0.5
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Mini Road Trip",
+    "description": "Take a spontaneous drive to explore a nearby town, discovering hidden cafes and scenic stops.",
+    "vector": [
+      0.3,
+      1.0,
+      0.5,
+      0.5,
+      0.25,
+      0.8,
+      0.8,
+      0.4,
+      0.8
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Museum Late-Night Access",
+    "description": "Attend a special late-night museum opening for a quieter and more intimate cultural experience.",
+    "vector": [
+      0.5,
+      0.0,
+      0.2,
+      0.2,
+      0.75,
+      0.35,
+      0.5,
+      0.45,
+      0.8
+    ]
+  },
+  {
+    "id": 19,
+    "name": "DIY Pizza Night",
+    "description": "Prepare dough, choose toppings, and bake custom pizzas while enjoying music and casual conversation.",
+    "vector": [
+      0.3,
+      0.0,
+      0.5,
+      0.5,
+      0.75,
+      0.35,
+      0.2,
+      0.4,
+      0.5
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Hot Air Balloon Ride",
+    "description": "Take a sunrise or sunset balloon ride for breathtaking panoramic views and unforgettable romance.",
+    "vector": [
+      1.0,
+      1.0,
+      0.2,
+      0.5,
+      0.25,
+      0.55,
+      0.8,
+      0.95,
+      0.8
+    ]
+  },
+  {
+    "id": 21,
+    "name": "Trivia Night at Pub",
+    "description": "Join a lively pub trivia night and collaborate to answer questions across categories.",
+    "vector": [
+      0.3,
+      0.0,
+      0.5,
+      0.8,
+      0.75,
+      0.35,
+      0.2,
+      0.2,
+      0.5
+    ]
+  },
+  {
+    "id": 22,
+    "name": "Sunflower Field Visit",
+    "description": "Visit a blooming sunflower or flower field for photos, walking, and relaxed conversation.",
+    "vector": [
+      0.3,
+      1.0,
+      0.2,
+      0.5,
+      0.5,
+      0.8,
+      0.2,
+      0.65,
+      0.5
+    ]
+  },
+  {
+    "id": 23,
+    "name": "Stand-Up Comedy Show",
+    "description": "Attend a live stand-up comedy performance to share laughter and lighten the mood.",
+    "vector": [
+      0.5,
+      0.0,
+      0.5,
+      0.8,
+      0.75,
+      0.35,
+      0.5,
+      0.4,
+      0.25
+    ]
+  },
+  {
+    "id": 24,
+    "name": "Bookstore Coffee Date",
+    "description": "Explore a cozy bookstore, recommend favorite reads, and sit down for coffee discussion.",
+    "vector": [
+      0.3,
+      0.0,
+      0.2,
+      0.2,
+      0.5,
+      0.35,
+      0.2,
+      0.45,
+      0.8
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Ice Skating Evening",
+    "description": "Visit an indoor or seasonal outdoor ice rink and help each other skate, creating playful physical closeness.",
+    "vector": [
+      0.5,
+      0.0,
+      0.5,
+      0.5,
+      0.75,
+      0.8,
+      0.2,
+      0.4,
+      0.25
+    ]
+  },
+  {
+    "id": 26,
+    "name": "Art Gallery Hopping",
+    "description": "Spend an afternoon visiting contemporary galleries and discussing artistic interpretations.",
+    "vector": [
+      0.0,
+      0.0,
+      0.2,
+      0.2,
+      0.5,
+      0.55,
+      0.2,
+      0.45,
+      0.8
+    ]
+  },
+  {
+    "id": 27,
+    "name": "Couples Dance Class",
+    "description": "Take a beginner-friendly dance class to build rhythm, trust, and chemistry through guided movement.",
+    "vector": [
+      0.5,
+      0.0,
+      0.8,
+      0.8,
+      0.75,
+      0.35,
+      0.5,
+      0.75,
+      0.25
+    ]
+  },
+  {
+    "id": 28,
+    "name": "Hiking Scenic Trail",
+    "description": "Choose a scenic hiking trail and enjoy nature, fresh air, and meaningful conversation along the path.",
+    "vector": [
+      0.0,
+      1.0,
+      0.8,
+      0.8,
+      0.25,
+      0.65,
+      0.2,
+      0.8,
+      0.8
+    ]
+  },
+  {
+    "id": 29,
+    "name": "Drive-In Movie Night",
+    "description": "Visit a classic drive-in theater with blankets and snacks for nostalgic romance.",
+    "vector": [
+      0.3,
+      1.0,
+      0.2,
+      0.5,
+      0.9,
+      0.55,
+      0.5,
+      0.65,
+      0.25
+    ]
+  },
+  {
+    "id": 30,
+    "name": "Rock Climbing Gym",
+    "description": "Encourage each other at a climbing gym, building trust and excitement.",
+    "vector": [
+      0.5,
+      0.0,
+      0.8,
+      0.8,
+      0.5,
+      0.35,
+      0.5,
+      0.4,
+      0.25
+    ]
+  },
+  {
+    "id": 31,
+    "name": "Candlelight Dinner at Home",
+    "description": "Cook or order favorite dishes and transform your space with candles and soft music.",
+    "vector": [
+      0.3,
+      0.0,
+      0.2,
+      0.2,
+      0.75,
+      0.55,
+      0.5,
+      0.95,
+      0.8
+    ]
+  },
+  {
+    "id": 32,
+    "name": "Photography Walk",
+    "description": "Walk around scenic neighborhoods capturing creative photos and sharing perspectives.",
+    "vector": [
+      0.0,
+      1.0,
+      0.5,
+      0.5,
+      0.5,
+      0.35,
+      0.2,
+      0.2,
+      0.5
+    ]
+  },
+  {
+    "id": 33,
+    "name": "Live Theater Performance",
+    "description": "Dress up and enjoy a live theatrical performance followed by post-show discussion.",
+    "vector": [
+      0.5,
+      0.0,
+      0.2,
+      0.5,
+      0.75,
+      0.55,
+      0.2,
+      0.45,
+      0.8
+    ]
+  },
+  {
+    "id": 34,
+    "name": "Volunteer Together",
+    "description": "Spend a few hours volunteering at a shelter or community project to connect through shared values.",
+    "vector": [
+      0.0,
+      0.5,
+      0.5,
+      0.5,
+      0.25,
+      0.55,
+      0.2,
+      0.8,
+      0.8
+    ]
+  },
+  {
+    "id": 35,
+    "name": "Food Festival Visit",
+    "description": "Attend a local food festival and sample dishes from various vendors while sharing favorites.",
+    "vector": [
+      0.5,
+      1.0,
+      0.5,
+      0.8,
+      0.5,
+      0.55,
+      0.5,
+      0.4,
+      0.5
+    ]
+  },
+  {
+    "id": 36,
+    "name": "Aquarium Date",
+    "description": "Visit an aquarium and enjoy observing marine life in a serene environment.",
+    "vector": [
+      0.5,
+      0.0,
+      0.2,
+      0.2,
+      0.5,
+      0.35,
+      0.2,
+      0.2,
+      0.5
+    ]
+  },
+  {
+    "id": 37,
+    "name": "Camping Under the Stars",
+    "description": "Set up a tent, cook over a fire, and spend the night stargazing in nature.",
+    "vector": [
+      0.3,
+      1.0,
+      0.5,
+      0.5,
+      0.9,
+      1.0,
+      0.5,
+      0.8,
+      0.8
+    ]
+  },
+  {
+    "id": 38,
+    "name": "Karaoke Night",
+    "description": "Visit a karaoke bar or private booth and perform duets or solo songs for fun.",
+    "vector": [
+      0.3,
+      0.0,
+      0.8,
+      0.8,
+      0.75,
+      0.35,
+      0.5,
+      0.4,
+      0.25
+    ]
+  },
+  {
+    "id": 39,
+    "name": "Couples Yoga Session",
+    "description": "Attend a couples yoga class to improve flexibility and shared mindfulness.",
+    "vector": [
+      0.5,
+      0.0,
+      0.5,
+      0.2,
+      0.25,
+      0.8,
+      0.2,
+      0.75,
+      0.8
+    ]
+  },
+  {
+    "id": 40,
+    "name": "Historical Walking Tour",
+    "description": "Join a guided walking tour to learn about historical landmarks and hidden stories.",
+    "vector": [
+      0.3,
+      1.0,
+      0.5,
+      0.5,
+      0.25,
+      0.35,
+      0.2,
+      0.45,
+      0.5
+    ]
+  },
+  {
+    "id": 41,
+    "name": "Amateur Painting Night",
+    "description": "Attend a paint-and-sip class and create artworks side by side.",
+    "vector": [
+      0.5,
+      0.0,
+      0.2,
+      0.5,
+      0.75,
+      0.35,
+      0.2,
+      0.4,
+      0.5
+    ]
+  },
+  {
+    "id": 42,
+    "name": "Skydiving Experience",
+    "description": "Take tandem skydives for an unforgettable thrill and bonding rush.",
+    "vector": [
+      1.0,
+      1.0,
+      0.8,
+      0.8,
+      0.25,
+      0.55,
+      0.8,
+      0.95,
+      0.25
+    ]
+  },
+  {
+    "id": 43,
+    "name": "Library Study Date",
+    "description": "Spend focused time working or reading in a quiet library corner.",
+    "vector": [
+      0.0,
+      0.0,
+      0.2,
+      0.2,
+      0.5,
+      0.55,
+      0.2,
+      0.45,
+      0.5
+    ]
+  },
+  {
+    "id": 44,
+    "name": "Sunset Horseback Riding",
+    "description": "Take a guided horseback ride during sunset for scenic romance.",
+    "vector": [
+      0.5,
+      1.0,
+      0.5,
+      0.5,
+      0.75,
+      0.35,
+      0.5,
+      0.65,
+      0.5
+    ]
+  },
+  {
+    "id": 45,
+    "name": "Home Movie Marathon",
+    "description": "Binge-watch favorite movies with snacks and blankets.",
+    "vector": [
+      0.1,
+      0.0,
+      0.1,
+      0.1,
+      0.75,
+      0.65,
+      0.1,
+      0.5,
+      0.3
+    ]
+  },
+  {
+    "id": 46,
+    "name": "Sunset Beach Walk",
+    "description": "Stroll barefoot along the shore as the sun sets.",
+    "vector": [
+      0.0,
+      1.0,
+      0.3,
+      0.2,
+      0.75,
+      0.35,
+      0.2,
+      0.7,
+      0.7
+    ]
+  },
+  {
+    "id": 47,
+    "name": "Bowling Night",
+    "description": "Compete at bowling with friendly wagers.",
+    "vector": [
+      0.3,
+      0.0,
+      0.5,
+      0.6,
+      0.75,
+      0.35,
+      0.2,
+      0.35,
+      0.35
+    ]
+  },
+  {
+    "id": 48,
+    "name": "Mini Golf Date",
+    "description": "Playful competition on a themed mini golf course.",
+    "vector": [
+      0.3,
+      1.0,
+      0.4,
+      0.5,
+      0.5,
+      0.35,
+      0.3,
+      0.4,
+      0.35
+    ]
+  },
+  {
+    "id": 49,
+    "name": "Farmers Market Brunch",
+    "description": "Explore a morning market then cook brunch together.",
+    "vector": [
+      0.3,
+      1.0,
+      0.4,
+      0.5,
+      0.25,
+      0.45,
+      0.3,
+      0.45,
+      0.5
+    ]
+  },
+  {
+    "id": 50,
+    "name": "Picnic in the Park",
+    "description": "Pack homemade food and enjoy a lazy afternoon in the park.",
+    "vector": [
+      0.15,
+      1.0,
+      0.2,
+      0.3,
+      0.5,
+      0.45,
+      0.2,
+      0.6,
+      0.6
+    ]
+  },
+  {
+    "id": 51,
+    "name": "Arcade Game Night",
+    "description": "Play retro and modern arcade games together.",
+    "vector": [
+      0.3,
+      0.0,
+      0.6,
+      0.6,
+      0.75,
+      0.35,
+      0.3,
+      0.3,
+      0.25
+    ]
+  },
+  {
+    "id": 52,
+    "name": "Sunrise Hike",
+    "description": "Early morning hike to catch the sunrise from a peak.",
+    "vector": [
+      0.0,
+      1.0,
+      0.8,
+      0.3,
+      0.15,
+      0.55,
+      0.4,
+      0.7,
+      0.7
+    ]
+  },
+  {
+    "id": 53,
+    "name": "Baking Challenge",
+    "description": "Compete to bake the best dessert at home.",
+    "vector": [
+      0.2,
+      0.0,
+      0.5,
+      0.1,
+      0.5,
+      0.45,
+      0.4,
+      0.4,
+      0.4
+    ]
+  },
+  {
+    "id": 54,
+    "name": "Local Concert",
+    "description": "Attend a live local band or singer performance.",
+    "vector": [
+      0.4,
+      0.0,
+      0.5,
+      0.7,
+      0.75,
+      0.45,
+      0.5,
+      0.5,
+      0.25
+    ]
+  },
+  {
+    "id": 55,
+    "name": "Thrift Store Challenge",
+    "description": "Each pick an outfit for the other under a budget.",
+    "vector": [
+      0.2,
+      0.0,
+      0.5,
+      0.5,
+      0.5,
+      0.35,
+      0.7,
+      0.4,
+      0.4
+    ]
+  },
+  {
+    "id": 56,
+    "name": "Planetarium Visit",
+    "description": "Explore the cosmos in a domed theater.",
+    "vector": [
+      0.3,
+      0.0,
+      0.15,
+      0.4,
+      0.5,
+      0.35,
+      0.3,
+      0.55,
+      0.5
+    ]
+  },
+  {
+    "id": 57,
+    "name": "Couples Massage at Home",
+    "description": "Give each other massages with candles and music.",
+    "vector": [
+      0.1,
+      0.0,
+      0.1,
+      0.05,
+      0.75,
+      0.35,
+      0.3,
+      0.85,
+      0.4
+    ]
+  },
+  {
+    "id": 58,
+    "name": "Go-Kart Racing",
+    "description": "Race each other at a go-kart track.",
+    "vector": [
+      0.4,
+      0.5,
+      0.8,
+      0.6,
+      0.5,
+      0.25,
+      0.5,
+      0.3,
+      0.2
+    ]
+  },
+  {
+    "id": 59,
+    "name": "Sunset Sailing",
+    "description": "Sail a small boat during golden hour.",
+    "vector": [
+      0.6,
+      1.0,
+      0.3,
+      0.15,
+      0.75,
+      0.45,
+      0.6,
+      0.8,
+      0.6
+    ]
+  },
+  {
+    "id": 60,
+    "name": "Open Mic Night",
+    "description": "Watch or perform at a local open mic event.",
+    "vector": [
+      0.2,
+      0.0,
+      0.4,
+      0.7,
+      0.75,
+      0.35,
+      0.5,
+      0.35,
+      0.3
+    ]
+  },
+  {
+    "id": 61,
+    "name": "Dog Park Hangout",
+    "description": "Bring your dogs (or visit) and enjoy the outdoors.",
+    "vector": [
+      0.0,
+      1.0,
+      0.4,
+      0.5,
+      0.5,
+      0.35,
+      0.2,
+      0.3,
+      0.5
+    ]
+  },
+  {
+    "id": 62,
+    "name": "Sushi Making at Home",
+    "description": "Learn to roll sushi together from scratch.",
+    "vector": [
+      0.3,
+      0.0,
+      0.5,
+      0.1,
+      0.75,
+      0.45,
+      0.4,
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": 63,
+    "name": "Bike Ride Along River",
+    "description": "Cycle along a scenic riverside path.",
+    "vector": [
+      0.1,
+      1.0,
+      0.7,
+      0.3,
+      0.5,
+      0.45,
+      0.2,
+      0.45,
+      0.5
+    ]
+  },
+  {
+    "id": 64,
+    "name": "Jazz Club Evening",
+    "description": "Enjoy live jazz with cocktails in an intimate venue.",
+    "vector": [
+      0.5,
+      0.0,
+      0.2,
+      0.4,
+      0.75,
+      0.45,
+      0.4,
+      0.7,
+      0.5
+    ]
+  },
+  {
+    "id": 65,
+    "name": "Laser Tag Battle",
+    "description": "Team up or compete in a laser tag arena.",
+    "vector": [
+      0.3,
+      0.0,
+      0.8,
+      0.7,
+      0.5,
+      0.25,
+      0.5,
+      0.25,
+      0.15
+    ]
+  },
+  {
+    "id": 66,
+    "name": "Flea Market Treasure Hunt",
+    "description": "Search for unique finds at a flea market.",
+    "vector": [
+      0.2,
+      1.0,
+      0.4,
+      0.6,
+      0.25,
+      0.45,
+      0.5,
+      0.3,
+      0.5
+    ]
+  },
+  {
+    "id": 67,
+    "name": "Cocktail Making Class",
+    "description": "Learn to mix craft cocktails together.",
+    "vector": [
+      0.5,
+      0.0,
+      0.4,
+      0.5,
+      0.75,
+      0.35,
+      0.5,
+      0.55,
+      0.4
+    ]
+  },
+  {
+    "id": 68,
+    "name": "Trampoline Park",
+    "description": "Bounce around at an indoor trampoline park.",
+    "vector": [
+      0.3,
+      0.0,
+      0.9,
+      0.6,
+      0.5,
+      0.25,
+      0.4,
+      0.25,
+      0.15
+    ]
+  },
+  {
+    "id": 69,
+    "name": "Botanical Garden Walk",
+    "description": "Wander through beautiful gardens in bloom.",
+    "vector": [
+      0.2,
+      1.0,
+      0.3,
+      0.3,
+      0.5,
+      0.35,
+      0.2,
+      0.6,
+      0.6
+    ]
+  },
+  {
+    "id": 70,
+    "name": "Fondue Night",
+    "description": "Prepare a cheese or chocolate fondue at home.",
+    "vector": [
+      0.3,
+      0.0,
+      0.2,
+      0.1,
+      0.75,
+      0.35,
+      0.3,
+      0.7,
+      0.6
+    ]
+  },
+  {
+    "id": 71,
+    "name": "Surfing Lesson",
+    "description": "Take a beginner surfing lesson at the beach.",
+    "vector": [
+      0.5,
+      1.0,
+      0.9,
+      0.5,
+      0.25,
+      0.55,
+      0.7,
+      0.35,
+      0.2
+    ]
+  },
+  {
+    "id": 72,
+    "name": "Antique Shop Exploration",
+    "description": "Browse antique shops and share stories about finds.",
+    "vector": [
+      0.2,
+      0.0,
+      0.3,
+      0.3,
+      0.5,
+      0.35,
+      0.4,
+      0.35,
+      0.6
+    ]
+  },
+  {
+    "id": 73,
+    "name": "Helicopter Tour",
+    "description": "See the city from above on a helicopter ride.",
+    "vector": [
+      1.0,
+      1.0,
+      0.3,
+      0.3,
+      0.5,
+      0.25,
+      0.9,
+      0.85,
+      0.3
+    ]
+  },
+  {
+    "id": 74,
+    "name": "Board Game Night at Home",
+    "description": "Play strategy or party games at home.",
+    "vector": [
+      0.0,
+      0.0,
+      0.3,
+      0.1,
+      0.75,
+      0.55,
+      0.2,
+      0.35,
+      0.5
+    ]
+  },
+  {
+    "id": 75,
+    "name": "Couples Cooking Competition",
+    "description": "Compete to make the best dish with secret ingredients.",
+    "vector": [
+      0.2,
+      0.0,
+      0.6,
+      0.1,
+      0.75,
+      0.45,
+      0.6,
+      0.4,
+      0.4
+    ]
+  },
+  {
+    "id": 76,
+    "name": "Zip Lining Adventure",
+    "description": "Soar through treetops on a zip line course.",
+    "vector": [
+      0.6,
+      1.0,
+      0.8,
+      0.5,
+      0.5,
+      0.35,
+      0.8,
+      0.35,
+      0.15
+    ]
+  },
+  {
+    "id": 77,
+    "name": "Night Market Food Tour",
+    "description": "Explore a vibrant night market sampling street food.",
+    "vector": [
+      0.3,
+      1.0,
+      0.5,
+      0.8,
+      0.8,
+      0.45,
+      0.6,
+      0.4,
+      0.4
+    ]
+  },
+  {
+    "id": 78,
+    "name": "Puzzle Room at Home",
+    "description": "Work together on a complex jigsaw puzzle.",
+    "vector": [
+      0.1,
+      0.0,
+      0.2,
+      0.1,
+      0.5,
+      0.55,
+      0.15,
+      0.35,
+      0.5
+    ]
+  },
+  {
+    "id": 79,
+    "name": "Scenic Train Ride",
+    "description": "Take a scenic railway through countryside.",
+    "vector": [
+      0.5,
+      0.5,
+      0.15,
+      0.4,
+      0.25,
+      0.65,
+      0.5,
+      0.65,
+      0.7
+    ]
+  },
+  {
+    "id": 80,
+    "name": "Comedy Improv Show",
+    "description": "Watch an interactive improv comedy performance.",
+    "vector": [
+      0.4,
+      0.0,
+      0.5,
+      0.7,
+      0.75,
+      0.35,
+      0.6,
+      0.35,
+      0.25
+    ]
+  },
+  {
+    "id": 81,
+    "name": "Candlelit Bath",
+    "description": "Share a relaxing bath with candles and music.",
+    "vector": [
+      0.1,
+      0.0,
+      0.05,
+      0.0,
+      0.8,
+      0.25,
+      0.3,
+      0.9,
+      0.5
+    ]
+  },
+  {
+    "id": 82,
+    "name": "Apple Picking",
+    "description": "Visit an orchard to pick apples together.",
+    "vector": [
+      0.2,
+      1.0,
+      0.5,
+      0.4,
+      0.25,
+      0.45,
+      0.3,
+      0.45,
+      0.5
+    ]
+  },
+  {
+    "id": 83,
+    "name": "Scuba Diving Experience",
+    "description": "Explore underwater life with a guided dive.",
+    "vector": [
+      0.8,
+      1.0,
+      0.8,
+      0.3,
+      0.25,
+      0.65,
+      0.9,
+      0.45,
+      0.1
+    ]
+  },
+  {
+    "id": 84,
+    "name": "Pumpkin Patch Visit",
+    "description": "Pick pumpkins and enjoy fall activities.",
+    "vector": [
+      0.2,
+      1.0,
+      0.4,
+      0.5,
+      0.5,
+      0.35,
+      0.3,
+      0.4,
+      0.4
+    ]
+  },
+  {
+    "id": 85,
+    "name": "Fine Dining Experience",
+    "description": "Enjoy a multi-course meal at a top restaurant.",
+    "vector": [
+      1.0,
+      0.0,
+      0.15,
+      0.4,
+      0.75,
+      0.55,
+      0.4,
+      0.8,
+      0.7
+    ]
+  },
+  {
+    "id": 86,
+    "name": "Rooftop Bar Hopping",
+    "description": "Visit multiple rooftop bars for drinks and views.",
+    "vector": [
+      0.6,
+      0.5,
+      0.5,
+      0.7,
+      0.8,
+      0.55,
+      0.5,
+      0.55,
+      0.4
+    ]
+  },
+  {
+    "id": 87,
+    "name": "Volunteer at Animal Shelter",
+    "description": "Spend time caring for shelter animals together.",
+    "vector": [
+      0.0,
+      0.5,
+      0.5,
+      0.4,
+      0.25,
+      0.45,
+      0.3,
+      0.5,
+      0.6
+    ]
+  },
+  {
+    "id": 88,
+    "name": "Poetry Reading Night",
+    "description": "Attend or share poetry at a cozy venue.",
+    "vector": [
+      0.2,
+      0.0,
+      0.15,
+      0.4,
+      0.75,
+      0.35,
+      0.3,
+      0.6,
+      0.8
+    ]
+  },
+  {
+    "id": 89,
+    "name": "Snowshoeing Adventure",
+    "description": "Hike through snowy trails on snowshoes.",
+    "vector": [
+      0.3,
+      1.0,
+      0.8,
+      0.2,
+      0.25,
+      0.55,
+      0.5,
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": 90,
+    "name": "Chocolate Tasting Tour",
+    "description": "Sample artisan chocolates at specialty shops.",
+    "vector": [
+      0.4,
+      0.0,
+      0.2,
+      0.4,
+      0.5,
+      0.35,
+      0.4,
+      0.6,
+      0.5
+    ]
+  },
+  {
+    "id": 91,
+    "name": "Beach Volleyball",
+    "description": "Play casual beach volleyball together.",
+    "vector": [
+      0.0,
+      1.0,
+      0.8,
+      0.6,
+      0.5,
+      0.35,
+      0.3,
+      0.3,
+      0.2
+    ]
+  },
+  {
+    "id": 92,
+    "name": "Spa Day Out",
+    "description": "Full spa treatment with pools, saunas, and relaxation.",
+    "vector": [
+      0.8,
+      0.0,
+      0.1,
+      0.3,
+      0.5,
+      0.65,
+      0.3,
+      0.7,
+      0.4
+    ]
+  },
+  {
+    "id": 93,
+    "name": "Ghost Tour",
+    "description": "Walk a guided haunted history tour at night.",
+    "vector": [
+      0.3,
+      1.0,
+      0.4,
+      0.6,
+      0.85,
+      0.35,
+      0.7,
+      0.4,
+      0.3
+    ]
+  },
+  {
+    "id": 94,
+    "name": "Breakfast in Bed",
+    "description": "Surprise with a homemade breakfast in bed.",
+    "vector": [
+      0.15,
+      0.0,
+      0.1,
+      0.0,
+      0.15,
+      0.25,
+      0.5,
+      0.8,
+      0.5
+    ]
+  },
+  {
+    "id": 95,
+    "name": "Roller Skating",
+    "description": "Skate laps together at a roller rink.",
+    "vector": [
+      0.3,
+      0.0,
+      0.7,
+      0.5,
+      0.5,
+      0.35,
+      0.4,
+      0.4,
+      0.2
+    ]
+  },
+  {
+    "id": 96,
+    "name": "Wine and Paint Night",
+    "description": "Paint canvases while sipping wine.",
+    "vector": [
+      0.4,
+      0.0,
+      0.3,
+      0.5,
+      0.75,
+      0.45,
+      0.3,
+      0.5,
+      0.4
+    ]
+  },
+  {
+    "id": 97,
+    "name": "Camping Weekend",
+    "description": "Full weekend camping with hiking and campfire.",
+    "vector": [
+      0.3,
+      1.0,
+      0.7,
+      0.15,
+      0.5,
+      1.0,
+      0.5,
+      0.75,
+      0.8
+    ]
+  },
+  {
+    "id": 98,
+    "name": "Paddleboarding",
+    "description": "Stand-up paddleboard on a calm lake.",
+    "vector": [
+      0.4,
+      1.0,
+      0.7,
+      0.3,
+      0.5,
+      0.35,
+      0.4,
+      0.4,
+      0.3
+    ]
+  },
+  {
+    "id": 99,
+    "name": "Moonlit Picnic",
+    "description": "Late-night picnic under the moon.",
+    "vector": [
+      0.15,
+      1.0,
+      0.15,
+      0.1,
+      0.9,
+      0.35,
+      0.5,
+      0.85,
+      0.7
+    ]
+  },
+  {
+    "id": 100,
+    "name": "Record Store Browsing",
+    "description": "Dig through vinyl records and share music tastes.",
+    "vector": [
+      0.2,
+      0.0,
+      0.25,
+      0.3,
+      0.5,
+      0.35,
+      0.3,
+      0.35,
+      0.6
+    ]
+  },
+  {
+    "id": 101,
+    "name": "Couples Photoshoot",
+    "description": "Hire a photographer or take creative self-portraits.",
+    "vector": [
+      0.4,
+      0.5,
+      0.4,
+      0.3,
+      0.5,
+      0.35,
+      0.5,
+      0.7,
+      0.3
+    ]
+  },
+  {
+    "id": 102,
+    "name": "Ferry Boat Ride",
+    "description": "Take a scenic ferry ride across the water.",
+    "vector": [
+      0.3,
+      1.0,
+      0.15,
+      0.4,
+      0.5,
+      0.35,
+      0.3,
+      0.55,
+      0.5
+    ]
+  },
+  {
+    "id": 103,
+    "name": "Geocaching Adventure",
+    "description": "Use GPS to find hidden caches outdoors.",
+    "vector": [
+      0.0,
+      1.0,
+      0.6,
+      0.2,
+      0.5,
+      0.55,
+      0.7,
+      0.35,
+      0.4
+    ]
+  },
+  {
+    "id": 104,
+    "name": "Tapas Bar Tour",
+    "description": "Hop between tapas restaurants trying small plates.",
+    "vector": [
+      0.5,
+      0.0,
+      0.4,
+      0.6,
+      0.75,
+      0.55,
+      0.5,
+      0.55,
+      0.5
+    ]
+  },
+  {
+    "id": 105,
+    "name": "Hammock Hangout",
+    "description": "Lie in a hammock together reading or chatting.",
+    "vector": [
+      0.0,
+      1.0,
+      0.05,
+      0.05,
+      0.5,
+      0.45,
+      0.1,
+      0.6,
+      0.65
+    ]
+  },
+  {
+    "id": 106,
+    "name": "Dance Party at Home",
+    "description": "Create a playlist and dance in the living room.",
+    "vector": [
+      0.0,
+      0.0,
+      0.7,
+      0.05,
+      0.8,
+      0.25,
+      0.4,
+      0.65,
+      0.15
+    ]
+  },
+  {
+    "id": 107,
+    "name": "Museum Scavenger Hunt",
+    "description": "Create a scavenger hunt list inside a museum.",
+    "vector": [
+      0.3,
+      0.0,
+      0.5,
+      0.5,
+      0.5,
+      0.45,
+      0.6,
+      0.4,
+      0.4
+    ]
+  },
+  {
+    "id": 108,
+    "name": "Hot Spring Visit",
+    "description": "Soak in natural hot springs together.",
+    "vector": [
+      0.4,
+      1.0,
+      0.1,
+      0.3,
+      0.5,
+      0.55,
+      0.4,
+      0.75,
+      0.6
+    ]
+  },
+  {
+    "id": 109,
+    "name": "DIY Terrarium Making",
+    "description": "Build miniature garden terrariums together.",
+    "vector": [
+      0.3,
+      0.0,
+      0.3,
+      0.15,
+      0.5,
+      0.35,
+      0.4,
+      0.4,
+      0.5
+    ]
+  },
+  {
+    "id": 110,
+    "name": "Rooftop Stargazing",
+    "description": "Watch stars from a building rooftop with drinks.",
+    "vector": [
+      0.1,
+      1.0,
+      0.1,
+      0.1,
+      0.9,
+      0.35,
+      0.4,
+      0.8,
+      0.7
+    ]
+  },
+  {
+    "id": 111,
+    "name": "Fruit Picking Farm",
+    "description": "Pick strawberries, blueberries, or seasonal fruit.",
+    "vector": [
+      0.2,
+      1.0,
+      0.4,
+      0.4,
+      0.25,
+      0.35,
+      0.3,
+      0.4,
+      0.4
+    ]
+  },
+  {
+    "id": 112,
+    "name": "Underground Comedy Club",
+    "description": "Watch standup in an intimate basement venue.",
+    "vector": [
+      0.4,
+      0.0,
+      0.4,
+      0.6,
+      0.8,
+      0.35,
+      0.5,
+      0.4,
+      0.25
+    ]
+  },
+  {
+    "id": 113,
+    "name": "Sunset Rooftop Dinner",
+    "description": "Dine on a rooftop as the sun sets.",
+    "vector": [
+      0.8,
+      1.0,
+      0.15,
+      0.4,
+      0.75,
+      0.45,
+      0.5,
+      0.85,
+      0.65
+    ]
+  },
+  {
+    "id": 114,
+    "name": "Origami Workshop",
+    "description": "Learn paper folding art together.",
+    "vector": [
+      0.2,
+      0.0,
+      0.2,
+      0.3,
+      0.5,
+      0.35,
+      0.4,
+      0.35,
+      0.4
+    ]
+  },
+  {
+    "id": 115,
+    "name": "Biking Through Vineyards",
+    "description": "Cycle through wine country scenery.",
+    "vector": [
+      0.4,
+      1.0,
+      0.7,
+      0.2,
+      0.5,
+      0.55,
+      0.5,
+      0.55,
+      0.5
+    ]
+  },
+  {
+    "id": 116,
+    "name": "Candle Making Class",
+    "description": "Create custom scented candles together.",
+    "vector": [
+      0.3,
+      0.0,
+      0.3,
+      0.3,
+      0.5,
+      0.35,
+      0.4,
+      0.45,
+      0.5
+    ]
+  },
+  {
+    "id": 117,
+    "name": "Late Night Diner Date",
+    "description": "Hit a retro diner for milkshakes and fries.",
+    "vector": [
+      0.2,
+      0.0,
+      0.2,
+      0.4,
+      0.9,
+      0.25,
+      0.3,
+      0.45,
+      0.5
+    ]
+  },
+  {
+    "id": 118,
+    "name": "Horseback Trail Ride",
+    "description": "Guided horseback ride through scenic trails.",
+    "vector": [
+      0.6,
+      1.0,
+      0.5,
+      0.3,
+      0.5,
+      0.45,
+      0.5,
+      0.6,
+      0.5
+    ]
+  },
+  {
+    "id": 119,
+    "name": "Indoor Rock Wall",
+    "description": "Try indoor rock climbing at a gym.",
+    "vector": [
+      0.4,
+      0.0,
+      0.8,
+      0.5,
+      0.5,
+      0.35,
+      0.4,
+      0.3,
+      0.2
+    ]
+  },
+  {
+    "id": 120,
+    "name": "Outdoor Yoga Session",
+    "description": "Practice yoga together in a park at sunrise.",
+    "vector": [
+      0.1,
+      1.0,
+      0.5,
+      0.3,
+      0.2,
+      0.25,
+      0.3,
+      0.6,
+      0.5
+    ]
+  },
+  {
+    "id": 121,
+    "name": "Secret Bar Discovery",
+    "description": "Hunt for a hidden speakeasy bar.",
+    "vector": [
+      0.5,
+      0.0,
+      0.3,
+      0.4,
+      0.8,
+      0.45,
+      0.8,
+      0.65,
+      0.5
+    ]
+  },
+  {
+    "id": 122,
+    "name": "Kite Flying",
+    "description": "Fly colorful kites at a windy beach or hill.",
+    "vector": [
+      0.1,
+      1.0,
+      0.4,
+      0.3,
+      0.5,
+      0.35,
+      0.3,
+      0.35,
+      0.4
+    ]
+  },
+  {
+    "id": 123,
+    "name": "Casino Night Out",
+    "description": "Try your luck at a casino with a set budget.",
+    "vector": [
+      0.5,
+      0.0,
+      0.5,
+      0.8,
+      0.8,
+      0.55,
+      0.6,
+      0.45,
+      0.3
+    ]
+  },
+  {
+    "id": 124,
+    "name": "Waterfall Hike",
+    "description": "Hike to a hidden waterfall in nature.",
+    "vector": [
+      0.0,
+      1.0,
+      0.8,
+      0.2,
+      0.25,
+      0.65,
+      0.6,
+      0.6,
+      0.6
+    ]
+  },
+  {
+    "id": 125,
+    "name": "Ramen Shop Crawl",
+    "description": "Try ramen at multiple shops in one evening.",
+    "vector": [
+      0.3,
+      0.0,
+      0.3,
+      0.5,
+      0.75,
+      0.45,
+      0.4,
+      0.35,
+      0.4
+    ]
+  },
+  {
+    "id": 126,
+    "name": "Bungee Jumping",
+    "description": "Take the leap together off a bridge or platform.",
+    "vector": [
+      0.7,
+      1.0,
+      0.9,
+      0.5,
+      0.5,
+      0.15,
+      0.95,
+      0.4,
+      0.1
+    ]
+  },
+  {
+    "id": 127,
+    "name": "Greenhouse Cafe Visit",
+    "description": "Have coffee in a plant-filled greenhouse cafe.",
+    "vector": [
+      0.3,
+      0.0,
+      0.15,
+      0.3,
+      0.5,
+      0.35,
+      0.3,
+      0.5,
+      0.6
+    ]
+  },
+  {
+    "id": 128,
+    "name": "Salsa Night at Club",
+    "description": "Dance salsa at a Latin dance club.",
+    "vector": [
+      0.3,
+      0.0,
+      0.8,
+      0.8,
+      0.8,
+      0.45,
+      0.5,
+      0.65,
+      0.15
+    ]
+  },
+  {
+    "id": 129,
+    "name": "Outdoor Movie Blanket",
+    "description": "Set up a projector outdoors for a private screening.",
+    "vector": [
+      0.2,
+      1.0,
+      0.1,
+      0.1,
+      0.8,
+      0.45,
+      0.5,
+      0.7,
+      0.3
+    ]
+  },
+  {
+    "id": 130,
+    "name": "Ceramic Painting Studio",
+    "description": "Paint pre-made ceramics at a studio.",
+    "vector": [
+      0.3,
+      0.0,
+      0.25,
+      0.3,
+      0.5,
+      0.35,
+      0.3,
+      0.4,
+      0.5
+    ]
+  },
+  {
+    "id": 131,
+    "name": "Scenic Overlook Sunset",
+    "description": "Drive to a hilltop overlook to watch sunset.",
+    "vector": [
+      0.1,
+      1.0,
+      0.1,
+      0.1,
+      0.75,
+      0.25,
+      0.3,
+      0.75,
+      0.65
+    ]
+  },
+  {
+    "id": 132,
+    "name": "Cooking a New Cuisine",
+    "description": "Pick a new cuisine and cook it together from recipes.",
+    "vector": [
+      0.3,
+      0.0,
+      0.5,
+      0.1,
+      0.75,
+      0.55,
+      0.5,
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": 133,
+    "name": "Fish Feeding at Pond",
+    "description": "Feed fish at a tranquil garden pond.",
+    "vector": [
+      0.0,
+      1.0,
+      0.1,
+      0.2,
+      0.5,
+      0.2,
+      0.15,
+      0.4,
+      0.5
+    ]
+  },
+  {
+    "id": 134,
+    "name": "Drive-Through Light Show",
+    "description": "Drive through a holiday or art light installation.",
+    "vector": [
+      0.3,
+      0.5,
+      0.1,
+      0.3,
+      0.8,
+      0.25,
+      0.5,
+      0.6,
+      0.3
+    ]
+  },
+  {
+    "id": 135,
+    "name": "Live Podcast Recording",
+    "description": "Attend a live taping of a favorite podcast.",
+    "vector": [
+      0.4,
+      0.0,
+      0.3,
+      0.6,
+      0.75,
+      0.35,
+      0.5,
+      0.3,
+      0.4
+    ]
+  },
+  {
+    "id": 136,
+    "name": "Charity Gala",
+    "description": "Dress up and attend a charity event together.",
+    "vector": [
+      0.8,
+      0.0,
+      0.4,
+      0.8,
+      0.75,
+      0.55,
+      0.5,
+      0.6,
+      0.4
+    ]
+  },
+  {
+    "id": 137,
+    "name": "Treehouse Stay",
+    "description": "Spend a night in a treehouse rental.",
+    "vector": [
+      0.7,
+      0.5,
+      0.3,
+      0.05,
+      0.75,
+      1.0,
+      0.8,
+      0.85,
+      0.7
+    ]
+  },
+  {
+    "id": 138,
+    "name": "Sunrise Coffee Run",
+    "description": "Wake up early for the best coffee spot in town.",
+    "vector": [
+      0.2,
+      0.5,
+      0.3,
+      0.3,
+      0.15,
+      0.15,
+      0.2,
+      0.35,
+      0.5
+    ]
+  },
+  {
+    "id": 139,
+    "name": "Couples Journal Session",
+    "description": "Write or draw in shared journals side by side.",
+    "vector": [
+      0.05,
+      0.0,
+      0.1,
+      0.05,
+      0.5,
+      0.35,
+      0.3,
+      0.6,
+      0.85
+    ]
+  },
+  {
+    "id": 140,
+    "name": "Water Park Day",
+    "description": "Enjoy slides and wave pools at a water park.",
+    "vector": [
+      0.5,
+      1.0,
+      0.9,
+      0.8,
+      0.5,
+      0.65,
+      0.5,
+      0.25,
+      0.15
+    ]
+  },
+  {
+    "id": 141,
+    "name": "Traditional Tea Ceremony",
+    "description": "Experience a guided tea ceremony.",
+    "vector": [
+      0.4,
+      0.0,
+      0.1,
+      0.2,
+      0.5,
+      0.35,
+      0.5,
+      0.55,
+      0.7
+    ]
+  },
+  {
+    "id": 142,
+    "name": "Night Photography Walk",
+    "description": "Photograph city lights and architecture at night.",
+    "vector": [
+      0.1,
+      1.0,
+      0.35,
+      0.3,
+      0.85,
+      0.45,
+      0.4,
+      0.45,
+      0.5
+    ]
+  },
+  {
+    "id": 143,
+    "name": "Parasailing",
+    "description": "Soar above the ocean attached to a parachute.",
+    "vector": [
+      0.7,
+      1.0,
+      0.7,
+      0.4,
+      0.5,
+      0.2,
+      0.85,
+      0.5,
+      0.1
+    ]
+  },
+  {
+    "id": 144,
+    "name": "Indoor Picnic",
+    "description": "Set up a picnic blanket with fairy lights indoors.",
+    "vector": [
+      0.15,
+      0.0,
+      0.1,
+      0.05,
+      0.75,
+      0.35,
+      0.4,
+      0.75,
+      0.6
+    ]
+  },
+  {
+    "id": 145,
+    "name": "Street Food Crawl",
+    "description": "Walk through a city tasting street food vendors.",
+    "vector": [
+      0.3,
+      1.0,
+      0.5,
+      0.7,
+      0.75,
+      0.45,
+      0.5,
+      0.35,
+      0.4
+    ]
+  },
+  {
+    "id": 146,
+    "name": "Sunset Paddleboating",
+    "description": "Pedal a paddleboat on a lake at sunset.",
+    "vector": [
+      0.3,
+      1.0,
+      0.5,
+      0.2,
+      0.75,
+      0.35,
+      0.4,
+      0.65,
+      0.5
+    ]
+  },
+  {
+    "id": 147,
+    "name": "Murder Mystery Dinner",
+    "description": "Attend a themed murder mystery dinner event.",
+    "vector": [
+      0.6,
+      0.0,
+      0.5,
+      0.6,
+      0.75,
+      0.55,
+      0.7,
+      0.4,
+      0.4
+    ]
+  },
+  {
+    "id": 148,
+    "name": "Hot Chocolate & Bookshop",
+    "description": "Warm drinks and browsing books on a cold day.",
+    "vector": [
+      0.2,
+      0.0,
+      0.1,
+      0.2,
+      0.5,
+      0.35,
+      0.2,
+      0.5,
+      0.6
+    ]
+  },
+  {
+    "id": 149,
+    "name": "Tandem Biking",
+    "description": "Ride a tandem bicycle through a scenic route.",
+    "vector": [
+      0.3,
+      1.0,
+      0.6,
+      0.3,
+      0.5,
+      0.35,
+      0.5,
+      0.45,
+      0.3
+    ]
+  },
+  {
+    "id": 150,
+    "name": "Bonfire & S'mores",
+    "description": "Build a fire and make s'mores under the stars.",
+    "vector": [
+      0.1,
+      1.0,
+      0.2,
+      0.15,
+      0.85,
+      0.45,
+      0.3,
+      0.7,
+      0.65
+    ]
+  },
+  {
+    "id": 151,
+    "name": "Glass Blowing Class",
+    "description": "Create glass art together with an instructor.",
+    "vector": [
+      0.5,
+      0.0,
+      0.4,
+      0.3,
+      0.5,
+      0.35,
+      0.6,
+      0.4,
+      0.3
+    ]
+  },
+  {
+    "id": 152,
+    "name": "Scenic Gondola Ride",
+    "description": "Ride a gondola over mountains or cityscape.",
+    "vector": [
+      0.6,
+      1.0,
+      0.1,
+      0.3,
+      0.5,
+      0.25,
+      0.5,
+      0.7,
+      0.5
+    ]
+  },
+  {
+    "id": 153,
+    "name": "DIY Tie-Dye Session",
+    "description": "Tie-dye matching shirts together at home.",
+    "vector": [
+      0.15,
+      0.5,
+      0.4,
+      0.1,
+      0.5,
+      0.35,
+      0.5,
+      0.35,
+      0.3
+    ]
+  },
+  {
+    "id": 154,
+    "name": "Silent Disco",
+    "description": "Dance with wireless headphones at a silent disco event.",
+    "vector": [
+      0.4,
+      0.0,
+      0.8,
+      0.7,
+      0.8,
+      0.35,
+      0.7,
+      0.45,
+      0.1
+    ]
+  },
+  {
+    "id": 155,
+    "name": "Plant Shopping Date",
+    "description": "Visit a nursery and pick plants for your space.",
+    "vector": [
+      0.2,
+      0.5,
+      0.25,
+      0.3,
+      0.25,
+      0.35,
+      0.2,
+      0.4,
+      0.5
+    ]
+  },
+  {
+    "id": 156,
+    "name": "Rooftop Picnic",
+    "description": "Picnic on a rooftop with city views.",
+    "vector": [
+      0.2,
+      1.0,
+      0.15,
+      0.15,
+      0.75,
+      0.35,
+      0.5,
+      0.7,
+      0.6
+    ]
+  },
+  {
+    "id": 157,
+    "name": "Escape the City Drive",
+    "description": "Spontaneous drive to a small town or vista.",
+    "vector": [
+      0.2,
+      1.0,
+      0.4,
+      0.15,
+      0.5,
+      0.65,
+      0.6,
+      0.55,
+      0.7
+    ]
+  },
+  {
+    "id": 158,
+    "name": "Meditation Session Together",
+    "description": "Guided couples meditation at home or a studio.",
+    "vector": [
+      0.15,
+      0.0,
+      0.05,
+      0.1,
+      0.25,
+      0.25,
+      0.3,
+      0.6,
+      0.5
+    ]
+  },
+  {
+    "id": 159,
+    "name": "Craft Beer Tasting",
+    "description": "Sample flights at a local craft brewery.",
+    "vector": [
+      0.4,
+      0.0,
+      0.3,
+      0.5,
+      0.75,
+      0.35,
+      0.4,
+      0.4,
+      0.45
+    ]
+  },
+  {
+    "id": 160,
+    "name": "Sunrise Fishing",
+    "description": "Early morning fishing trip to a quiet lake.",
+    "vector": [
+      0.2,
+      1.0,
+      0.3,
+      0.1,
+      0.15,
+      0.55,
+      0.3,
+      0.45,
+      0.6
+    ]
+  },
+  {
+    "id": 161,
+    "name": "Luxury Brunch",
+    "description": "Indulge in a high-end brunch at a top restaurant.",
+    "vector": [
+      0.8,
+      0.0,
+      0.2,
+      0.5,
+      0.3,
+      0.35,
+      0.3,
+      0.6,
+      0.5
+    ]
+  },
+  {
+    "id": 162,
+    "name": "Bird Watching Walk",
+    "description": "Spot birds with binoculars in a nature reserve.",
+    "vector": [
+      0.1,
+      1.0,
+      0.3,
+      0.1,
+      0.25,
+      0.45,
+      0.2,
+      0.35,
+      0.6
+    ]
+  },
+  {
+    "id": 163,
+    "name": "VR Gaming Session",
+    "description": "Play virtual reality games together at an arcade.",
+    "vector": [
+      0.4,
+      0.0,
+      0.6,
+      0.4,
+      0.5,
+      0.35,
+      0.7,
+      0.25,
+      0.2
+    ]
+  },
+  {
+    "id": 164,
+    "name": "Sunset Yacht Watch",
+    "description": "Watch sunset from a dock or rented yacht.",
+    "vector": [
+      0.7,
+      1.0,
+      0.1,
+      0.2,
+      0.75,
+      0.35,
+      0.5,
+      0.85,
+      0.6
+    ]
+  },
+  {
+    "id": 165,
+    "name": "Cooking Show Binge & Cook",
+    "description": "Watch a cooking show then recreate the recipes.",
+    "vector": [
+      0.2,
+      0.0,
+      0.4,
+      0.1,
+      0.75,
+      0.55,
+      0.4,
+      0.45,
+      0.4
+    ]
+  },
+  {
+    "id": 166,
+    "name": "Snow Tubing",
+    "description": "Slide down snowy hills on inflatable tubes.",
+    "vector": [
+      0.3,
+      1.0,
+      0.7,
+      0.5,
+      0.5,
+      0.35,
+      0.5,
+      0.35,
+      0.2
+    ]
+  },
+  {
+    "id": 167,
+    "name": "Lantern Festival",
+    "description": "Attend a lantern lighting festival or release lanterns.",
+    "vector": [
+      0.3,
+      1.0,
+      0.3,
+      0.6,
+      0.8,
+      0.35,
+      0.7,
+      0.75,
+      0.4
+    ]
+  },
+  {
+    "id": 168,
+    "name": "Book Exchange Date",
+    "description": "Each bring a favorite book to swap and discuss.",
+    "vector": [
+      0.0,
+      0.0,
+      0.1,
+      0.15,
+      0.5,
+      0.35,
+      0.3,
+      0.4,
+      0.8
+    ]
+  },
+  {
+    "id": 169,
+    "name": "Treetop Adventure Course",
+    "description": "Navigate rope bridges and obstacles in trees.",
+    "vector": [
+      0.5,
+      1.0,
+      0.85,
+      0.4,
+      0.5,
+      0.45,
+      0.7,
+      0.3,
+      0.15
+    ]
+  },
+  {
+    "id": 170,
+    "name": "Sake Tasting Night",
+    "description": "Sample different sakes at a Japanese restaurant.",
+    "vector": [
+      0.5,
+      0.0,
+      0.2,
+      0.4,
+      0.75,
+      0.35,
+      0.5,
+      0.55,
+      0.5
+    ]
+  },
+  {
+    "id": 171,
+    "name": "Build a Fort",
+    "description": "Construct a blanket fort and watch movies inside.",
+    "vector": [
+      0.0,
+      0.0,
+      0.2,
+      0.0,
+      0.8,
+      0.55,
+      0.4,
+      0.65,
+      0.4
+    ]
+  },
+  {
+    "id": 172,
+    "name": "Private Chef Experience",
+    "description": "Hire a chef to cook a meal in your home.",
+    "vector": [
+      1.0,
+      0.0,
+      0.1,
+      0.1,
+      0.75,
+      0.55,
+      0.6,
+      0.9,
+      0.7
+    ]
+  },
+  {
+    "id": 173,
+    "name": "Outdoor Sketching",
+    "description": "Sit outdoors and sketch the scenery together.",
+    "vector": [
+      0.05,
+      1.0,
+      0.15,
+      0.2,
+      0.5,
+      0.45,
+      0.3,
+      0.45,
+      0.5
+    ]
+  },
+  {
+    "id": 174,
+    "name": "Cloud Watching",
+    "description": "Lie on grass and identify shapes in the clouds.",
+    "vector": [
+      0.0,
+      1.0,
+      0.05,
+      0.05,
+      0.5,
+      0.35,
+      0.1,
+      0.55,
+      0.6
+    ]
+  },
+  {
+    "id": 175,
+    "name": "Outdoor Concert Festival",
+    "description": "Attend a multi-act outdoor music festival.",
+    "vector": [
+      0.6,
+      1.0,
+      0.7,
+      0.9,
+      0.5,
+      0.8,
+      0.6,
+      0.4,
+      0.2
+    ]
+  },
+  {
+    "id": 176,
+    "name": "Cheese Tasting",
+    "description": "Sample artisan cheeses at a fromagerie.",
+    "vector": [
+      0.4,
+      0.0,
+      0.15,
+      0.3,
+      0.5,
+      0.35,
+      0.4,
+      0.55,
+      0.5
+    ]
+  },
+  {
+    "id": 177,
+    "name": "Scenic Bridge Walk",
+    "description": "Walk across a famous bridge at golden hour.",
+    "vector": [
+      0.0,
+      1.0,
+      0.35,
+      0.4,
+      0.75,
+      0.25,
+      0.2,
+      0.6,
+      0.6
+    ]
+  },
+  {
+    "id": 178,
+    "name": "Thai Cooking Class",
+    "description": "Learn to cook Thai dishes with a local chef.",
+    "vector": [
+      0.5,
+      0.0,
+      0.5,
+      0.4,
+      0.75,
+      0.55,
+      0.5,
+      0.45,
+      0.4
+    ]
+  },
+  {
+    "id": 179,
+    "name": "Couples Bucket List Night",
+    "description": "Write your bucket list together over drinks.",
+    "vector": [
+      0.1,
+      0.0,
+      0.1,
+      0.05,
+      0.75,
+      0.35,
+      0.4,
+      0.7,
+      0.9
+    ]
+  },
+  {
+    "id": 180,
+    "name": "Starlit Boat Ride",
+    "description": "Row a small boat on a lake under the stars.",
+    "vector": [
+      0.3,
+      1.0,
+      0.3,
+      0.05,
+      0.9,
+      0.35,
+      0.5,
+      0.9,
+      0.7
+    ]
+  },
+  {
+    "id": 181,
+    "name": "Holiday Market Visit",
+    "description": "Browse a seasonal holiday market together.",
+    "vector": [
+      0.3,
+      1.0,
+      0.4,
+      0.7,
+      0.75,
+      0.35,
+      0.4,
+      0.45,
+      0.4
+    ]
+  },
+  {
+    "id": 182,
+    "name": "DIY Gift Making",
+    "description": "Make handmade gifts for each other.",
+    "vector": [
+      0.15,
+      0.0,
+      0.35,
+      0.05,
+      0.5,
+      0.55,
+      0.5,
+      0.65,
+      0.4
+    ]
+  },
+  {
+    "id": 183,
+    "name": "Astronomy Event",
+    "description": "Attend a public telescope night or meteor shower viewing.",
+    "vector": [
+      0.1,
+      1.0,
+      0.15,
+      0.4,
+      0.9,
+      0.45,
+      0.5,
+      0.6,
+      0.6
+    ]
+  },
+  {
+    "id": 184,
+    "name": "Speed Boat Ride",
+    "description": "Take an exhilarating speedboat ride.",
+    "vector": [
+      0.6,
+      1.0,
+      0.7,
+      0.4,
+      0.5,
+      0.2,
+      0.7,
+      0.4,
+      0.1
+    ]
+  },
+  {
+    "id": 185,
+    "name": "Mural Painting Together",
+    "description": "Paint a mural or large canvas as a team.",
+    "vector": [
+      0.2,
+      0.5,
+      0.5,
+      0.2,
+      0.5,
+      0.55,
+      0.5,
+      0.4,
+      0.4
+    ]
+  },
+  {
+    "id": 186,
+    "name": "Japanese Garden Visit",
+    "description": "Walk through a peaceful Japanese garden.",
+    "vector": [
+      0.2,
+      1.0,
+      0.15,
+      0.3,
+      0.5,
+      0.35,
+      0.2,
+      0.6,
+      0.65
+    ]
+  },
+  {
+    "id": 187,
+    "name": "Perfume Making Workshop",
+    "description": "Create custom fragrances together.",
+    "vector": [
+      0.5,
+      0.0,
+      0.25,
+      0.3,
+      0.5,
+      0.35,
+      0.6,
+      0.6,
+      0.4
+    ]
+  },
+  {
+    "id": 188,
+    "name": "Pillow Fight",
+    "description": "Spontaneous playful pillow fight at home.",
+    "vector": [
+      0.0,
+      0.0,
+      0.6,
+      0.0,
+      0.8,
+      0.1,
+      0.5,
+      0.45,
+      0.1
+    ]
+  },
+  {
+    "id": 189,
+    "name": "Scenic Cable Car Ride",
+    "description": "Ride a cable car with panoramic views.",
+    "vector": [
+      0.4,
+      1.0,
+      0.1,
+      0.4,
+      0.5,
+      0.25,
+      0.4,
+      0.55,
+      0.4
+    ]
+  },
+  {
+    "id": 190,
+    "name": "Farmers Market Cooking",
+    "description": "Buy ingredients at the market, then cook together.",
+    "vector": [
+      0.3,
+      0.5,
+      0.5,
+      0.4,
+      0.25,
+      0.65,
+      0.4,
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": 191,
+    "name": "Haunted House Visit",
+    "description": "Brave a haunted house attraction together.",
+    "vector": [
+      0.3,
+      0.0,
+      0.7,
+      0.6,
+      0.8,
+      0.25,
+      0.8,
+      0.4,
+      0.15
+    ]
+  },
+  {
+    "id": 192,
+    "name": "Lighthouse Visit",
+    "description": "Climb a coastal lighthouse and enjoy the view.",
+    "vector": [
+      0.1,
+      1.0,
+      0.4,
+      0.3,
+      0.5,
+      0.35,
+      0.3,
+      0.55,
+      0.55
+    ]
+  },
+  {
+    "id": 193,
+    "name": "Karaoke Duet at Home",
+    "description": "Sing duets together with a karaoke app at home.",
+    "vector": [
+      0.0,
+      0.0,
+      0.6,
+      0.0,
+      0.8,
+      0.35,
+      0.3,
+      0.5,
+      0.2
+    ]
+  },
+  {
+    "id": 194,
+    "name": "Dessert Bar Crawl",
+    "description": "Visit multiple dessert spots in one evening.",
+    "vector": [
+      0.4,
+      0.0,
+      0.3,
+      0.5,
+      0.75,
+      0.45,
+      0.5,
+      0.5,
+      0.4
+    ]
+  },
+  {
+    "id": 195,
+    "name": "Sunrise Hot Air Balloon",
+    "description": "Float over landscapes at dawn in a balloon.",
+    "vector": [
+      1.0,
+      1.0,
+      0.2,
+      0.2,
+      0.15,
+      0.55,
+      0.9,
+      0.9,
+      0.6
+    ]
+  },
+  {
+    "id": 196,
+    "name": "Couple's Trivia Night",
+    "description": "Host your own trivia night about each other.",
+    "vector": [
+      0.0,
+      0.0,
+      0.4,
+      0.0,
+      0.75,
+      0.35,
+      0.5,
+      0.55,
+      0.7
+    ]
+  },
+  {
+    "id": 197,
+    "name": "Beach Sunrise Yoga",
+    "description": "Practice yoga on the beach at sunrise.",
+    "vector": [
+      0.0,
+      1.0,
+      0.5,
+      0.2,
+      0.15,
+      0.25,
+      0.3,
+      0.6,
+      0.4
+    ]
+  },
+  {
+    "id": 198,
+    "name": "Scenic Waterfront Dinner",
+    "description": "Dine at a restaurant with waterfront views.",
+    "vector": [
+      0.7,
+      0.5,
+      0.15,
+      0.4,
+      0.75,
+      0.55,
+      0.3,
+      0.8,
+      0.65
+    ]
+  },
+  {
+    "id": 199,
+    "name": "Treasure Map Adventure",
+    "description": "Create clues leading to a surprise gift or location.",
+    "vector": [
+      0.2,
+      0.5,
+      0.5,
+      0.1,
+      0.5,
+      0.55,
+      0.9,
+      0.7,
+      0.4
+    ]
+  }
+]

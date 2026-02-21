@@ -1,0 +1,14 @@
+services:
+  vectoraidb:
+    image: williamimoh/actian-vectorai-db:1.0b
+    platform: linux/amd64
+    ports:
+      - "50051:50051"
+    volumes:
+      - actian_data:/data
+    environment:
+      - DOCKER_DEFAULT_PLATFORM=linux/amd64
+    restart: unless-stopped
+
+volumes:
+  actian_data:
