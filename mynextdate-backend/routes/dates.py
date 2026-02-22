@@ -2,7 +2,7 @@ import asyncio
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from middleware.auth import get_current_user
-from services.actian_service import get_client, search_similar, ensure_cache, store_custom_date_vector
+from services.actian_service import get_client, search_similar, ensure_cache, store_custom_date_vector, save_custom_activity, search_custom_activities
 from services.text_to_vector import text_to_vector
 from supabase import create_client
 from config import SUPABASE_URL, SUPABASE_SERVICE_KEY, COLLECTION_NAME
@@ -51,7 +51,7 @@ async def get_date_history(user: dict = Depends(get_current_user)):
 
 @router.post("/dates/preview")
 async def preview_date_matches(body: AddDateByTextRequest, user: dict = Depends(get_current_user)):
-    """Convert description to vector and return top 3 matches WITHOUT saving. User picks one, then calls POST /dates."""
+    """Convert description to vector and return top 3 matches from JSON activities + community custom activities."""
     if not body.description.strip():
         raise HTTPException(status_code=400, detail="Description cannot be empty")
 
@@ -60,13 +60,28 @@ async def preview_date_matches(body: AddDateByTextRequest, user: dict = Depends(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to analyze description: {str(e)}")
 
-    results = search_similar(query_vector, top_k=3, text_query=body.description)
+    sb = get_supabase()
 
-    if not results:
+    # Search both the 200 JSON activities and community custom activities
+    json_results = search_similar(query_vector, top_k=3, text_query=body.description)
+    custom_results = search_custom_activities(query_vector, sb, top_k=3, text_query=body.description)
+
+    # Merge, deduplicate by name, sort by score, take top 3
+    seen_names = set()
+    merged = []
+    for r in sorted(json_results + custom_results, key=lambda x: x["score"], reverse=True):
+        name_lower = r["name"].strip().lower()
+        if name_lower not in seen_names:
+            seen_names.add(name_lower)
+            merged.append(r)
+        if len(merged) == 3:
+            break
+
+    if not merged:
         raise HTTPException(status_code=500, detail="No matching activity found")
 
     return {
-        "top_matches": results,
+        "top_matches": merged,
         "extracted_vector": query_vector,
     }
 
@@ -95,6 +110,9 @@ async def add_custom_date(body: AddCustomDateRequest, user: dict = Depends(get_c
     # Store vector in memory so recommendations/analytics can use it
     if record.get("id"):
         store_custom_date_vector(record["id"], query_vector)
+
+    # Save to shared custom_activities table so other users can find it
+    save_custom_activity(body.name.strip(), query_vector, user["id"], sb)
 
     # Non-blocking: generate canonical entry and seed into global activity pool
     asyncio.create_task(_seed_activity_background(body.name.strip(), query_vector))
@@ -129,8 +147,20 @@ async def add_date_by_description(body: AddDateByTextRequest, user: dict = Depen
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to analyze description: {str(e)}")
 
-    # Search with vector similarity + keyword boost
-    results = search_similar(query_vector, top_k=3, text_query=body.description)
+    # Search both JSON activities and community custom activities
+    sb = get_supabase()
+    json_results = search_similar(query_vector, top_k=3, text_query=body.description)
+    custom_results = search_custom_activities(query_vector, sb, top_k=3, text_query=body.description)
+
+    seen_names = set()
+    results = []
+    for r in sorted(json_results + custom_results, key=lambda x: x["score"], reverse=True):
+        name_lower = r["name"].strip().lower()
+        if name_lower not in seen_names:
+            seen_names.add(name_lower)
+            results.append(r)
+        if len(results) == 3:
+            break
 
     if not results:
         raise HTTPException(status_code=500, detail="No matching activity found")

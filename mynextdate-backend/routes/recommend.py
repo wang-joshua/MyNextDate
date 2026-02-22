@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel
 from middleware.auth import get_current_user
-from services.actian_service import search_similar, search_worst, get_activity_vectors, get_custom_date_vectors
+from services.actian_service import search_similar, search_worst, search_custom_activities, get_activity_vectors, get_custom_date_vectors
 from services.preference_engine import compute_preference_vector, apply_repeat_penalty
 from services.location_service import reverse_geocode_and_save, get_user_city, get_local_trends
 from supabase import create_client
@@ -69,7 +69,19 @@ async def get_recommendations(
     pref_vector = apply_repeat_penalty(pref_vector, activity_ids, activity_vectors)
 
     exclude = list(set(activity_ids + skip_ids))
-    recommendations = search_similar(pref_vector, top_k=3, exclude_ids=exclude)
+    json_recs = search_similar(pref_vector, top_k=3, exclude_ids=exclude)
+    custom_recs = search_custom_activities(pref_vector, sb, top_k=3)
+
+    # Merge, deduplicate by name, sort by score, take top 3
+    seen_names = set()
+    recommendations = []
+    for r in sorted(json_recs + custom_recs, key=lambda x: x["score"], reverse=True):
+        name_lower = r["name"].strip().lower()
+        if name_lower not in seen_names:
+            seen_names.add(name_lower)
+            recommendations.append(r)
+        if len(recommendations) == 3:
+            break
 
     return {
         "recommendations": recommendations,
@@ -121,7 +133,21 @@ async def get_worst_recommendations(user: dict = Depends(get_current_user)):
             rated_dates.append({"activity_id": d["activity_id"], "rating": d["rating"]})
 
     pref_vector = compute_preference_vector(rated_dates, activity_vectors)
-    worst = search_worst(pref_vector, top_k=3)
+    json_worst = search_worst(pref_vector, top_k=3)
+
+    # Also search custom activities with inverted preference
+    inverse_pref = [round(1.0 - v, 4) for v in pref_vector]
+    custom_worst = search_custom_activities(inverse_pref, sb, top_k=3)
+
+    seen_names = set()
+    worst = []
+    for r in sorted(json_worst + custom_worst, key=lambda x: x["score"], reverse=True):
+        name_lower = r["name"].strip().lower()
+        if name_lower not in seen_names:
+            seen_names.add(name_lower)
+            worst.append(r)
+        if len(worst) == 3:
+            break
 
     return {
         "recommendations": worst,

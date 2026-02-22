@@ -212,3 +212,63 @@ def store_custom_date_vector(date_record_id: str, vector: list[float]):
 def get_custom_date_vectors(date_record_ids: list[str]) -> dict[str, list[float]]:
     """Get stored vectors for custom dates by their Supabase record IDs."""
     return {rid: _custom_date_vectors[rid] for rid in date_record_ids if rid in _custom_date_vectors}
+
+
+def save_custom_activity(name: str, vector: list[float], user_id: str, sb) -> dict | None:
+    """Save a custom activity to the shared custom_activities table so other users can find it."""
+    try:
+        result = sb.table("custom_activities").insert({
+            "name": name,
+            "vector": vector,
+            "created_by": user_id,
+        }).execute()
+        return result.data[0] if result.data else None
+    except Exception as e:
+        print(f"Failed to save custom activity (non-fatal): {e}")
+        return None
+
+
+def search_custom_activities(query_vector: list[float], sb, top_k: int = 3, text_query: str | None = None) -> list[dict]:
+    """Search user-created custom activities from Supabase by vector similarity."""
+    try:
+        result = sb.table("custom_activities").select("id, name, vector").execute()
+        rows = result.data or []
+    except Exception as e:
+        print(f"Failed to fetch custom activities: {e}")
+        return []
+
+    if not rows:
+        return []
+
+    query = np.array(query_vector)
+    query_norm = np.linalg.norm(query)
+    if query_norm == 0:
+        query_norm = 1.0
+
+    scored = []
+    for row in rows:
+        vec = row.get("vector")
+        if not vec:
+            continue
+        v = np.array(vec)
+        v_norm = np.linalg.norm(v)
+        if v_norm == 0:
+            continue
+        similarity = float(np.dot(query, v) / (query_norm * v_norm))
+        if text_query:
+            boost = _keyword_boost(text_query, row.get("name", ""), "")
+            similarity += boost
+        scored.append((row, similarity))
+
+    scored.sort(key=lambda x: x[1], reverse=True)
+
+    return [
+        {
+            "id": row["id"],
+            "name": row["name"],
+            "description": "Custom activity from the community",
+            "score": round(min(score, 1.0), 4),
+            "is_custom": True,
+        }
+        for row, score in scored[:top_k]
+    ]
