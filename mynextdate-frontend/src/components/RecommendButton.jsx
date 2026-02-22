@@ -55,7 +55,7 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
   }
 
   return (
-    <div className="space-y-6">
+    <div className="relative">
       <div className="relative">
         <AnimatePresence>
           {showPulse && (
@@ -121,118 +121,122 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
         </div>
       </div>
 
-      <AnimatePresence>
-        {needsHistory && (
-          <motion.div
-            className="glass-card rounded-2xl p-5 text-center"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <p className="font-serif text-lg mb-2" style={{ color: '#f0ecf9' }}>
-              We need to know you first!
-            </p>
-            <p className="text-sm mb-4" style={{ color: '#9a8fad' }}>
-              Add at least one date — ideal or experienced — so we can learn your preferences and recommend the perfect next date.
-            </p>
-            <motion.button
-              onClick={() => { setNeedsHistory(false); onAddDate?.() }}
-              className="px-5 py-2.5 rounded-xl text-sm font-medium tracking-wide"
-              style={{
-                background: 'linear-gradient(135deg, #8b5cf6, #6d2c8e)',
-                boxShadow: '0 4px 20px rgba(139, 92, 246, 0.2)',
-              }}
-              whileHover={{ scale: 1.03, boxShadow: '0 8px 30px rgba(139, 92, 246, 0.35)' }}
-              whileTap={{ scale: 0.97 }}
+      {/* Results float as overlay — no layout shift */}
+      <div className="absolute left-0 right-0 z-10" style={{ top: 'calc(100% + 1rem)' }}>
+        <AnimatePresence>
+          {needsHistory && (
+            <motion.div
+              className="glass-card rounded-2xl p-5 text-center"
+              style={{ backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             >
-              + Add Your First Date
-            </motion.button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <p className="font-serif text-lg mb-2" style={{ color: '#f0ecf9' }}>
+                We need to know you first!
+              </p>
+              <p className="text-sm mb-4" style={{ color: '#9a8fad' }}>
+                Add at least one date — ideal or experienced — so we can learn your preferences and recommend the perfect next date.
+              </p>
+              <motion.button
+                onClick={() => { setNeedsHistory(false); onAddDate?.() }}
+                className="px-5 py-2.5 rounded-xl text-sm font-medium tracking-wide"
+                style={{
+                  background: 'linear-gradient(135deg, #8b5cf6, #6d2c8e)',
+                  boxShadow: '0 4px 20px rgba(139, 92, 246, 0.2)',
+                }}
+                whileHover={{ scale: 1.03, boxShadow: '0 8px 30px rgba(139, 92, 246, 0.35)' }}
+                whileTap={{ scale: 0.97 }}
+              >
+                + Add Your First Date
+              </motion.button>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-      <AnimatePresence mode="wait">
-        {recs && recs.length > 0 && (
-          <motion.div
-            className="space-y-3"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.4 }}
-          >
-            <h3 className="label-editorial">
-              {mode === 'breakup' ? 'Worst Possible Dates' : 'Recommended For You'}
-            </h3>
-            <AnimatePresence>
-              {recs.map((rec, i) => (
-                <motion.div
-                  key={rec.id}
-                  layout
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20, height: 0, marginBottom: 0, padding: 0 }}
-                  transition={{ delay: 0.2 + i * 0.15, type: 'spring', stiffness: 300, damping: 25 }}
-                  whileHover={{ scale: 1.01, y: -2 }}
-                  className={`p-6 rounded-2xl transition-all duration-300 ${
-                    mode === 'breakup'
-                      ? 'bg-red-950/20 border border-red-500/20 hover:border-red-500/40'
-                      : 'glass-card'
-                  }`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        {mode === 'breakup' ? (
-                          <HeartCrack className="w-4 h-4 text-red-400" />
-                        ) : (
-                          <Heart className="w-4 h-4 fill-violet-400" style={{ color: '#c084fc' }} />
-                        )}
-                        <h4 className="font-serif font-semibold text-lg">{rec.name}</h4>
-                      </div>
-                      <p className="text-sm mt-1 leading-relaxed" style={{ color: '#9a8fad' }}>{rec.description}</p>
-                      <div className="flex items-center gap-2 mt-3">
-                        <div className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                          mode === 'breakup' ? 'bg-red-500/10 text-red-400' : ''
-                        }`}
-                          style={mode !== 'breakup' ? { background: 'rgba(139, 92, 246, 0.1)', color: '#c084fc' } : {}}
-                        >
-                          {Math.round(rec.score * 100)}% match
+        <AnimatePresence mode="wait">
+          {recs && recs.length > 0 && (
+            <motion.div
+              className="space-y-3"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.4 }}
+            >
+              <h3 className="label-editorial">
+                {mode === 'breakup' ? 'Worst Possible Dates' : 'Recommended For You'}
+              </h3>
+              <AnimatePresence>
+                {recs.map((rec, i) => (
+                  <motion.div
+                    key={rec.id}
+                    layout
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20, height: 0, marginBottom: 0, padding: 0 }}
+                    transition={{ delay: 0.2 + i * 0.15, type: 'spring', stiffness: 300, damping: 25 }}
+                    whileHover={{ scale: 1.01, y: -2 }}
+                    className={`p-6 rounded-2xl transition-all duration-300 ${
+                      mode === 'breakup'
+                        ? 'bg-red-950/20 border border-red-500/20 hover:border-red-500/40'
+                        : 'glass-card'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          {mode === 'breakup' ? (
+                            <HeartCrack className="w-4 h-4 text-red-400" />
+                          ) : (
+                            <Heart className="w-4 h-4 fill-violet-400" style={{ color: '#c084fc' }} />
+                          )}
+                          <h4 className="font-serif font-semibold text-lg">{rec.name}</h4>
+                        </div>
+                        <p className="text-sm mt-1 leading-relaxed" style={{ color: '#9a8fad' }}>{rec.description}</p>
+                        <div className="flex items-center gap-2 mt-3">
+                          <div className={`text-xs px-2.5 py-1 rounded-full font-medium ${
+                            mode === 'breakup' ? 'bg-red-500/10 text-red-400' : ''
+                          }`}
+                            style={mode !== 'breakup' ? { background: 'rgba(139, 92, 246, 0.1)', color: '#c084fc' } : {}}
+                          >
+                            {Math.round(rec.score * 100)}% match
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2 ml-4">
-                      {mode !== 'breakup' && (
+                      <div className="flex items-center gap-2 ml-4">
+                        {mode !== 'breakup' && (
+                          <motion.button
+                            onClick={() => handleAddDate(rec.id)}
+                            disabled={adding === rec.id}
+                            className="p-3 rounded-xl transition-all"
+                            style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#c084fc' }}
+                            whileHover={{ scale: 1.1, boxShadow: '0 0 15px rgba(139, 92, 246, 0.2)' }}
+                            whileTap={{ scale: 0.9 }}
+                            title="Add to date history"
+                          >
+                            {adding === rec.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+                          </motion.button>
+                        )}
                         <motion.button
-                          onClick={() => handleAddDate(rec.id)}
-                          disabled={adding === rec.id}
+                          onClick={() => handleSkip(rec.id)}
                           className="p-3 rounded-xl transition-all"
-                          style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#c084fc' }}
-                          whileHover={{ scale: 1.1, boxShadow: '0 0 15px rgba(139, 92, 246, 0.2)' }}
+                          style={{ background: 'rgba(107, 95, 126, 0.1)', color: '#6b5f7e' }}
+                          whileHover={{ scale: 1.1, color: '#f0ecf9', background: 'rgba(107, 95, 126, 0.2)' }}
                           whileTap={{ scale: 0.9 }}
-                          title="Add to date history"
+                          title="Skip — show me something else"
                         >
-                          {adding === rec.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+                          <X className="w-5 h-5" />
                         </motion.button>
-                      )}
-                      <motion.button
-                        onClick={() => handleSkip(rec.id)}
-                        className="p-3 rounded-xl transition-all"
-                        style={{ background: 'rgba(107, 95, 126, 0.1)', color: '#6b5f7e' }}
-                        whileHover={{ scale: 1.1, color: '#f0ecf9', background: 'rgba(107, 95, 126, 0.2)' }}
-                        whileTap={{ scale: 0.9 }}
-                        title="Skip — show me something else"
-                      >
-                        <X className="w-5 h-5" />
-                      </motion.button>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   )
 }
