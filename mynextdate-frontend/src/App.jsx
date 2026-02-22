@@ -8,15 +8,38 @@ import LogoLoader from './components/LogoLoader'
 
 function StarField() {
   const stars = useMemo(() => {
-    return Array.from({ length: 80 }, (_, i) => ({
-      id: i,
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      size: `${1 + Math.random()}px`,
-      opacity: 0.15 + Math.random() * 0.5,
-      dur: `${3 + Math.random() * 5}s`,
-      delay: `${-Math.random() * 8}s`,
-    }))
+    return Array.from({ length: 120 }, (_, i) => {
+      const rand = Math.random()
+      const starSize = rand < 0.6 ? 1 + Math.random() * 0.5
+        : rand < 0.9 ? 1.5 + Math.random() * 0.5
+        : 2 + Math.random() * 0.5
+      return {
+        id: i,
+        top: `${Math.random() * 100}%`,
+        left: `${Math.random() * 100}%`,
+        size: `${starSize}px`,
+        opacity: 0.2 + Math.random() * 0.6,
+        dur: `${1.5 + Math.random() * 3}s`,
+        delay: `${-Math.random() * 5}s`,
+      }
+    })
+  }, [])
+
+  // 4-pointed cross stars with elongated south ray
+  const crossStars = useMemo(() => {
+    return Array.from({ length: 14 }, (_, i) => {
+      const w = 15 + Math.random() * 12 // 15-27px wide
+      return {
+        id: i,
+        top: `${5 + Math.random() * 90}%`,
+        left: `${5 + Math.random() * 90}%`,
+        w,
+        h: w * 1.7, // taller — elongated south ray
+        opacity: 0.4 + Math.random() * 0.4,
+        dur: `${6 + Math.random() * 6}s`,
+        delay: `${-Math.random() * 12}s`,
+      }
+    })
   }, [])
 
   return (
@@ -30,6 +53,21 @@ function StarField() {
             left: s.left,
             width: s.size,
             height: s.size,
+            '--star-opacity': s.opacity,
+            '--star-dur': s.dur,
+            '--star-delay': s.delay,
+          }}
+        />
+      ))}
+      {crossStars.map((s) => (
+        <div
+          key={`cross-${s.id}`}
+          className="star-cross"
+          style={{
+            top: s.top,
+            left: s.left,
+            width: s.w,
+            height: s.h,
             '--star-opacity': s.opacity,
             '--star-dur': s.dur,
             '--star-delay': s.delay,

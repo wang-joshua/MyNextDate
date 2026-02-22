@@ -50,14 +50,14 @@ export default function LogoLoader({ size = 96 }) {
           strokeWidth="4"
           strokeLinejoin="round"
           style={{ transformOrigin: '100px 100px' }}
-          animate={{ scale: [1, 0.1, 0.1, 1, 1], opacity: [1, 0, 0, 1, 1] }}
+          animate={{ scale: [0.1, 1, 1, 0.1, 0.1], opacity: [0, 1, 1, 0, 0] }}
           transition={T}
         />
 
         {/* Wires — fade out on shatter, fade back in on join */}
         <motion.g
           stroke="#9c8cd8" strokeWidth="3.5" strokeLinecap="round"
-          animate={{ opacity: [1, 0, 0, 1, 1] }}
+          animate={{ opacity: [0, 1, 1, 0, 0] }}
           transition={T}
         >
           <line x1="52"  y1="28"  x2="18"  y2="62"  />
@@ -92,8 +92,8 @@ export default function LogoLoader({ size = 96 }) {
             cx={n.cx} cy={n.cy} r={n.r}
             fill="#9c8cd8"
             animate={{
-              x: [0, n.sx, n.sx, 0, 0],
-              y: [0, n.sy, n.sy, 0, 0],
+              x: [n.sx, 0, 0, n.sx, n.sx],
+              y: [n.sy, 0, 0, n.sy, n.sy],
             }}
             transition={T}
           />

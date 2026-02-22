@@ -31,9 +31,29 @@
   position: absolute;
   border-radius: 50%;
   background: white;
+  box-shadow: 0 0 3px 0px rgba(255, 255, 255, 0.6);
   animation: twinkle var(--star-dur) ease-in-out infinite var(--star-delay);
   pointer-events: none;
 }
+
+/* 4-pointed cross star — elongated south ray */
+.star-cross {
+  position: absolute;
+  background: radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.95) 0%, rgba(200,200,255,0.5) 35%, transparent 70%);
+  clip-path: polygon(
+    50% 0%,
+    53% 28%,
+    100% 30%,
+    53% 33%,
+    50% 100%,
+    47% 33%,
+    0% 30%,
+    47% 28%
+  );
+  animation: twinkle var(--star-dur) ease-in-out infinite var(--star-delay);
+  pointer-events: none;
+}
+
 
 /* ============================================
    BASE

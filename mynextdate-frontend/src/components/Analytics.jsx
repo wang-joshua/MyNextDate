@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { TrendingUp, TrendingDown, Minus, Heart, Target } from 'lucide-react'
+import { TrendingUp, TrendingDown, Minus, Heart } from 'lucide-react'
 import { getAnalytics } from '../lib/api'
 import HeartLoader from './HeartLoader'
 
@@ -129,6 +129,96 @@ function DimensionBar({ dimension, value, delay = 0 }) {
   )
 }
 
+function GaugeCard({ successRate, totalDates, trend, delay = 0 }) {
+  const successCount = Math.round(successRate * totalDates / 100)
+  const fillRatio = successRate / 100
+
+  // Arc geometry — semi-circle open at bottom
+  const size = 140
+  const cx = size / 2
+  const cy = size / 2 + 4
+  const r = 52
+  const strokeWidth = 14
+  // Arc spans from 220° to 320° (horseshoe open at bottom)
+  const startAngle = 220
+  const endAngle = -40 // equivalent to 320°
+  const totalSweep = 260 // degrees of arc
+
+  const toRad = (deg) => (deg * Math.PI) / 180
+  const pointOnArc = (angle) => ({
+    x: cx + r * Math.cos(toRad(angle)),
+    y: cy - r * Math.sin(toRad(angle)),
+  })
+
+  const start = pointOnArc(startAngle)
+  const end = pointOnArc(endAngle)
+  const bgPath = `M ${start.x} ${start.y} A ${r} ${r} 0 1 1 ${end.x} ${end.y}`
+
+  const trendLabel = trend === 'improving' ? 'RISING' : trend === 'declining' ? 'FALLING' : 'STABLE'
+  const trendColor = trend === 'improving' ? '#4ade80' : trend === 'declining' ? '#f87171' : '#c084fc'
+  const trendBg = trend === 'improving' ? 'rgba(74,222,128,0.15)' : trend === 'declining' ? 'rgba(248,113,113,0.15)' : 'rgba(192,132,252,0.15)'
+
+  const gradientId = 'gaugeGradient'
+
+  return (
+    <motion.div
+      className="glass-card rounded-2xl p-4 flex flex-col items-center justify-center relative"
+      initial={{ opacity: 0, y: 20, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{
+        y: -3,
+        boxShadow: '0 8px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(139, 92, 246, 0.1)',
+        borderColor: 'rgba(139, 92, 246, 0.3)',
+      }}
+    >
+      <div className="relative" style={{ width: size, height: size * 0.75 }}>
+        <svg width={size} height={size * 0.75} viewBox={`0 0 ${size} ${size * 0.75}`} className="overflow-visible">
+          {/* Red track (remaining / full 100%) */}
+          <path
+            d={bgPath}
+            fill="none"
+            stroke="#f87171"
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            opacity={1}
+          />
+          {/* Green fill (accomplished portion) */}
+          <motion.path
+            d={bgPath}
+            fill="none"
+            stroke="#4ade80"
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: fillRatio }}
+            transition={{ delay: delay + 0.3, duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+            style={{ filter: 'drop-shadow(0 0 6px rgba(74,222,128,0.4))' }}
+          />
+        </svg>
+
+        {/* Center text overlay — positioned at arc center */}
+        <div className="absolute flex flex-col items-center justify-center" style={{ top: 0, left: 0, right: 0, height: cy * 2, paddingTop: 8 }}>
+          <motion.span
+            className="font-serif font-bold leading-none"
+            style={{ fontSize: 28, color: '#f0ecf9' }}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: delay + 0.5, type: 'spring', stiffness: 200 }}
+          >
+            {successRate}%
+          </motion.span>
+          <span className="text-[11px] mt-1" style={{ color: '#6b5f7e' }}>
+            {successCount} / {totalDates}
+          </span>
+        </div>
+      </div>
+
+      <p className="label-editorial mt-3">Success Rate</p>
+    </motion.div>
+  )
+}
+
 export default function Analytics({ refreshTrigger }) {
   const [analytics, setAnalytics] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -214,11 +304,10 @@ export default function Analytics({ refreshTrigger }) {
             delay={0}
             showHearts={true}
           />
-          <StatCard
-            value={`${analytics.success_rate}%`}
-            label="Success Rate"
-            icon={Target}
-            color="#8b5cf6"
+          <GaugeCard
+            successRate={analytics.success_rate}
+            totalDates={analytics.total_dates}
+            trend={analytics.trend}
             delay={0.1}
           />
           <StatCard
