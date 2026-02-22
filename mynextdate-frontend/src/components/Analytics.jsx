@@ -13,7 +13,7 @@ const DIMENSION_DISPLAY = {
   duration: { label: 'Length', low: 'Quick', high: 'Extended', color: 'from-cyan-400 to-teal-500' },
   surprise: { label: 'Novelty', low: 'Familiar', high: 'Adventurous', color: 'from-rose-400 to-pink-500' },
   romance_intensity: { label: 'Romance', low: 'Casual', high: 'Intense', color: 'from-pink-400 to-violet-500' },
-  conversation_depth: { label: 'Convo', low: 'Activity-based', high: 'Deep talks', color: 'from-indigo-400 to-violet-500' },
+  conversation_depth: { label: 'Conversation', low: 'Activity-based', high: 'Deep talks', color: 'from-indigo-400 to-violet-500' },
 }
 
 function StatCard({ value, label, icon: Icon, color, delay = 0 }) {
