@@ -170,6 +170,26 @@ body {
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
+/* Warmer glass for plum sections */
+.glass-plum {
+  background: rgba(30, 22, 50, 0.55);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(139, 92, 246, 0.18);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.glass-plum:hover {
+  border-color: rgba(139, 92, 246, 0.35);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    0 0 25px rgba(139, 92, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
 /* ============================================
    FOCUS
    ============================================ */
@@ -204,6 +224,72 @@ input:focus, textarea:focus {
 @media (max-width: 768px) {
   .snap-container { scroll-snap-type: y proximity; }
   .snap-section { min-height: auto; }
+}
+
+/* ============================================
+   SECTION BACKGROUNDS
+   ============================================ */
+/* Section 1: seeds the transition — fades toward deep plum at the bottom */
+.section-hero {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    transparent 55%,
+    rgba(22, 16, 38, 0.4) 78%,
+    rgba(22, 16, 38, 0.85) 100%
+  );
+}
+
+/* Section 2: deep plum — a distinct mid-tone between dark hero and light lavender */
+.section-plum {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    #140f24 0%,
+    #1a1432 10%,
+    #201a3e 30%,
+    #221c42 50%,
+    #201a3e 75%,
+    #1a1432 90%,
+    #15111f 100%
+  );
+}
+
+/* Section 3: deep lavender — darker variant, still distinct from plum */
+.section-lavender {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    #15111f 0%,
+    #1e1730 8%,
+    #2a1e48 20%,
+    #33265a 40%,
+    #382a60 55%,
+    #33265a 75%,
+    #2a1e48 90%,
+    #1e1730 100%
+  );
+}
+
+/* Glass card for lavender sections */
+.card-lavender {
+  background: rgba(35, 25, 60, 0.6);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.card-lavender:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    0 0 25px rgba(139, 92, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 /* ============================================

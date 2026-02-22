@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, HeartCrack, Loader2, Plus, Heart, X, ChevronDown, MapPin, Globe, RefreshCw } from 'lucide-react'
+import { Sparkles, HeartCrack, Loader2, Plus, Heart, X, ChevronDown, RefreshCw } from 'lucide-react'
 import { getRecommendations, getWorstRecommendations, addDate, getLocalTrends } from '../lib/api'
-import SimilarCouples from './SimilarCouples'
 
-export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate, onSearch, onExploreCities }) {
+export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate, onSearch, onLocalTrends }) {
   const [recs, setRecs] = useState(null)
   const [loading, setLoading] = useState(false)
   const [mode, setMode] = useState(null)
@@ -26,7 +25,7 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate,
     setShowPulse(true)
     const newMode = breakup ? 'breakup' : 'good'
 
-    // Collapse the hero layout before fetching
+    // Shrink the hero layout
     onSearch?.(true)
 
     // Hide existing recommendations immediately so the scroll hint disappears
@@ -47,6 +46,7 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate,
 
       if (trendsData) {
         setLocalTrends(trendsData)
+        onLocalTrends?.(trendsData)
         // Cache the user's city for ExploreCities default selection
         if (trendsData.city) {
           localStorage.setItem('userCity', trendsData.city)
@@ -299,85 +299,6 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate,
           )}
         </AnimatePresence>
 
-        {/* Popular in City */}
-        <AnimatePresence>
-          {localTrends && localTrends.city && localTrends.trends?.length > 0 && (
-            <motion.div
-              className="glass-card rounded-2xl p-6 mt-3"
-              style={{ backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ delay: 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <div className="flex items-center gap-2 mb-4">
-                <MapPin className="w-4 h-4" style={{ color: '#c084fc' }} />
-                <h3 className="label-editorial">
-                  Popular in {localTrends.city}
-                </h3>
-                <span className="text-xs" style={{ color: '#6b5f7e' }}>
-                  ({localTrends.total_users} {localTrends.total_users === 1 ? 'dater' : 'daters'})
-                </span>
-              </div>
-              <div className="space-y-3">
-                {localTrends.trends.map((trend, i) => (
-                  <motion.div
-                    key={trend.activity_name}
-                    className="flex items-center gap-3"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.5 + i * 0.1 }}
-                  >
-                    <div className="flex-1">
-                      <div className="flex justify-between items-center mb-1">
-                        <span className="text-sm font-serif font-medium" style={{ color: '#f0ecf9' }}>
-                          {trend.activity_name}
-                        </span>
-                        <span className="text-xs font-mono" style={{ color: '#c084fc' }}>
-                          {trend.percentage}%
-                        </span>
-                      </div>
-                      <div
-                        className="h-1.5 rounded-full overflow-hidden"
-                        style={{ background: 'rgba(10, 8, 18, 0.8)' }}
-                      >
-                        <motion.div
-                          className="h-full rounded-full"
-                          style={{ background: 'linear-gradient(90deg, #8b5cf6, #c084fc)' }}
-                          initial={{ width: 0 }}
-                          animate={{ width: `${trend.percentage}%` }}
-                          transition={{ delay: 0.6 + i * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                        />
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Explore Cities CTA */}
-              <motion.button
-                onClick={onExploreCities}
-                className="mt-5 flex items-center gap-2 text-sm font-medium px-4 py-2.5 rounded-xl w-full justify-center"
-                style={{
-                  background: 'rgba(139, 92, 246, 0.08)',
-                  border: '1px solid rgba(139, 92, 246, 0.2)',
-                  color: '#c084fc',
-                }}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9, duration: 0.4 }}
-                whileHover={{ scale: 1.02, background: 'rgba(139, 92, 246, 0.15)', boxShadow: '0 0 20px rgba(139, 92, 246, 0.15)' }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Globe className="w-4 h-4" />
-                Explore other cities →
-              </motion.button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Social discovery — only show after first recommend click */}
-        {localTrends && <SimilarCouples />}
       </div>
 
       {/* Scroll indicator: only show when not loading and there are no recommendations */}

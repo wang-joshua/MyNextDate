@@ -24,8 +24,12 @@ export default function SimilarCouples() {
 
   return (
     <motion.div
-      className="glass-card rounded-2xl p-6 mt-3"
-      style={{ backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+      className="rounded-2xl p-6 mt-3"
+      style={{
+        background: 'rgba(10, 8, 18, 0.4)',
+        border: '1px solid rgba(139, 92, 246, 0.1)',
+        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.15)',
+      }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
@@ -60,7 +64,7 @@ export default function SimilarCouples() {
                   <span className="text-sm font-serif font-medium" style={{ color: '#f0ecf9' }}>
                     {act.activity_name}
                   </span>
-                  <span className="text-xs font-mono" style={{ color: '#8b5cf6' }}>
+                  <span className="text-xs font-mono" style={{ color: '#c084fc' }}>
                     {act.percentage}%
                   </span>
                 </div>
@@ -70,7 +74,7 @@ export default function SimilarCouples() {
                 >
                   <motion.div
                     className="h-full rounded-full"
-                    style={{ background: 'linear-gradient(90deg, #6d2c8e, #8b5cf6)' }}
+                    style={{ background: 'linear-gradient(90deg, #8b5cf6, #c084fc)' }}
                     initial={{ width: 0 }}
                     animate={{ width: `${act.percentage}%` }}
                     transition={{ delay: 0.8 + i * 0.07, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -89,7 +93,7 @@ export default function SimilarCouples() {
             onClick={() => setShowCouples((b) => !b)}
             className="flex items-center gap-1.5 text-xs"
             style={{ color: '#4a3f5c' }}
-            whileHover={{ color: '#8b5cf6' }}
+            whileHover={{ color: '#c084fc' }}
           >
             {showCouples ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
             Based on {data.similar_couples.length} couples
