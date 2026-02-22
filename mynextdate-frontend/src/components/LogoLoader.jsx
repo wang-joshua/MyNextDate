@@ -15,8 +15,8 @@ const NODES = [
   { cx: 100, cy: 100, r: 9, sx: 0,   sy: -35 },
 ]
 
-// Keyframe times: [whole, shatter-out, scattered, reassembled, hold]
-const T = { duration: 2.6, repeat: Infinity, times: [0, 0.2, 0.38, 0.72, 1], ease: 'easeInOut' }
+// Keyframe times: [scattered, assembling, formed, shattering, scattered]
+const T = { duration: 2.6, repeat: Infinity, times: [0, 0.32, 0.65, 0.82, 1], ease: 'easeInOut' }
 
 export default function LogoLoader({ size = 96 }) {
   return (
@@ -29,7 +29,7 @@ export default function LogoLoader({ size = 96 }) {
           height: size * 1.7,
           background: 'radial-gradient(circle, rgba(139,92,246,0.2) 0%, rgba(109,44,142,0.08) 50%, transparent 70%)',
         }}
-        animate={{ scale: [1, 1.18, 1], opacity: [0.5, 1, 0.5] }}
+        animate={{ scale: [1, 1.18, 1.18, 1, 1], opacity: [0.5, 1, 1, 0.5, 0.5] }}
         transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
       />
 
@@ -42,7 +42,7 @@ export default function LogoLoader({ size = 96 }) {
           </linearGradient>
         </defs>
 
-        {/* Heart — collapses to a point during shatter, expands back on join */}
+        {/* Heart — invisible while scattered, expands as nodes converge, collapses on shatter */}
         <motion.polygon
           points="52,28 18,62 48,128 100,178 152,128 182,62 148,28 100,48"
           fill="url(#ll-grad)"
@@ -50,14 +50,14 @@ export default function LogoLoader({ size = 96 }) {
           strokeWidth="4"
           strokeLinejoin="round"
           style={{ transformOrigin: '100px 100px' }}
-          animate={{ scale: [1, 0.1, 0.1, 1, 1], opacity: [1, 0, 0, 1, 1] }}
+          animate={{ scale: [0.1, 1, 1, 0.1, 0.1], opacity: [0, 1, 1, 0, 0] }}
           transition={T}
         />
 
-        {/* Wires — fade out on shatter, fade back in on join */}
+        {/* Wires — hidden while scattered, fade in as nodes arrive, fade out on shatter */}
         <motion.g
           stroke="#9c8cd8" strokeWidth="3.5" strokeLinecap="round"
-          animate={{ opacity: [1, 0, 0, 1, 1] }}
+          animate={{ opacity: [0, 1, 1, 0, 0] }}
           transition={T}
         >
           <line x1="52"  y1="28"  x2="18"  y2="62"  />
@@ -85,15 +85,15 @@ export default function LogoLoader({ size = 96 }) {
           <line x1="130" y1="70"  x2="152" y2="128" />
         </motion.g>
 
-        {/* Nodes — fly outward then snap back */}
+        {/* Nodes — start scattered, fly inward to form logo, then fly back out */}
         {NODES.map((n, i) => (
           <motion.circle
             key={i}
             cx={n.cx} cy={n.cy} r={n.r}
             fill="#9c8cd8"
             animate={{
-              x: [0, n.sx, n.sx, 0, 0],
-              y: [0, n.sy, n.sy, 0, 0],
+              x: [n.sx, 0, 0, n.sx, n.sx],
+              y: [n.sy, 0, 0, n.sy, n.sy],
             }}
             transition={T}
           />
