@@ -14,6 +14,9 @@ _client: CortexClient | None = None
 _vector_cache: dict[int, list[float]] = {}
 _payload_cache: dict[int, dict] = {}
 
+# Custom date vectors: date_history record UUID -> vector (user-specific, not in global pool)
+_custom_date_vectors: dict[str, list[float]] = {}
+
 
 def get_client() -> CortexClient:
     """Get or create a persistent Actian connection. Reconnects if dead."""
@@ -86,8 +89,22 @@ def seed_activities(client: CortexClient, activities_path: str):
     print(f"Seeded {len(activities)} activities into Actian.")
 
 
-def search_similar(query_vector: list[float], top_k: int = 2, exclude_ids: list[int] | None = None) -> list[dict]:
-    """Search using in-memory cache with cosine similarity. Instant, no duplicates, all 200 activities."""
+def _keyword_boost(text_query: str, name: str, description: str) -> float:
+    """Compute a keyword overlap boost between user query and activity name/description."""
+    if not text_query:
+        return 0.0
+    # Extract meaningful words (3+ chars) from query
+    query_words = {w.lower() for w in text_query.split() if len(w) >= 3}
+    if not query_words:
+        return 0.0
+    target = (name + " " + description).lower()
+    hits = sum(1 for w in query_words if w in target)
+    # Boost: 0.05 per keyword match, max 0.15
+    return min(hits * 0.05, 0.15)
+
+
+def search_similar(query_vector: list[float], top_k: int = 2, exclude_ids: list[int] | None = None, text_query: str | None = None) -> list[dict]:
+    """Search using in-memory cache with cosine similarity + optional keyword boost."""
     _warm_cache()
     exclude_set = set(exclude_ids) if exclude_ids else set()
     query = np.array(query_vector)
@@ -104,6 +121,11 @@ def search_similar(query_vector: list[float], top_k: int = 2, exclude_ids: list[
         if v_norm == 0:
             continue
         similarity = float(np.dot(query, v) / (query_norm * v_norm))
+        # Boost score if user's text has keyword overlap with activity name/description
+        if text_query:
+            payload = _payload_cache.get(aid, {})
+            boost = _keyword_boost(text_query, payload.get("name", ""), payload.get("description", ""))
+            similarity += boost
         scored.append((aid, similarity))
 
     scored.sort(key=lambda x: x[1], reverse=True)
@@ -115,7 +137,7 @@ def search_similar(query_vector: list[float], top_k: int = 2, exclude_ids: list[
             "id": aid,
             "name": payload.get("name", ""),
             "description": payload.get("description", ""),
-            "score": round(score, 4),
+            "score": round(min(score, 1.0), 4),
         })
     return output
 
@@ -139,3 +161,13 @@ def get_all_activities() -> list[dict]:
         {"id": rid, "name": _payload_cache[rid].get("name", ""), "description": _payload_cache[rid].get("description", "")}
         for rid in _payload_cache
     ]
+
+
+def store_custom_date_vector(date_record_id: str, vector: list[float]):
+    """Store a Groq-generated vector for a custom date (activity_id=0)."""
+    _custom_date_vectors[date_record_id] = vector
+
+
+def get_custom_date_vectors(date_record_ids: list[str]) -> dict[str, list[float]]:
+    """Get stored vectors for custom dates by their Supabase record IDs."""
+    return {rid: _custom_date_vectors[rid] for rid in date_record_ids if rid in _custom_date_vectors}

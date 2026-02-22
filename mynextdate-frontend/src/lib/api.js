@@ -37,6 +37,26 @@ export async function addDate(activityId, rating = null) {
   return res.json()
 }
 
+export async function previewDateMatches(description) {
+  const res = await fetch('/api/dates/preview', {
+    method: 'POST',
+    headers: await authHeaders(),
+    body: JSON.stringify({ description }),
+  })
+  if (!res.ok) throw new Error('Failed to preview matches')
+  return res.json()
+}
+
+export async function addCustomDate(name) {
+  const res = await fetch('/api/dates/custom', {
+    method: 'POST',
+    headers: await authHeaders(),
+    body: JSON.stringify({ name }),
+  })
+  if (!res.ok) throw new Error('Failed to add custom date')
+  return res.json()
+}
+
 export async function addDateByDescription(description, rating = null) {
   const res = await fetch('/api/dates/describe', {
     method: 'POST',
@@ -79,6 +99,22 @@ export async function searchActivities(query) {
     body: JSON.stringify({ query }),
   })
   if (!res.ok) throw new Error('Failed to search activities')
+  return res.json()
+}
+
+export async function saveLocation(lat, lng) {
+  const res = await fetch('/api/location', {
+    method: 'POST',
+    headers: await authHeaders(),
+    body: JSON.stringify({ lat, lng }),
+  })
+  if (!res.ok) throw new Error('Failed to save location')
+  return res.json()
+}
+
+export async function getLocalTrends() {
+  const res = await fetch('/api/recommend/local', { headers: await authHeaders() })
+  if (!res.ok) throw new Error('Failed to get local trends')
   return res.json()
 }
 

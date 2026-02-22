@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from middleware.auth import get_current_user
-from services.actian_service import get_activity_vectors
+from services.actian_service import get_activity_vectors, get_custom_date_vectors
 from services.analytics_service import compute_analytics
 from supabase import create_client
 from config import SUPABASE_URL, SUPABASE_SERVICE_KEY
@@ -30,15 +30,23 @@ async def get_analytics(user: dict = Depends(get_current_user)):
     activity_ids = list(set(d["activity_id"] for d in dates))
     activity_vectors = get_activity_vectors(activity_ids)
 
-    dates_with_names = [
-        {
+    # Include custom date vectors (activity_id=0) in analytics
+    custom_date_ids = [d["id"] for d in dates if d["activity_id"] == 0]
+    custom_vectors = get_custom_date_vectors(custom_date_ids)
+
+    dates_with_names = []
+    for d in dates:
+        entry = {
             "activity_id": d["activity_id"],
             "rating": d["rating"],
             "created_at": d.get("created_at", ""),
             "activity_name": d.get("activity_name", ""),
         }
-        for d in dates
-    ]
+        # For custom dates, swap in the date record ID so analytics can find the vector
+        if d["activity_id"] == 0 and d["id"] in custom_vectors:
+            activity_vectors[d["id"]] = custom_vectors[d["id"]]
+            entry["activity_id"] = d["id"]
+        dates_with_names.append(entry)
 
     analytics = compute_analytics(dates_with_names, activity_vectors)
     return analytics

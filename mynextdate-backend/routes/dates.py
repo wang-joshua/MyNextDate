@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from middleware.auth import get_current_user
-from services.actian_service import get_client, search_similar, ensure_cache
+from services.actian_service import get_client, search_similar, ensure_cache, store_custom_date_vector
 from services.text_to_vector import text_to_vector
 from supabase import create_client
 from config import SUPABASE_URL, SUPABASE_SERVICE_KEY, COLLECTION_NAME
@@ -20,6 +20,11 @@ def get_supabase():
 
 class AddDateByTextRequest(BaseModel):
     description: str
+    rating: float | None = None
+
+
+class AddCustomDateRequest(BaseModel):
+    name: str
     rating: float | None = None
 
 
@@ -43,6 +48,59 @@ async def get_date_history(user: dict = Depends(get_current_user)):
     return {"dates": result.data or []}
 
 
+@router.post("/dates/preview")
+async def preview_date_matches(body: AddDateByTextRequest, user: dict = Depends(get_current_user)):
+    """Convert description to vector and return top 3 matches WITHOUT saving. User picks one, then calls POST /dates."""
+    if not body.description.strip():
+        raise HTTPException(status_code=400, detail="Description cannot be empty")
+
+    try:
+        query_vector = await text_to_vector(body.description)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to analyze description: {str(e)}")
+
+    results = search_similar(query_vector, top_k=3, text_query=body.description)
+
+    if not results:
+        raise HTTPException(status_code=500, detail="No matching activity found")
+
+    return {
+        "top_matches": results,
+        "extracted_vector": query_vector,
+    }
+
+
+@router.post("/dates/custom")
+async def add_custom_date(body: AddCustomDateRequest, user: dict = Depends(get_current_user)):
+    """Add a custom date. Groq generates a vector that influences future recommendations."""
+    if not body.name.strip():
+        raise HTTPException(status_code=400, detail="Activity name cannot be empty")
+
+    try:
+        query_vector = await text_to_vector(body.name.strip())
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to analyze activity: {str(e)}")
+
+    sb = get_supabase()
+    data = {
+        "user_id": user["id"],
+        "activity_id": 0,
+        "activity_name": body.name.strip(),
+        "rating": body.rating,
+    }
+    result = sb.table("date_history").insert(data).execute()
+    record = result.data[0] if result.data else data
+
+    # Store vector in memory so recommendations/analytics can use it
+    if record.get("id"):
+        store_custom_date_vector(record["id"], query_vector)
+
+    return {
+        "date": record,
+        "matched_activity": body.name.strip(),
+    }
+
+
 @router.post("/dates/describe")
 async def add_date_by_description(body: AddDateByTextRequest, user: dict = Depends(get_current_user)):
     """Add a date by describing it in text. Uses Groq to extract a 9D vector, then matches to closest activity in Actian."""
@@ -54,8 +112,8 @@ async def add_date_by_description(body: AddDateByTextRequest, user: dict = Depen
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to analyze description: {str(e)}")
 
-    # Search Actian for closest matching activity
-    results = search_similar(query_vector, top_k=3)
+    # Search with vector similarity + keyword boost
+    results = search_similar(query_vector, top_k=3, text_query=body.description)
 
     if not results:
         raise HTTPException(status_code=500, detail="No matching activity found")

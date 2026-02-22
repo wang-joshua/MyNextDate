@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, HeartCrack, Loader2, Plus, Heart, X, ChevronDown } from 'lucide-react'
-import { getRecommendations, getWorstRecommendations, addDate } from '../lib/api'
+import { Sparkles, HeartCrack, Loader2, Plus, Heart, X, ChevronDown, MapPin } from 'lucide-react'
+import { getRecommendations, getWorstRecommendations, addDate, getLocalTrends } from '../lib/api'
 
 export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate }) {
   const [recs, setRecs] = useState(null)
@@ -11,6 +11,7 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
   const [showPulse, setShowPulse] = useState(false)
   const [skippedIds, setSkippedIds] = useState([])
   const [needsHistory, setNeedsHistory] = useState(false)
+  const [localTrends, setLocalTrends] = useState(null)
   const SCROLL_EXIT_MS = 850
 
   const handleRecommend = async (breakup = false) => {
@@ -34,9 +35,12 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
     setMode(newMode)
     try {
       const currentSkipped = [...skippedIds]
-      const data = breakup
-        ? await getWorstRecommendations()
-        : await getRecommendations(currentSkipped)
+      const [data, trendsData] = await Promise.all([
+        breakup ? getWorstRecommendations() : getRecommendations(currentSkipped),
+        getLocalTrends().catch(() => null),
+      ])
+
+      if (trendsData) setLocalTrends(trendsData)
 
       // Wait for the scroll indicator to fully fade out before showing recs
       setTimeout(() => {
@@ -255,6 +259,64 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
                     ))}
                   </AnimatePresence>
                 </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Popular in City */}
+        <AnimatePresence>
+          {localTrends && localTrends.city && localTrends.trends?.length > 0 && (
+            <motion.div
+              className="glass-card rounded-2xl p-6 mt-3"
+              style={{ backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ delay: 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <MapPin className="w-4 h-4" style={{ color: '#c084fc' }} />
+                <h3 className="label-editorial">
+                  Popular in {localTrends.city}
+                </h3>
+                <span className="text-xs" style={{ color: '#6b5f7e' }}>
+                  ({localTrends.total_users} {localTrends.total_users === 1 ? 'dater' : 'daters'})
+                </span>
+              </div>
+              <div className="space-y-3">
+                {localTrends.trends.map((trend, i) => (
+                  <motion.div
+                    key={trend.activity_name}
+                    className="flex items-center gap-3"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5 + i * 0.1 }}
+                  >
+                    <div className="flex-1">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-sm font-serif font-medium" style={{ color: '#f0ecf9' }}>
+                          {trend.activity_name}
+                        </span>
+                        <span className="text-xs font-mono" style={{ color: '#c084fc' }}>
+                          {trend.percentage}%
+                        </span>
+                      </div>
+                      <div
+                        className="h-1.5 rounded-full overflow-hidden"
+                        style={{ background: 'rgba(10, 8, 18, 0.8)' }}
+                      >
+                        <motion.div
+                          className="h-full rounded-full"
+                          style={{ background: 'linear-gradient(90deg, #8b5cf6, #c084fc)' }}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${trend.percentage}%` }}
+                          transition={{ delay: 0.6 + i * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             </motion.div>
           )}

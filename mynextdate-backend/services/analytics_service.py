@@ -69,12 +69,12 @@ def compute_analytics(
     # Generate insight summary
     summary = _generate_summary(dim_averages, success_rate, avg_last_five)
 
-    # Trend: compare last 3 dates vs previous 3 dates (rated only)
+    # Trend: compare last 2 dates vs previous 2 dates (rated only)
     trend = "neutral"
-    if len(ratings) >= 6:
-        recent_3_avg = sum(ratings[:3]) / 3
-        previous_3_avg = sum(ratings[3:6]) / 3
-        diff = recent_3_avg - previous_3_avg
+    if len(ratings) >= 4:
+        recent_2_avg = sum(ratings[:2]) / 2
+        previous_2_avg = sum(ratings[2:4]) / 2
+        diff = recent_2_avg - previous_2_avg
         if diff >= 0.5:
             trend = "improving"
         elif diff <= -0.5:

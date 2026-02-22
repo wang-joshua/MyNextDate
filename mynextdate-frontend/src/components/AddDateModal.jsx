@@ -1,17 +1,28 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Loader2, Send, Sparkles, Check } from 'lucide-react'
-import { addDateByDescription } from '../lib/api'
+import { X, Loader2, Send, Sparkles, Check, Heart, PenLine } from 'lucide-react'
+import { previewDateMatches, addDate, addCustomDate } from '../lib/api'
 
 export default function AddDateModal({ isOpen, onClose, onDateAdded }) {
   const [description, setDescription] = useState('')
   const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState(null)
+  const [matches, setMatches] = useState(null)    // preview results (top 3)
+  const [selected, setSelected] = useState(null)   // user-chosen match id
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [savedName, setSavedName] = useState('')
+  const [customMode, setCustomMode] = useState(false)
+  const [customName, setCustomName] = useState('')
   const [error, setError] = useState('')
 
   const handleClose = () => {
     setDescription('')
-    setResult(null)
+    setMatches(null)
+    setSelected(null)
+    setSaved(false)
+    setSavedName('')
+    setCustomMode(false)
+    setCustomName('')
     setError('')
     onClose()
   }
@@ -20,11 +31,12 @@ export default function AddDateModal({ isOpen, onClose, onDateAdded }) {
     if (!description.trim()) return
     setLoading(true)
     setError('')
-    setResult(null)
+    setMatches(null)
+    setSelected(null)
+    setSaved(false)
     try {
-      const data = await addDateByDescription(description.trim())
-      setResult(data)
-      onDateAdded?.()
+      const data = await previewDateMatches(description.trim())
+      setMatches(data.top_matches)
     } catch (err) {
       setError('Failed to match your date. Please try again.')
       console.error(err)
@@ -33,8 +45,52 @@ export default function AddDateModal({ isOpen, onClose, onDateAdded }) {
     }
   }
 
+  const handleSelectMatch = async (match) => {
+    setSelected(match.id)
+    setSaving(true)
+    try {
+      await addDate(match.id)
+      setSavedName(match.name)
+      setSaved(true)
+      onDateAdded?.()
+    } catch (err) {
+      setError('Failed to save date. Please try again.')
+      console.error(err)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleSaveCustom = async () => {
+    if (!customName.trim()) return
+    setSaving(true)
+    setError('')
+    try {
+      const data = await addCustomDate(customName.trim())
+      setSavedName(data.matched_activity || customName.trim())
+      setSaved(true)
+      onDateAdded?.()
+    } catch (err) {
+      setError('Failed to save date. Please try again.')
+      console.error(err)
+    } finally {
+      setSaving(false)
+    }
+  }
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && e.metaKey) handleSubmit()
+  }
+
+  const handleStartOver = () => {
+    setDescription('')
+    setMatches(null)
+    setSelected(null)
+    setSaved(false)
+    setSavedName('')
+    setCustomMode(false)
+    setCustomName('')
+    setError('')
   }
 
   return (
@@ -81,10 +137,11 @@ export default function AddDateModal({ isOpen, onClose, onDateAdded }) {
 
             {/* Content */}
             <div className="p-6 space-y-4">
-              {!result ? (
+              {/* Step 1: Describe your date */}
+              {!matches && !saved && (
                 <>
                   <p className="text-sm font-serif italic" style={{ color: '#9a8fad' }}>
-                    Describe your date experience or your ideal date in a few lines. We'll match it to the perfect activity.
+                    Describe your date experience or your ideal date in a few lines. We'll find the best matches for you to pick from.
                   </p>
 
                   <textarea
@@ -127,12 +184,141 @@ export default function AddDateModal({ isOpen, onClose, onDateAdded }) {
                       {loading ? (
                         <><Loader2 className="w-4 h-4 animate-spin" /> Matching...</>
                       ) : (
-                        <><Send className="w-4 h-4" /> Find Match</>
+                        <><Send className="w-4 h-4" /> Find Matches</>
                       )}
                     </motion.button>
                   </div>
                 </>
-              ) : (
+              )}
+
+              {/* Step 2: Pick from matches */}
+              {matches && !saved && (
+                <motion.div className="space-y-4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+                  <p className="text-sm font-serif italic" style={{ color: '#9a8fad' }}>
+                    We found these matches. Tap the one that fits best:
+                  </p>
+
+                  <div className="space-y-2">
+                    {matches.map((match, i) => (
+                      <motion.button
+                        key={match.id}
+                        onClick={() => !saving && handleSelectMatch(match)}
+                        disabled={saving}
+                        className="w-full text-left p-4 rounded-xl transition-all"
+                        style={{
+                          background: selected === match.id
+                            ? 'rgba(139, 92, 246, 0.15)'
+                            : 'rgba(10, 8, 18, 0.6)',
+                          border: selected === match.id
+                            ? '1px solid rgba(139, 92, 246, 0.4)'
+                            : '1px solid rgba(109, 44, 142, 0.15)',
+                        }}
+                        initial={{ opacity: 0, x: -15 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.1 }}
+                        whileHover={!saving ? { scale: 1.01, borderColor: 'rgba(139, 92, 246, 0.3)' } : {}}
+                        whileTap={!saving ? { scale: 0.98 } : {}}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <div
+                              className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                              style={{ background: 'rgba(139, 92, 246, 0.1)' }}
+                            >
+                              {saving && selected === match.id ? (
+                                <Loader2 className="w-4 h-4 animate-spin" style={{ color: '#c084fc' }} />
+                              ) : (
+                                <Heart className="w-4 h-4" style={{ color: '#c084fc' }} />
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-serif font-medium truncate" style={{ color: '#f0ecf9' }}>
+                                {match.name}
+                              </p>
+                              {match.description && (
+                                <p className="text-xs mt-0.5 truncate" style={{ color: '#6b5f7e' }}>
+                                  {match.description}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <span
+                            className="text-xs px-2.5 py-1 rounded-full font-medium shrink-0 ml-3"
+                            style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#c084fc' }}
+                          >
+                            {Math.round(match.score * 100)}%
+                          </span>
+                        </div>
+                      </motion.button>
+                    ))}
+                  </div>
+
+                  {error && (
+                    <motion.p
+                      className="text-sm" style={{ color: '#f87171' }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
+                      {error}
+                    </motion.p>
+                  )}
+
+                  {!customMode ? (
+                    <motion.button
+                      onClick={() => setCustomMode(true)}
+                      disabled={saving}
+                      className="w-full py-2.5 flex items-center justify-center gap-2 text-xs font-medium rounded-xl transition-all"
+                      style={{ color: '#9a8fad', background: 'rgba(109, 44, 142, 0.08)', border: '1px solid rgba(109, 44, 142, 0.1)' }}
+                      whileHover={{ background: 'rgba(109, 44, 142, 0.15)', color: '#c084fc' }}
+                    >
+                      <PenLine className="w-3.5 h-3.5" />
+                      None of these? Enter your own activity
+                    </motion.button>
+                  ) : (
+                    <motion.div
+                      className="space-y-3 pt-1"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                    >
+                      <div
+                        className="h-px w-full"
+                        style={{ background: 'linear-gradient(90deg, transparent, rgba(109, 44, 142, 0.2), transparent)' }}
+                      />
+                      <p className="text-xs font-serif italic" style={{ color: '#9a8fad' }}>
+                        Type your own activity name:
+                      </p>
+                      <input
+                        type="text"
+                        value={customName}
+                        onChange={(e) => setCustomName(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSaveCustom()}
+                        placeholder="e.g. Sushi dinner at Nobu"
+                        className="w-full px-4 py-3 rounded-xl text-white text-sm placeholder-[#6b5f7e]"
+                        style={{ background: 'rgba(10, 8, 18, 0.8)', border: '1px solid rgba(109, 44, 142, 0.15)' }}
+                        autoFocus
+                        disabled={saving}
+                      />
+                      <motion.button
+                        onClick={handleSaveCustom}
+                        disabled={!customName.trim() || saving}
+                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium disabled:opacity-40 transition-all"
+                        style={{
+                          background: 'linear-gradient(135deg, #8b5cf6, #6d2c8e)',
+                          boxShadow: '0 4px 20px rgba(139, 92, 246, 0.2)',
+                        }}
+                        whileHover={customName.trim() && !saving ? { scale: 1.02 } : {}}
+                        whileTap={customName.trim() && !saving ? { scale: 0.98 } : {}}
+                      >
+                        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                        {saving ? 'Saving...' : 'Save Custom Date'}
+                      </motion.button>
+                    </motion.div>
+                  )}
+                </motion.div>
+              )}
+
+              {/* Step 3: Confirmation */}
+              {saved && (
                 <motion.div className="space-y-4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                   <div className="flex items-center gap-2" style={{ color: '#c084fc' }}>
                     <Check className="w-5 h-5" />
@@ -140,37 +326,14 @@ export default function AddDateModal({ isOpen, onClose, onDateAdded }) {
                   </div>
 
                   <div className="p-4 rounded-xl glass-card" style={{ border: '1px solid rgba(139, 92, 246, 0.2)' }}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="label-editorial" style={{ color: '#c084fc' }}>Best Match</span>
-                      <span className="label-editorial">{Math.round(result.match_score * 100)}% match</span>
-                    </div>
-                    <p className="font-serif font-semibold text-white">{result.matched_activity}</p>
+                    <p className="font-serif font-semibold text-white">
+                      {savedName}
+                    </p>
                   </div>
-
-                  {result.top_matches && result.top_matches.length > 1 && (
-                    <div className="space-y-2">
-                      <span className="label-editorial">Other close matches</span>
-                      {result.top_matches.slice(1).map((match, i) => (
-                        <motion.div
-                          key={match.id}
-                          className="p-3 rounded-lg"
-                          style={{ background: 'rgba(10, 8, 18, 0.6)', border: '1px solid rgba(109, 44, 142, 0.1)' }}
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.1 * (i + 1) }}
-                        >
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm font-serif" style={{ color: '#9a8fad' }}>{match.name}</p>
-                            <span className="label-editorial">{Math.round(match.score * 100)}%</span>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  )}
 
                   <div className="flex gap-3 pt-2">
                     <motion.button
-                      onClick={() => { setDescription(''); setResult(null) }}
+                      onClick={handleStartOver}
                       className="flex-1 py-2.5 rounded-xl text-sm font-medium transition-colors"
                       style={{ background: 'rgba(109, 44, 142, 0.15)', border: '1px solid rgba(109, 44, 142, 0.2)' }}
                       whileHover={{ scale: 1.02 }}

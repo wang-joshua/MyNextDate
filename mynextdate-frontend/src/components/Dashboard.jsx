@@ -8,7 +8,7 @@ import RecommendButton from './RecommendButton'
 import DateHistory from './DateHistory'
 import AddDateModal from './AddDateModal'
 import Analytics from './Analytics'
-import { getDateHistory } from '../lib/api'
+import { getDateHistory, saveLocation } from '../lib/api'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30, scale: 0.97 },
@@ -38,6 +38,18 @@ export default function Dashboard() {
       .then((data) => setDates(data.dates))
       .catch(console.error)
   }, [refreshKey])
+
+  // Request browser geolocation on mount and save to backend
+  useEffect(() => {
+    if (!navigator.geolocation) return
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        saveLocation(pos.coords.latitude, pos.coords.longitude).catch(() => {})
+      },
+      () => {},
+      { enableHighAccuracy: false, timeout: 10000 }
+    )
+  }, [])
 
   return (
     <div className="snap-container">

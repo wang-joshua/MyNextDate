@@ -21,7 +21,7 @@ app.include_router(analytics_router)
 
 @app.on_event("startup")
 async def startup():
-    """Seed the Actian DB (if needed) and warm the vector cache on boot."""
+    """Seed the Actian DB (if needed), warm vector cache, and ensure location table exists."""
     import os
     from services.actian_service import get_client, init_collection, seed_activities, ensure_cache
 
@@ -37,6 +37,61 @@ async def startup():
         ensure_cache()
     except Exception as e:
         print(f"Warning: Startup init failed: {e}")
+
+    # Ensure user_locations table exists in Supabase
+    await _ensure_location_table()
+
+
+async def _ensure_location_table():
+    """Create user_locations table if it doesn't exist."""
+    import httpx
+    from config import SUPABASE_URL, SUPABASE_SERVICE_KEY
+
+    # Extract project ref from URL (https://xxx.supabase.co -> xxx)
+    project_ref = SUPABASE_URL.replace("https://", "").split(".")[0]
+
+    sql = """
+    CREATE TABLE IF NOT EXISTS user_locations (
+        id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+        user_id UUID NOT NULL UNIQUE,
+        city TEXT NOT NULL,
+        region TEXT,
+        country TEXT,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+    );
+    CREATE INDEX IF NOT EXISTS idx_user_locations_city ON user_locations(city);
+    """
+
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.post(
+                f"https://{project_ref}.supabase.co/rest/v1/rpc/",
+                headers={
+                    "apikey": SUPABASE_SERVICE_KEY,
+                    "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}",
+                },
+                json={"query": sql},
+            )
+            if resp.status_code < 300:
+                print("user_locations table ready.")
+            else:
+                # Table might already exist or RPC not available — try a test query
+                from supabase import create_client
+                sb = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+                sb.table("user_locations").select("id").limit(1).execute()
+                print("user_locations table already exists.")
+    except Exception as e:
+        print(f"Note: Could not auto-create user_locations table: {e}")
+        print("Please create it manually in Supabase SQL Editor:")
+        print("  CREATE TABLE IF NOT EXISTS user_locations (")
+        print("    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,")
+        print("    user_id UUID NOT NULL UNIQUE,")
+        print("    city TEXT NOT NULL,")
+        print("    region TEXT,")
+        print("    country TEXT,")
+        print("    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()")
+        print("  );")
+        print("  CREATE INDEX IF NOT EXISTS idx_user_locations_city ON user_locations(city);")
 
 
 @app.get("/api/health")
