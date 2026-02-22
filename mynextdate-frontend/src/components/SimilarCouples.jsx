@@ -24,7 +24,7 @@ export default function SimilarCouples() {
 
   return (
     <motion.div
-      className="glass-card rounded-2xl p-6 mt-3"
+      className="glass-card rounded-3xl p-6"
       style={{ backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}

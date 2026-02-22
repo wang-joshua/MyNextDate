@@ -44,6 +44,15 @@ html { scroll-behavior: smooth; }
 body {
   margin: 0;
   background: var(--bg-deep);
+  background-image: linear-gradient(
+    180deg,
+    #0a0812 0%,        /* hero — deep cinematic black */
+    #0a0812 30%,        /* hold dark through hero section */
+    #0f0b1a 50%,        /* subtle lift for history / analytics */
+    #140f24 70%,        /* warmer purple-tinted dark for data cards */
+    #16112a 100%        /* deepest content — gentle violet warmth */
+  );
+  background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font-sans);
   min-height: 100vh;
@@ -171,6 +180,24 @@ body {
 }
 
 /* ============================================
+   HERO GRID — animate video left when recs show
+   ============================================ */
+@media (min-width: 1024px) {
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 0.75fr 1fr;
+    transition: grid-template-columns 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hero-grid.recs-active {
+    grid-template-columns: 0.4fr 1fr;
+  }
+}
+
+.hero-video {
+  transition: height 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================
    FOCUS
    ============================================ */
 input:focus, textarea:focus {
@@ -179,32 +206,6 @@ input:focus, textarea:focus {
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15), 0 0 20px rgba(139, 92, 246, 0.1);
 }
 
-/* ============================================
-   SCROLL SNAP
-   ============================================ */
-.snap-container {
-  scroll-snap-type: y proximity;
-  overflow-y: auto;
-  height: 100vh;
-}
-
-.snap-section {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  min-height: 200vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.snap-section:nth-child(n+2) {
-  min-height: 100vh;
-}
-
-@media (max-width: 768px) {
-  .snap-container { scroll-snap-type: y proximity; }
-  .snap-section { min-height: auto; }
-}
 
 /* ============================================
    AMBIENT BACKGROUND

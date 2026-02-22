@@ -136,6 +136,12 @@ export async function getSimilarCouples() {
   return res.json()
 }
 
+export async function getCityDimensions() {
+  const res = await fetch('/api/explore/city-dimensions')
+  if (!res.ok) throw new Error('Failed to get city dimensions')
+  return res.json()
+}
+
 export async function searchCity(body) {
   const res = await fetch('/api/explore/search', {
     method: 'POST',

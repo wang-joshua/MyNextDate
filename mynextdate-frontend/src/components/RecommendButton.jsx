@@ -1,10 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, HeartCrack, Loader2, Plus, Heart, X, ChevronDown, MapPin, Globe, RefreshCw } from 'lucide-react'
+import { Sparkles, HeartCrack, Loader2, Plus, Heart, X, RefreshCw } from 'lucide-react'
 import { getRecommendations, getWorstRecommendations, addDate, getLocalTrends } from '../lib/api'
-import SimilarCouples from './SimilarCouples'
 
-export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate, onSearch, onExploreCities }) {
+export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate, onLocalTrends, onRecsChange }) {
   const [recs, setRecs] = useState(null)
   const [loading, setLoading] = useState(false)
   const [mode, setMode] = useState(null)
@@ -13,8 +12,10 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate,
   const [showPulse, setShowPulse] = useState(false)
   const [skippedIds, setSkippedIds] = useState([])
   const [needsHistory, setNeedsHistory] = useState(false)
-  const [localTrends, setLocalTrends] = useState(null)
-  const SCROLL_EXIT_MS = 850
+
+  useEffect(() => {
+    onRecsChange?.(recs && recs.length > 0)
+  }, [recs, onRecsChange])
 
   const handleRecommend = async (breakup = false, extraSkips = []) => {
     if (dateCount === 0) {
@@ -26,10 +27,7 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate,
     setShowPulse(true)
     const newMode = breakup ? 'breakup' : 'good'
 
-    // Collapse the hero layout before fetching
-    onSearch?.(true)
-
-    // Hide existing recommendations immediately so the scroll hint disappears
+    // Hide existing recommendations immediately
     setRecs(null)
     // If switching recommendation type, wait briefly to let exit animations finish
     const isSwitchingTypes = mode && mode !== newMode && recs && recs.length > 0
@@ -46,24 +44,18 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate,
       ])
 
       if (trendsData) {
-        setLocalTrends(trendsData)
-        // Cache the user's city for ExploreCities default selection
+        onLocalTrends?.(trendsData)
         if (trendsData.city) {
           localStorage.setItem('userCity', trendsData.city)
         }
       }
 
-      // Wait for the scroll indicator to fully fade out before showing recs
-      setTimeout(() => {
-        setRecs(data.recommendations)
-        // Reset skipped IDs after successful fetch — fresh batch, fresh skips
-        setSkippedIds([])
-        setLoading(false)
-        setTimeout(() => setShowPulse(false), 600)
-      }, SCROLL_EXIT_MS)
+      setRecs(data.recommendations)
+      setSkippedIds([])
+      setLoading(false)
+      setTimeout(() => setShowPulse(false), 600)
     } catch (err) {
       console.error(err)
-      // On error, clear loading so UI can recover (scroll may reappear)
       setRecs(null)
       setLoading(false)
       setTimeout(() => setShowPulse(false), 600)
@@ -75,12 +67,9 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate,
     setAdding(activityId)
     try {
       await addDate(activityId)
-      // Vanish all remaining cards — clean slate after a choice is made
       setRecs(null)
       setChosenId(null)
       onDateAdded?.()
-      // Wait for the exit animation to finish before scrolling to history
-      setTimeout(() => document.getElementById('section-history')?.scrollIntoView({ behavior: 'smooth' }), 500)
     } catch (err) {
       console.error(err)
       setChosenId(null)
@@ -138,9 +127,31 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate,
               <Sparkles className="w-6 h-6" />
             )}
             <span className="relative">What's My Next Date?</span>
+            {recs && recs.length > 0 && !loading && (
+              <motion.span
+                className="relative flex items-center gap-1 text-xs font-normal opacity-70"
+                initial={{ opacity: 0, x: -5 }}
+                animate={{ opacity: 0.7, x: 0 }}
+                whileHover={{ opacity: 1 }}
+                onClick={(e) => { e.stopPropagation(); handleRecommend(mode === 'breakup', recs.map((r) => r.id)) }}
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+              </motion.span>
+            )}
           </motion.button>
         </div>
       </div>
+
+      {/* Breakup link — always visible below button */}
+      <motion.button
+        onClick={() => handleRecommend(true)}
+        disabled={loading}
+        className="text-xs cursor-pointer mt-3 block mx-auto"
+        style={{ color: '#2a2435', letterSpacing: '0.05em' }}
+        whileHover={{ color: '#f87171' }}
+      >
+        {loading && mode === 'breakup' ? 'finding the worst...' : 'or plan a breakup?'}
+      </motion.button>
 
       {/* Results flow in-document below the button */}
       <div className="mt-4">
@@ -263,142 +274,10 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate,
                 </div>
               </div>
 
-              {/* Refresh — get a fresh batch skipping current suggestions */}
-              <motion.button
-                onClick={() => handleRecommend(mode === 'breakup', recs.map((r) => r.id))}
-                disabled={loading}
-                className="flex items-center gap-1.5 text-xs mt-3"
-                style={{ color: '#4a3f5c' }}
-                whileHover={{ color: '#c084fc' }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.7 }}
-              >
-                <RefreshCw className="w-3 h-3" />
-                Try different ideas
-              </motion.button>
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Popular in City */}
-        <AnimatePresence>
-          {localTrends && localTrends.city && localTrends.trends?.length > 0 && (
-            <motion.div
-              className="glass-card rounded-2xl p-6 mt-3"
-              style={{ backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ delay: 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <div className="flex items-center gap-2 mb-4">
-                <MapPin className="w-4 h-4" style={{ color: '#c084fc' }} />
-                <h3 className="label-editorial">
-                  Popular in {localTrends.city}
-                </h3>
-                <span className="text-xs" style={{ color: '#6b5f7e' }}>
-                  ({localTrends.total_users} {localTrends.total_users === 1 ? 'dater' : 'daters'})
-                </span>
-              </div>
-              <div className="space-y-3">
-                {localTrends.trends.map((trend, i) => (
-                  <motion.div
-                    key={trend.activity_name}
-                    className="flex items-center gap-3"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.5 + i * 0.1 }}
-                  >
-                    <div className="flex-1">
-                      <div className="flex justify-between items-center mb-1">
-                        <span className="text-sm font-serif font-medium" style={{ color: '#f0ecf9' }}>
-                          {trend.activity_name}
-                        </span>
-                        <span className="text-xs font-mono" style={{ color: '#c084fc' }}>
-                          {trend.percentage}%
-                        </span>
-                      </div>
-                      <div
-                        className="h-1.5 rounded-full overflow-hidden"
-                        style={{ background: 'rgba(10, 8, 18, 0.8)' }}
-                      >
-                        <motion.div
-                          className="h-full rounded-full"
-                          style={{ background: 'linear-gradient(90deg, #8b5cf6, #c084fc)' }}
-                          initial={{ width: 0 }}
-                          animate={{ width: `${trend.percentage}%` }}
-                          transition={{ delay: 0.6 + i * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                        />
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Explore Cities CTA */}
-              <motion.button
-                onClick={onExploreCities}
-                className="mt-5 flex items-center gap-2 text-sm font-medium px-4 py-2.5 rounded-xl w-full justify-center"
-                style={{
-                  background: 'rgba(139, 92, 246, 0.08)',
-                  border: '1px solid rgba(139, 92, 246, 0.2)',
-                  color: '#c084fc',
-                }}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9, duration: 0.4 }}
-                whileHover={{ scale: 1.02, background: 'rgba(139, 92, 246, 0.15)', boxShadow: '0 0 20px rgba(139, 92, 246, 0.15)' }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Globe className="w-4 h-4" />
-                Explore other cities →
-              </motion.button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Social discovery — only show after first recommend click */}
-        {localTrends && <SimilarCouples />}
       </div>
-
-      {/* Scroll indicator + hidden breakup link */}
-      <AnimatePresence>
-        {(!loading && (!recs || recs.length === 0)) && (
-          <motion.div
-            className="flex flex-col items-center gap-3 mt-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-          >
-            <div
-              className="flex items-center gap-2 cursor-pointer"
-              onClick={() => document.getElementById('section-history')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              <span className="label-editorial" style={{ fontSize: '0.6rem' }}>Scroll to explore</span>
-              <motion.div
-                animate={{ y: [0, 6, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <ChevronDown className="w-5 h-5" style={{ color: '#6b5f7e' }} />
-              </motion.div>
-            </div>
-            <motion.button
-              onClick={() => handleRecommend(true)}
-              disabled={loading}
-              className="text-xs cursor-pointer"
-              style={{ color: '#2a2435', letterSpacing: '0.05em' }}
-              whileHover={{ color: '#f87171' }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 2, duration: 1 }}
-            >
-              {loading && mode === 'breakup' ? 'finding the worst...' : 'or plan a breakup?'}
-            </motion.button>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { LogOut, Plus, History, BarChart3, ArrowLeft, Globe } from 'lucide-react'
+import { LogOut, Plus, History, BarChart3, Globe, MapPin, RefreshCw } from 'lucide-react'
 import Logo from './Logo'
 import VideoCards from './VideoCards'
 import { useAuth } from '../context/AuthContext'
@@ -9,7 +9,8 @@ import DateHistory from './DateHistory'
 import AddDateModal from './AddDateModal'
 import Analytics from './Analytics'
 import ExploreCities from './ExploreCities'
-import { getDateHistory, saveLocation } from '../lib/api'
+import SimilarCouples from './SimilarCouples'
+import { getDateHistory, saveLocation, getLocalTrends, getCityDimensions } from '../lib/api'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30, scale: 0.97 },
@@ -24,19 +25,28 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.08, delayChildren: 0.15 } }
 }
 
+const DIMENSION_DISPLAY = {
+  cost: { label: 'Budget', low: 'Affordable', high: 'Luxury', color: '#10b981' },
+  indoor_outdoor: { label: 'Setting', low: 'Indoor', high: 'Outdoor', color: '#38bdf8' },
+  energy: { label: 'Energy', low: 'Relaxed', high: 'Active', color: '#fb923c' },
+  social_density: { label: 'Social', low: 'Private', high: 'Social', color: '#a78bfa' },
+  time_of_day: { label: 'Time', low: 'Morning', high: 'Evening', color: '#e879f9' },
+  duration: { label: 'Length', low: 'Quick', high: 'Extended', color: '#2dd4bf' },
+  surprise: { label: 'Novelty', low: 'Familiar', high: 'Adventurous', color: '#fb7185' },
+  romance_intensity: { label: 'Romance', low: 'Casual', high: 'Intense', color: '#f472b6' },
+  conversation_depth: { label: 'Talk', low: 'Activity', high: 'Deep talks', color: '#818cf8' },
+}
+
 export default function Dashboard() {
   const { user, signOut } = useAuth()
   const [dates, setDates] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
-  const [heroShrunken, setHeroShrunken] = useState(false)
   const [showExploreCities, setShowExploreCities] = useState(false)
-  const [recommendKey, setRecommendKey] = useState(0)
-
-  const handleBack = useCallback(() => {
-    setHeroShrunken(false)
-    setRecommendKey((k) => k + 1) // remounts RecommendButton, clearing all recs/trends state
-  }, [])
+  const [localTrends, setLocalTrends] = useState(null)
+  const [hasRecs, setHasRecs] = useState(false)
+  const [cityFlipped, setCityFlipped] = useState(false)
+  const [cityDimensions, setCityDimensions] = useState(null)
 
   const refresh = useCallback(() => {
     setRefreshKey((k) => k + 1)
@@ -60,8 +70,36 @@ export default function Dashboard() {
     )
   }, [])
 
+  // Fetch local trends on mount
+  useEffect(() => {
+    getLocalTrends()
+      .then((data) => setLocalTrends(data))
+      .catch(() => {})
+  }, [])
+
+  // Fetch city dimension profile when we know the user's city
+  useEffect(() => {
+    if (!localTrends?.city) return
+    getCityDimensions()
+      .then((data) => {
+        const match = data.cities?.find(
+          (c) => c.city.toLowerCase() === localTrends.city.toLowerCase()
+        )
+        if (match) setCityDimensions(match)
+      })
+      .catch(() => {})
+  }, [localTrends?.city])
+
+  const handleLocalTrends = useCallback((trends) => {
+    setLocalTrends(trends)
+  }, [])
+
+  const handleRecsChange = useCallback((hasAny) => {
+    setHasRecs(!!hasAny)
+  }, [])
+
   return (
-    <div className="snap-container">
+    <div className="min-h-screen">
       {/* ============ FIXED HEADER ============ */}
       <motion.header
         className="fixed top-0 left-0 right-0 z-40"
@@ -124,82 +162,44 @@ export default function Dashboard() {
         </div>
       </motion.header>
 
-      {/* ============ SECTION 1: HERO / RECOMMEND ============ */}
-      <section className="snap-section px-4 sm:px-6 pt-20">
-        <div className={`${heroShrunken ? 'max-w-5xl mx-auto w-full' : 'max-w-6xl mr-auto ml-8 sm:ml-12'} h-full flex items-${heroShrunken ? 'start pt-6' : 'center'}`}>
-          <motion.div
-            layout
-            className={`grid gap-8 lg:gap-12 w-full items-start ${heroShrunken ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-[1.3fr_1fr]'}`}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      {/* ============ SECTION 1: HERO + RECOMMENDATIONS ============ */}
+      <section className="px-4 sm:px-6 pt-24 pb-12">
+        <div className="max-w-6xl mx-auto">
+          <div
+            className={`hero-grid gap-8 lg:gap-12 w-full items-start grid grid-cols-1${hasRecs ? ' recs-active' : ''}`}
           >
-            {/* Left: Camera roll scrolling media — exits when hero shrinks */}
-            <AnimatePresence>
-              {!heroShrunken && (
-                <motion.div
-                  key="video-col"
-                  className="overflow-hidden rounded-3xl"
-                  style={{
-                    height: '88vh',
-                    border: '1px solid rgba(139, 92, 246, 0.15)',
-                    boxShadow: '0 8px 40px rgba(109, 44, 142, 0.2), 0 0 60px rgba(139, 92, 246, 0.05)',
-                  }}
-                  initial={{ opacity: 0, x: -40 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, scale: 0.9, x: -40 }}
-                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <VideoCards mode="inline" />
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* Left: Camera roll scrolling media — always visible */}
+            <motion.div
+              className="overflow-hidden rounded-3xl hero-video"
+              style={{
+                height: hasRecs ? '60vh' : '88vh',
+                border: '1px solid rgba(139, 92, 246, 0.15)',
+                boxShadow: '0 8px 40px rgba(109, 44, 142, 0.2), 0 0 60px rgba(139, 92, 246, 0.05)',
+              }}
+              initial={{ opacity: 0, x: -40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <VideoCards mode="inline" />
+            </motion.div>
 
             {/* Right: Hero text + Recommend button */}
             <motion.div
-              layout
-              className={`flex flex-col items-start gap-4 ${heroShrunken ? 'pt-4' : 'pt-16'}`}
+              className={`flex flex-col gap-4 pt-16 ${hasRecs ? 'items-center' : 'items-start'}`}
               variants={stagger}
               initial="hidden"
               animate="visible"
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
-              <AnimatePresence>
-                {heroShrunken && (
-                  <motion.button
-                    key="back-btn"
-                    onClick={handleBack}
-                    className="flex items-center gap-1.5 text-sm -mt-1 mb-1"
-                    style={{ color: '#6b5f7e' }}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -8 }}
-                    transition={{ duration: 0.25 }}
-                    whileHover={{ color: '#c084fc' }}
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                    Back
-                  </motion.button>
-                )}
-              </AnimatePresence>
-
-              <AnimatePresence>
-                {!heroShrunken && (
-                  <motion.p
-                    key="label"
-                    className="label-editorial"
-                    variants={fadeUp}
-                    exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    Your personal date curator
-                  </motion.p>
-                )}
-              </AnimatePresence>
+              <motion.p
+                className="label-editorial"
+                variants={fadeUp}
+              >
+                Your personal date curator
+              </motion.p>
 
               <motion.h2
-                layout
-                className={`heading-hero ${heroShrunken ? 'text-2xl sm:text-3xl' : 'text-4xl sm:text-5xl lg:text-6xl'}`}
+                className={`heading-hero ${hasRecs ? 'text-3xl sm:text-4xl lg:text-4xl text-center' : 'text-4xl sm:text-5xl lg:text-6xl'}`}
                 variants={fadeUp}
-                transition={{ layout: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
               >
                 <span style={{
                   background: 'linear-gradient(135deg, #f0ecf9, #c084fc)',
@@ -214,44 +214,36 @@ export default function Dashboard() {
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}>
-                  Perfect Evening
+                  Perfect Experience
                 </span>
               </motion.h2>
 
-              <AnimatePresence>
-                {!heroShrunken && (
-                  <motion.p
-                    key="subtitle"
-                    className="text-lg max-w-md font-serif italic"
-                    style={{ color: '#9a8fad' }}
-                    variants={fadeUp}
-                    exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    Let AI craft your next unforgettable experience
-                  </motion.p>
-                )}
-              </AnimatePresence>
+              {!hasRecs && (
+                <motion.p
+                  className="text-lg max-w-md font-serif italic"
+                  style={{ color: '#9a8fad' }}
+                  variants={fadeUp}
+                >
+                  Let AI craft your next unforgettable experience
+                </motion.p>
+              )}
 
-              <motion.div layout className={`w-full ${heroShrunken ? '' : 'max-w-xl'} mt-4`} variants={fadeUp}>
+              <motion.div className={`w-full mt-4 ${hasRecs ? '' : 'max-w-xl'}`} variants={fadeUp}>
                 <RecommendButton
-                  key={recommendKey}
                   onDateAdded={refresh}
                   dateCount={dates.length}
                   onAddDate={() => setShowAddModal(true)}
-                  onSearch={setHeroShrunken}
-                  onExploreCities={() => setShowExploreCities(true)}
+                  onLocalTrends={handleLocalTrends}
+                  onRecsChange={handleRecsChange}
                 />
               </motion.div>
-
-
             </motion.div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* ============ SECTION 2: HISTORY + ANALYTICS ============ */}
-      <section id="section-history" className="snap-section px-4 sm:px-6 py-8 pt-24">
+      <section id="section-history" className="px-4 sm:px-6 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             {/* Left: Date History */}
@@ -314,6 +306,169 @@ export default function Dashboard() {
               <div>
                 <Analytics refreshTrigger={refreshKey} />
               </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ SECTION 3: POPULAR IN CITY (flippable) + SIMILAR COUPLES ============ */}
+      <section className="px-4 sm:px-6 py-8 pb-16">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            {/* Left: Flippable City Card */}
+            <motion.div
+              className="glass-card rounded-3xl p-6"
+              initial={{ opacity: 0, x: -30, scale: 0.97 }}
+              whileInView={{ opacity: 1, x: 0, scale: 1 }}
+              viewport={{ once: true, margin: '-100px' }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {/* Header with flip toggle */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4" style={{ color: '#c084fc' }} />
+                  <h2 className="heading-section text-xl">
+                    {cityFlipped ? 'City Dimensions' : 'Popular in Your City'}
+                  </h2>
+                </div>
+                {cityDimensions && (
+                  <motion.button
+                    onClick={() => setCityFlipped((f) => !f)}
+                    className="p-2 rounded-xl"
+                    style={{ color: '#6b5f7e', border: '1px solid rgba(139, 92, 246, 0.15)' }}
+                    whileHover={{ color: '#c084fc', borderColor: 'rgba(139,92,246,0.4)', background: 'rgba(139,92,246,0.08)' }}
+                    whileTap={{ scale: 0.9 }}
+                    title={cityFlipped ? 'Show popular dates' : 'Show city dimensions'}
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                  </motion.button>
+                )}
+              </div>
+
+              <AnimatePresence mode="wait">
+                {!cityFlipped ? (
+                  /* ---- FRONT: Popular in Your City ---- */
+                  <motion.div
+                    key="front-trends"
+                    initial={{ opacity: 0, rotateY: -90 }}
+                    animate={{ opacity: 1, rotateY: 0 }}
+                    exit={{ opacity: 0, rotateY: 90 }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    {localTrends && localTrends.city && localTrends.trends?.length > 0 ? (
+                      <>
+                        <div className="flex items-center gap-2 mb-4">
+                          <h3 className="label-editorial">{localTrends.city}</h3>
+                          <span className="text-xs" style={{ color: '#6b5f7e' }}>
+                            ({localTrends.total_users} {localTrends.total_users === 1 ? 'dater' : 'daters'})
+                          </span>
+                        </div>
+                        <div className="space-y-3">
+                          {localTrends.trends.map((trend, i) => (
+                            <motion.div
+                              key={trend.activity_name}
+                              className="flex items-center gap-3"
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 0.1 + i * 0.1 }}
+                            >
+                              <div className="flex-1">
+                                <div className="flex justify-between items-center mb-1">
+                                  <span className="text-sm font-serif font-medium" style={{ color: '#f0ecf9' }}>
+                                    {trend.activity_name}
+                                  </span>
+                                  <span className="text-xs font-mono" style={{ color: '#c084fc' }}>
+                                    {trend.percentage}%
+                                  </span>
+                                </div>
+                                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(10, 8, 18, 0.8)' }}>
+                                  <motion.div
+                                    className="h-full rounded-full"
+                                    style={{ background: 'linear-gradient(90deg, #8b5cf6, #c084fc)' }}
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${trend.percentage}%` }}
+                                    transition={{ delay: 0.2 + i * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                                  />
+                                </div>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-sm py-8 text-center" style={{ color: '#6b5f7e' }}>
+                        <p>City trends will appear once we detect your location.</p>
+                        <p className="mt-1 text-xs" style={{ color: '#4a3f5c' }}>Make sure location access is enabled.</p>
+                      </div>
+                    )}
+                  </motion.div>
+                ) : (
+                  /* ---- BACK: City Dimensions ---- */
+                  <motion.div
+                    key="back-dimensions"
+                    initial={{ opacity: 0, rotateY: 90 }}
+                    animate={{ opacity: 1, rotateY: 0 }}
+                    exit={{ opacity: 0, rotateY: -90 }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    {cityDimensions ? (
+                      <>
+                        <div className="flex items-center gap-2 mb-4">
+                          <h3 className="label-editorial">{cityDimensions.city}</h3>
+                          <span className="text-xs" style={{ color: '#6b5f7e' }}>
+                            ({cityDimensions.activity_count} activities)
+                          </span>
+                        </div>
+                        <div className="space-y-3">
+                          {Object.entries(cityDimensions.dimensions).map(([dim, val], i) => {
+                            const d = DIMENSION_DISPLAY[dim]
+                            if (!d) return null
+                            const pct = Math.round(val * 100)
+                            return (
+                              <motion.div
+                                key={dim}
+                                className="space-y-1"
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.05 + i * 0.06 }}
+                              >
+                                <div className="flex justify-between items-center text-xs">
+                                  <span style={{ color: '#6b5f7e' }}>{d.low}</span>
+                                  <span className="font-serif font-medium" style={{ color: '#f0ecf9' }}>{d.label}</span>
+                                  <span style={{ color: '#6b5f7e' }}>{d.high}</span>
+                                </div>
+                                <div className="h-1.5 rounded-full overflow-hidden relative" style={{ background: 'rgba(10, 8, 18, 0.8)' }}>
+                                  <motion.div
+                                    className="h-full rounded-full"
+                                    style={{ background: d.color }}
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${pct}%` }}
+                                    transition={{ delay: 0.1 + i * 0.06, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                                  />
+                                </div>
+                              </motion.div>
+                            )
+                          })}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-sm py-8 text-center" style={{ color: '#6b5f7e' }}>
+                        <p>Dimension data not available.</p>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* Right: Similar Couples — no outer glass-card to avoid double border */}
+            <motion.div
+              initial={{ opacity: 0, x: 30, scale: 0.97 }}
+              whileInView={{ opacity: 1, x: 0, scale: 1 }}
+              viewport={{ once: true, margin: '-100px' }}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <SimilarCouples />
             </motion.div>
           </div>
         </div>

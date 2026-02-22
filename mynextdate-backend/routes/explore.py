@@ -1,7 +1,7 @@
 """Public explore endpoints — no authentication required."""
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from services.city_service import get_cities_summary, search_city
+from services.city_service import get_cities_summary, search_city, get_city_dimension_averages, get_city_vibe_distribution
 from services.text_to_vector import text_to_vector
 
 router = APIRouter(prefix="/api/explore", tags=["explore"])
@@ -42,3 +42,15 @@ async def search_city_activities(body: SearchCityRequest):
     )
 
     return {"results": results, "city": body.city, "count": len(results)}
+
+
+@router.get("/city-dimensions")
+async def get_city_dimensions():
+    """Return average 9D dimension vector per city."""
+    return {"cities": get_city_dimension_averages()}
+
+
+@router.get("/city-vibes")
+async def get_city_vibes():
+    """Return vibe tag distribution per city."""
+    return {"cities": get_city_vibe_distribution()}

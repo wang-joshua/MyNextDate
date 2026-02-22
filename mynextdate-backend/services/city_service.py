@@ -148,6 +148,52 @@ def search_city(
     return [_build_result(aid, data, round(min(score, 1.0), 4)) for aid, data, score in scored[:top_k]]
 
 
+def get_city_dimension_averages() -> list[dict]:
+    """Return average 9D vector per city for heatmap visualization."""
+    from collections import defaultdict
+    from config import VECTOR_LABELS
+
+    city_vectors: dict[str, list[list[float]]] = defaultdict(list)
+    for aid, data in _city_cache.items():
+        city = data.get("city", "")
+        vec = _city_vector_cache.get(aid)
+        if city and vec:
+            city_vectors[city].append(vec)
+
+    result = []
+    for city in sorted(city_vectors.keys()):
+        vecs = city_vectors[city]
+        avg = np.mean(vecs, axis=0).tolist()
+        dimensions = {label: round(avg[i], 3) for i, label in enumerate(VECTOR_LABELS)}
+        result.append({"city": city, "dimensions": dimensions, "activity_count": len(vecs)})
+    return result
+
+
+def get_city_vibe_distribution() -> list[dict]:
+    """Return vibe tag counts per city for bar chart visualization."""
+    from collections import defaultdict, Counter
+
+    city_vibes: dict[str, Counter] = defaultdict(Counter)
+    city_counts: Counter = Counter()
+    for data in _city_cache.values():
+        city = data.get("city", "")
+        vibes = data.get("vibe", [])
+        if city:
+            city_counts[city] += 1
+            for v in vibes:
+                city_vibes[city][v] += 1
+
+    result = []
+    for city in sorted(city_vibes.keys()):
+        vibes = dict(city_vibes[city])
+        result.append({
+            "city": city,
+            "total_activities": city_counts[city],
+            "vibes": vibes,
+        })
+    return result
+
+
 def _build_result(aid: int, data: dict, score: float | None) -> dict:
     return {
         "id": aid,
