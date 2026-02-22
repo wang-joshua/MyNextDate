@@ -35,6 +35,24 @@
   pointer-events: none;
 }
 
+@keyframes twinkle-big {
+  0%, 100% {
+    opacity: 0;
+    filter: drop-shadow(0 0 1px rgba(255,255,255,0.1));
+    transform: scale(0.1);
+  }
+  40%, 60% {
+    opacity: 0.82;
+    filter: drop-shadow(0 0 3px rgba(255,255,255,0.95)) drop-shadow(0 0 7px rgba(255,240,200,0.55));
+    transform: scale(1);
+  }
+}
+.star-big {
+  position: absolute;
+  pointer-events: none;
+  animation: twinkle-big var(--star-dur) ease-in-out infinite var(--star-delay);
+}
+
 /* ============================================
    BASE
    ============================================ */

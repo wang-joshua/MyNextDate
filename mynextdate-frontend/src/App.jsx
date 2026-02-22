@@ -14,10 +14,28 @@ function StarField() {
       left: `${Math.random() * 100}%`,
       size: `${1 + Math.random()}px`,
       opacity: 0.15 + Math.random() * 0.5,
-      dur: `${3 + Math.random() * 5}s`,
+      dur: `${1.4 + Math.random() * 2.2}s`,
       delay: `${-Math.random() * 8}s`,
     }))
   }, [])
+
+  // Stable timing/size metadata — never changes
+  const bigStarsMeta = useMemo(() =>
+    Array.from({ length: 8 }, (_, i) => ({
+      id: i,
+      size: 22 + Math.random() * 14,
+      dur: `${2.5 + Math.random() * 3}s`,
+      delay: `${-Math.random() * 7}s`,
+    })),
+  [])
+
+  // Positions in state so each star can jump to a new spot after every cycle
+  const [bigStarPos, setBigStarPos] = useState(() =>
+    Array.from({ length: 8 }, () => ({
+      top: `${5 + Math.random() * 90}%`,
+      left: `${5 + Math.random() * 90}%`,
+    }))
+  )
 
   return (
     <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
@@ -35,6 +53,38 @@ function StarField() {
             '--star-delay': s.delay,
           }}
         />
+      ))}
+      {bigStarsMeta.map((s) => (
+        <svg
+          key={s.id}
+          className="star-big"
+          style={{
+            top: bigStarPos[s.id].top,
+            left: bigStarPos[s.id].left,
+            '--star-dur': s.dur,
+            '--star-delay': s.delay,
+          }}
+          width={s.size}
+          height={s.size * 1.25}
+          viewBox="-22 -22 44 55"
+          xmlns="http://www.w3.org/2000/svg"
+          onAnimationIteration={() =>
+            setBigStarPos(prev => {
+              const next = [...prev]
+              next[s.id] = {
+                top: `${5 + Math.random() * 90}%`,
+                left: `${5 + Math.random() * 90}%`,
+              }
+              return next
+            })
+          }
+        >
+          {/* 4-pointed cross star: N/E/W arms equal, S arm ~50% longer */}
+          <polygon
+            points="0,-20 3.5,-3.5 20,0 3.5,3.5 0,31 -3.5,3.5 -20,0 -3.5,-3.5"
+            fill="white"
+          />
+        </svg>
       ))}
     </div>
   )
