@@ -110,23 +110,14 @@ function CameraRoll({ speed, itemHeight, unit }) {
 }
 
 /**
- * @param {'fullscreen' | 'inline'} mode
+ * Fullscreen background video — original AuthPage look.
  */
-export default function VideoCards({ mode = 'fullscreen' }) {
-  const isInline = mode === 'inline'
-  const itemHeight = isInline ? 380 : 50
-  const unit = isInline ? 'px' : 'vh'
-  const speed = isInline ? 20 : 30
+function FullscreenBackground() {
+  const [loaded, setLoaded] = useState(false)
 
-  const containerStyle = isInline
-    ? {
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        overflow: 'hidden',
-        borderRadius: '24px',
-      }
-    : {
+  return (
+    <div
+      style={{
         position: 'absolute',
         top: 0,
         left: 0,
@@ -135,20 +126,87 @@ export default function VideoCards({ mode = 'fullscreen' }) {
         overflow: 'hidden',
         pointerEvents: 'none',
         zIndex: 0,
-      }
+      }}
+    >
+      <video
+        src="/bg-video.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        onCanPlay={() => setLoaded(true)}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          filter: 'saturate(0.5) brightness(0.65)',
+          transform: 'scale(1.05)',
+          opacity: loaded ? 1 : 0,
+          transition: 'opacity 2s ease-out',
+        }}
+      />
+
+      {/* Dark overlay */}
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(10, 8, 18, 0.35)' }} />
+
+      {/* Purple tint */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(135deg, rgba(109, 44, 142, 0.3), transparent 50%, rgba(139, 92, 246, 0.2))',
+        }}
+      />
+
+      {/* Bottom fade */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(to top, rgba(10, 8, 18, 0.95) 0%, transparent 40%)',
+        }}
+      />
+
+      {/* Vignette */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'radial-gradient(ellipse at center, transparent 30%, rgba(10, 8, 18, 0.6) 100%)',
+        }}
+      />
+    </div>
+  )
+}
+
+/**
+ * @param {'fullscreen' | 'inline'} mode
+ */
+export default function VideoCards({ mode = 'fullscreen' }) {
+  if (mode === 'fullscreen') {
+    return <FullscreenBackground />
+  }
 
   return (
-    <div style={containerStyle}>
-      <CameraRoll speed={speed} itemHeight={itemHeight} unit={unit} />
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        borderRadius: '24px',
+      }}
+    >
+      <CameraRoll speed={20} itemHeight={380} unit="px" />
 
-      {/* Subtle overlay */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background: isInline
-            ? 'rgba(10, 8, 18, 0.1)'
-            : 'rgba(10, 8, 18, 0.55)',
+          background: 'rgba(10, 8, 18, 0.1)',
           pointerEvents: 'none',
         }}
       />
@@ -157,66 +215,27 @@ export default function VideoCards({ mode = 'fullscreen' }) {
         style={{
           position: 'absolute',
           inset: 0,
-          background:
-            'linear-gradient(135deg, rgba(109, 44, 142, 0.25), transparent 50%, rgba(139, 92, 246, 0.15))',
+          background: 'linear-gradient(135deg, rgba(109, 44, 142, 0.15), transparent 50%, rgba(139, 92, 246, 0.1))',
           pointerEvents: 'none',
         }}
       />
 
-      {!isInline && (
-        <>
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background:
-                'linear-gradient(to top, rgba(10, 8, 18, 0.95) 0%, transparent 40%)',
-              pointerEvents: 'none',
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background:
-                'linear-gradient(to bottom, rgba(10, 8, 18, 0.7) 0%, transparent 25%)',
-              pointerEvents: 'none',
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background:
-                'radial-gradient(ellipse at center, transparent 30%, rgba(10, 8, 18, 0.6) 100%)',
-              pointerEvents: 'none',
-            }}
-          />
-        </>
-      )}
-
-      {isInline && (
-        <>
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background:
-                'linear-gradient(to top, rgba(10, 8, 18, 0.7) 0%, transparent 15%)',
-              pointerEvents: 'none',
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background:
-                'linear-gradient(to bottom, rgba(10, 8, 18, 0.7) 0%, transparent 15%)',
-              pointerEvents: 'none',
-            }}
-          />
-        </>
-      )}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(to top, rgba(10, 8, 18, 0.7) 0%, transparent 15%)',
+          pointerEvents: 'none',
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(to bottom, rgba(10, 8, 18, 0.7) 0%, transparent 15%)',
+          pointerEvents: 'none',
+        }}
+      />
     </div>
   )
 }
