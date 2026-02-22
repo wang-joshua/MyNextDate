@@ -154,22 +154,6 @@ export default function Dashboard() {
               <motion.div className="w-full max-w-xl mt-4" variants={fadeUp}>
                 <RecommendButton onDateAdded={refresh} dateCount={dates.length} onAddDate={() => setShowAddModal(true)} />
               </motion.div>
-
-              {/* Scroll indicator */}
-              <motion.div
-                className="flex items-center gap-2 mt-6"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.5, duration: 0.8 }}
-              >
-                <span className="label-editorial" style={{ fontSize: '0.6rem' }}>Scroll to explore</span>
-                <motion.div
-                  animate={{ y: [0, 6, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  <ChevronDown className="w-5 h-5" style={{ color: '#6b5f7e' }} />
-                </motion.div>
-              </motion.div>
             </motion.div>
           </div>
         </div>

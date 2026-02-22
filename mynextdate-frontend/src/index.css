@@ -176,10 +176,14 @@ input:focus, textarea:focus {
 .snap-section {
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  min-height: 100vh;
+  min-height: 200vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.snap-section:nth-child(n+2) {
+  min-height: 100vh;
 }
 
 @media (max-width: 768px) {

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, HeartCrack, Loader2, Plus, Heart, X } from 'lucide-react'
+import { Sparkles, HeartCrack, Loader2, Plus, Heart, X, ChevronDown } from 'lucide-react'
 import { getRecommendations, getWorstRecommendations, addDate } from '../lib/api'
 
 export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate }) {
@@ -11,6 +11,7 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
   const [showPulse, setShowPulse] = useState(false)
   const [skippedIds, setSkippedIds] = useState([])
   const [needsHistory, setNeedsHistory] = useState(false)
+  const SCROLL_EXIT_MS = 850
 
   const handleRecommend = async (breakup = false) => {
     if (dateCount === 0) {
@@ -20,28 +21,46 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
     setNeedsHistory(false)
     setLoading(true)
     setShowPulse(true)
-    setMode(breakup ? 'breakup' : 'good')
+    const newMode = breakup ? 'breakup' : 'good'
+
+    // Hide existing recommendations immediately so the scroll hint disappears
     setRecs(null)
+    // If switching recommendation type, wait briefly to let exit animations finish
+    const isSwitchingTypes = mode && mode !== newMode && recs && recs.length > 0
+    if (isSwitchingTypes) {
+      await new Promise(resolve => setTimeout(resolve, 300))
+    }
+
+    setMode(newMode)
     try {
       const currentSkipped = [...skippedIds]
       const data = breakup
         ? await getWorstRecommendations()
         : await getRecommendations(currentSkipped)
-      setRecs(data.recommendations)
-      // Reset skipped IDs after successful fetch — fresh batch, fresh skips
-      setSkippedIds([])
+
+      // Wait for the scroll indicator to fully fade out before showing recs
+      setTimeout(() => {
+        setRecs(data.recommendations)
+        // Reset skipped IDs after successful fetch — fresh batch, fresh skips
+        setSkippedIds([])
+        setLoading(false)
+        setTimeout(() => setShowPulse(false), 600)
+      }, SCROLL_EXIT_MS)
     } catch (err) {
       console.error(err)
+      // On error, clear loading so UI can recover (scroll may reappear)
       setRecs(null)
+      setLoading(false)
+      setTimeout(() => setShowPulse(false), 600)
     }
-    setLoading(false)
-    setTimeout(() => setShowPulse(false), 600)
   }
 
   const handleAddDate = async (activityId) => {
     setAdding(activityId)
     try {
       await addDate(activityId)
+      // Remove the added date from recommendations
+      setRecs((prev) => prev?.filter((r) => r.id !== activityId) || null)
       onDateAdded?.()
     } catch (err) {
       console.error(err)
@@ -158,85 +177,110 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
         <AnimatePresence mode="wait">
           {recs && recs.length > 0 && (
             <motion.div
-              className="space-y-3"
+              className="flex gap-3"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.4 }}
             >
-              <h3 className="label-editorial">
-                {mode === 'breakup' ? 'Worst Possible Dates' : 'Recommended For You'}
-              </h3>
-              <AnimatePresence>
-                {recs.map((rec, i) => (
-                  <motion.div
-                    key={rec.id}
-                    layout
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20, height: 0, marginBottom: 0, padding: 0 }}
-                    transition={{ delay: 0.2 + i * 0.15, type: 'spring', stiffness: 300, damping: 25 }}
-                    whileHover={{ scale: 1.01, y: -2 }}
-                    className={`p-6 rounded-2xl transition-all duration-300 ${
-                      mode === 'breakup'
-                        ? 'bg-red-950/20 border border-red-500/20 hover:border-red-500/40'
-                        : 'glass-card'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          {mode === 'breakup' ? (
-                            <HeartCrack className="w-4 h-4 text-red-400" />
-                          ) : (
-                            <Heart className="w-4 h-4 fill-violet-400" style={{ color: '#c084fc' }} />
-                          )}
-                          <h4 className="font-serif font-semibold text-lg">{rec.name}</h4>
-                        </div>
-                        <p className="text-sm mt-1 leading-relaxed" style={{ color: '#9a8fad' }}>{rec.description}</p>
-                        <div className="flex items-center gap-2 mt-3">
-                          <div className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                            mode === 'breakup' ? 'bg-red-500/10 text-red-400' : ''
-                          }`}
-                            style={mode !== 'breakup' ? { background: 'rgba(139, 92, 246, 0.1)', color: '#c084fc' } : {}}
-                          >
-                            {Math.round(rec.score * 100)}% match
+              <div className="w-full">
+                <h3 className="label-editorial mb-3">
+                  {mode === 'breakup' ? 'Worst Possible Dates' : 'Recommended For You'}
+                </h3>
+                <div className="flex gap-2">
+                  <AnimatePresence>
+                    {recs.map((rec, i) => (
+                      <motion.div
+                        key={rec.id}
+                        layout
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20, height: 0, marginBottom: 0, padding: 0 }}
+                        transition={{ delay: 0.2 + i * 0.15, type: 'spring', stiffness: 300, damping: 25 }}
+                        whileHover={{ scale: 1.01, y: -2 }}
+                        className={`min-w-[380px] p-6 rounded-2xl transition-all duration-300 ${
+                          mode === 'breakup'
+                            ? 'bg-red-950/20 border border-red-500/20 hover:border-red-500/40'
+                            : 'glass-card'
+                        }`}
+                      >
+                        <div className="flex flex-col h-full">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              {mode === 'breakup' ? (
+                                <HeartCrack className="w-4 h-4 text-red-400" />
+                              ) : (
+                                <Heart className="w-4 h-4 fill-violet-400" style={{ color: '#c084fc' }} />
+                              )}
+                              <h4 className="font-serif font-semibold text-lg">{rec.name}</h4>
+                            </div>
+                            <p className="text-sm mt-1 leading-relaxed" style={{ color: '#9a8fad' }}>{rec.description}</p>
+                            <div className="flex items-center gap-2 mt-3">
+                              <div className={`text-xs px-2.5 py-1 rounded-full font-medium ${
+                                mode === 'breakup' ? 'bg-red-500/10 text-red-400' : ''
+                              }`}
+                                style={mode !== 'breakup' ? { background: 'rgba(139, 92, 246, 0.1)', color: '#c084fc' } : {}}
+                              >
+                                {Math.round(rec.score * 100)}% match
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 mt-4">
+                            {mode !== 'breakup' && (
+                              <motion.button
+                                onClick={() => handleAddDate(rec.id)}
+                                disabled={adding === rec.id}
+                                className="p-3 rounded-xl transition-all"
+                                style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#c084fc' }}
+                                whileHover={{ scale: 1.1, boxShadow: '0 0 15px rgba(139, 92, 246, 0.2)' }}
+                                whileTap={{ scale: 0.9 }}
+                                title="Add to date history"
+                              >
+                                {adding === rec.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+                              </motion.button>
+                            )}
+                            <motion.button
+                              onClick={() => handleSkip(rec.id)}
+                              className="p-3 rounded-xl transition-all"
+                              style={{ background: 'rgba(107, 95, 126, 0.1)', color: '#6b5f7e' }}
+                              whileHover={{ scale: 1.1, color: '#f0ecf9', background: 'rgba(107, 95, 126, 0.2)' }}
+                              whileTap={{ scale: 0.9 }}
+                              title="Skip — show me something else"
+                            >
+                              <X className="w-5 h-5" />
+                            </motion.button>
                           </div>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-2 ml-4">
-                        {mode !== 'breakup' && (
-                          <motion.button
-                            onClick={() => handleAddDate(rec.id)}
-                            disabled={adding === rec.id}
-                            className="p-3 rounded-xl transition-all"
-                            style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#c084fc' }}
-                            whileHover={{ scale: 1.1, boxShadow: '0 0 15px rgba(139, 92, 246, 0.2)' }}
-                            whileTap={{ scale: 0.9 }}
-                            title="Add to date history"
-                          >
-                            {adding === rec.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
-                          </motion.button>
-                        )}
-                        <motion.button
-                          onClick={() => handleSkip(rec.id)}
-                          className="p-3 rounded-xl transition-all"
-                          style={{ background: 'rgba(107, 95, 126, 0.1)', color: '#6b5f7e' }}
-                          whileHover={{ scale: 1.1, color: '#f0ecf9', background: 'rgba(107, 95, 126, 0.2)' }}
-                          whileTap={{ scale: 0.9 }}
-                          title="Skip — show me something else"
-                        >
-                          <X className="w-5 h-5" />
-                        </motion.button>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+
+      {/* Scroll indicator: only show when not loading and there are no recommendations */}
+      <AnimatePresence>
+        {(!loading && (!recs || recs.length === 0)) && (
+          <motion.div
+            className="flex items-center gap-2 mt-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+          >
+            <span className="label-editorial" style={{ fontSize: '0.6rem' }}>Scroll to explore</span>
+            <motion.div
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <ChevronDown className="w-5 h-5" style={{ color: '#6b5f7e' }} />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

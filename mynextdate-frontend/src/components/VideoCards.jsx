@@ -148,7 +148,7 @@ export default function VideoCards({ mode = 'fullscreen' }) {
           inset: 0,
           background: isInline
             ? 'rgba(10, 8, 18, 0.1)'
-            : 'rgba(10, 8, 18, 0.35)',
+            : 'rgba(10, 8, 18, 0.55)',
           pointerEvents: 'none',
         }}
       />
@@ -158,7 +158,7 @@ export default function VideoCards({ mode = 'fullscreen' }) {
           position: 'absolute',
           inset: 0,
           background:
-            'linear-gradient(135deg, rgba(109, 44, 142, 0.15), transparent 50%, rgba(139, 92, 246, 0.1))',
+            'linear-gradient(135deg, rgba(109, 44, 142, 0.25), transparent 50%, rgba(139, 92, 246, 0.15))',
           pointerEvents: 'none',
         }}
       />

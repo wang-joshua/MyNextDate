@@ -16,7 +16,7 @@ const DIMENSION_DISPLAY = {
   conversation_depth: { label: 'Conversation', low: 'Activity-based', high: 'Deep talks', color: 'from-indigo-400 to-violet-500' },
 }
 
-function StatCard({ value, label, icon: Icon, color, delay = 0 }) {
+function StatCard({ value, label, icon: Icon, color, delay = 0, showHearts = false }) {
   return (
     <motion.div
       className="glass-card rounded-2xl p-5 text-center"
@@ -29,16 +29,60 @@ function StatCard({ value, label, icon: Icon, color, delay = 0 }) {
         borderColor: 'rgba(139, 92, 246, 0.3)',
       }}
     >
-      <Icon className="w-5 h-5 mx-auto mb-2" style={{ color }} />
-      <motion.p
-        className="font-serif text-4xl font-bold"
-        style={{ color }}
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: delay + 0.3, type: 'spring', stiffness: 200 }}
-      >
-        {value}
-      </motion.p>
+      {showHearts ? (
+        <>
+          <div className="flex justify-center gap-1 mb-3">
+            {[1, 2, 3, 4, 5].map((heartIndex) => {
+              const fillAmount = value >= heartIndex ? 1 : value >= heartIndex - 0.5 ? (value % 1) : 0
+              
+              return (
+                <div key={heartIndex} className="relative" style={{ width: 20, height: 20 }}>
+                  <Heart
+                    size={20}
+                    className="absolute inset-0"
+                    style={{ color: '#6b5f7e' }}
+                  />
+                  
+                  {fillAmount > 0 && (
+                    <div
+                      className="absolute inset-0 overflow-hidden"
+                      style={{ width: 20 * fillAmount }}
+                    >
+                      <Heart
+                        size={20}
+                        className="drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]"
+                        style={{ fill: '#ef4444', color: '#f87171' }}
+                      />
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+          <motion.p
+            className="font-serif text-3xl font-bold"
+            style={{ color: '#c084fc' }}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: delay + 0.3, type: 'spring', stiffness: 200 }}
+          >
+            {value.toFixed(1)}
+          </motion.p>
+        </>
+      ) : (
+        <>
+          <Icon className="w-5 h-5 mx-auto mb-2" style={{ color }} />
+          <motion.p
+            className="font-serif text-4xl font-bold"
+            style={{ color }}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: delay + 0.3, type: 'spring', stiffness: 200 }}
+          >
+            {value}
+          </motion.p>
+        </>
+      )}
       <p className="label-editorial mt-2">{label}</p>
     </motion.div>
   )
@@ -123,8 +167,7 @@ export default function Analytics({ refreshTrigger }) {
   if (!analytics || analytics.total_dates === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <Target className="w-10 h-10 mb-3 opacity-30" style={{ color: '#6b5f7e' }} />
-        <p className="heading-section text-lg" style={{ color: '#9a8fad' }}>No analytics yet</p>
+        <Heart className="w-12 h-12 mb-3" style={{ color: '#6b5f7e' }} />
         <p className="text-sm mt-1 font-serif italic" style={{ color: '#6b5f7e' }}>
           Rate some dates to unlock insights
         </p>
@@ -166,10 +209,10 @@ export default function Analytics({ refreshTrigger }) {
         <div className="grid grid-cols-3 gap-3">
           <StatCard
             value={analytics.avg_last_five}
-            label="Avg Last 5"
-            icon={Heart}
+            label="Average Score"
             color="#c084fc"
             delay={0}
+            showHearts={true}
           />
           <StatCard
             value={`${analytics.success_rate}%`}

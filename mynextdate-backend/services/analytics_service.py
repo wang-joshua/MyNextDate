@@ -37,30 +37,25 @@ def compute_analytics(
     successful = [r for r in ratings if r >= 3]
     success_rate = round(len(successful) / rated_count * 100, 1) if rated_count > 0 else 0.0
 
-    # Compute weighted dimension averages from ALL dates with vectors
-    # Positive dates (rating >= 3) pull toward, negative push away, unrated are neutral
+    # Compute weighted dimension averages from RATED dates only
+    # Positive dates (rating >= 3) pull toward, negative push away, unrated are excluded
     all_vecs = []
     all_weights = []
-    for d in dates:
+    for d in rated_dates:
         aid = d["activity_id"]
         if aid not in activity_vectors:
             continue
         vec = np.array(activity_vectors[aid])
         rating = d["rating"]
-        if rating and rating > 0:
-            if rating >= 3:
-                # Positive: higher rating = stronger pull toward this vector
-                weight = rating / 5.0
-                all_vecs.append(vec * weight)
-            else:
-                # Negative: lower rating = stronger push AWAY
-                weight = (3.0 - rating) / 5.0
-                all_vecs.append((1.0 - vec) * weight)
-            all_weights.append(weight)
+        if rating >= 3:
+            # Positive: higher rating = stronger pull toward this vector
+            weight = rating / 5.0
+            all_vecs.append(vec * weight)
         else:
-            # Unrated: neutral contribution
-            all_vecs.append(vec * 0.3)
-            all_weights.append(0.3)
+            # Negative: lower rating = stronger push AWAY
+            weight = (3.0 - rating) / 5.0
+            all_vecs.append((1.0 - vec) * weight)
+        all_weights.append(weight)
 
     dim_averages = {}
     if all_vecs and sum(all_weights) > 0:
@@ -74,14 +69,15 @@ def compute_analytics(
     # Generate insight summary
     summary = _generate_summary(dim_averages, success_rate, avg_last_five)
 
-    # Trend: compare last 3 vs previous 3 (rated only)
+    # Trend: compare last 3 dates vs previous 3 dates (rated only)
     trend = "neutral"
     if len(ratings) >= 6:
-        recent_avg = sum(ratings[:3]) / 3
-        older_avg = sum(ratings[3:6]) / 3
-        if recent_avg > older_avg + 0.3:
+        recent_3_avg = sum(ratings[:3]) / 3
+        previous_3_avg = sum(ratings[3:6]) / 3
+        diff = recent_3_avg - previous_3_avg
+        if diff >= 0.5:
             trend = "improving"
-        elif recent_avg < older_avg - 0.3:
+        elif diff <= -0.5:
             trend = "declining"
 
     return {
