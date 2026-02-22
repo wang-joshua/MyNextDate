@@ -67,56 +67,58 @@ export default function AuthPage() {
         />
       ))}
 
-      {/* Logo */}
-      <motion.div
-        className="inline-flex items-center justify-center w-28 h-28 mb-6 relative z-10"
-        initial={{ scale: 0, rotate: -180 }}
-        animate={{ scale: 1, rotate: 0 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
-        whileHover={{ scale: 1.1, rotate: 5 }}
-      >
-        <Logo className="w-28 h-28" />
-      </motion.div>
+      {/* Form card with logo on top */}
+      <div className="relative w-full max-w-sm z-10">
+        {/* Logo overlapping the top of the card */}
+        <motion.div
+          className="absolute left-1/2 -translate-x-1/2 -top-14 z-20"
+          initial={{ scale: 0, rotate: -180 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
+          whileHover={{ scale: 1.1, rotate: 5 }}
+          style={{ opacity: 0.85 }}
+        >
+          <Logo className="w-28 h-28" />
+        </motion.div>
 
-      {/* Title with letter reveal */}
-      <motion.h1
-        className="heading-hero text-5xl mb-2 relative z-10"
-        style={{
-          background: 'linear-gradient(135deg, #c084fc, #8b5cf6, #6d2c8e)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-        }}
-      >
-        {"MyNextDate".split('').map((char, i) => (
-          <motion.span
-            key={i}
-            initial={{ opacity: 0, y: 20, rotateX: -10 }}
-            animate={{ opacity: 1, y: 0, rotateX: 0 }}
-            transition={{ delay: 0.4 + i * 0.05, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            style={{ display: 'inline-block' }}
-          >
-            {char}
-          </motion.span>
-        ))}
-      </motion.h1>
+        <motion.div
+          className="glass-heavy rounded-3xl p-8 pt-18 w-full"
+          initial={{ opacity: 0, y: 30, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 0.6, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        >
+        {/* Title */}
+        <motion.h1
+          className="heading-hero text-2xl mb-1 text-center"
+          style={{
+            background: 'linear-gradient(135deg, #c084fc, #8b5cf6, #6d2c8e)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          {"MyNextDate".split('').map((char, i) => (
+            <motion.span
+              key={i}
+              initial={{ opacity: 0, y: 20, rotateX: -10 }}
+              animate={{ opacity: 1, y: 0, rotateX: 0 }}
+              transition={{ delay: 0.4 + i * 0.05, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              style={{ display: 'inline-block' }}
+            >
+              {char}
+            </motion.span>
+          ))}
+        </motion.h1>
 
-      <motion.p
-        className="text-lg font-serif italic mb-10 relative z-10"
-        style={{ color: '#9a8fad' }}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.0, duration: 0.8 }}
-      >
-        AI-powered date recommendations
-      </motion.p>
+        <motion.p
+          className="text-sm font-serif italic mb-6 text-center"
+          style={{ color: '#9a8fad' }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.0, duration: 0.8 }}
+        >
+          AI-powered date recommendations
+        </motion.p>
 
-      {/* Form card */}
-      <motion.div
-        className="glass-heavy rounded-3xl p-8 w-full max-w-sm relative z-10"
-        initial={{ opacity: 0, y: 30, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ delay: 0.6, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      >
         <AnimatePresence mode="wait">
           <motion.h2
             key={isSignUp ? 'signup' : 'signin'}
@@ -194,6 +196,7 @@ export default function AuthPage() {
           </button>
         </p>
       </motion.div>
+      </div>
     </div>
   )
 }
