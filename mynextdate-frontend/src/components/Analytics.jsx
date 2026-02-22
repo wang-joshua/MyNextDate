@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { TrendingUp, TrendingDown, Minus, Loader2, Heart, Target, Zap } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { TrendingUp, TrendingDown, Minus, Heart, Target } from 'lucide-react'
 import { getAnalytics } from '../lib/api'
+import HeartLoader from './HeartLoader'
 
 const DIMENSION_DISPLAY = {
   cost: { label: 'Budget', low: 'Affordable', high: 'Luxury', color: 'from-emerald-400 to-teal-500' },
@@ -55,10 +56,10 @@ function DimensionBar({ dimension, value, delay = 0 }) {
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="flex justify-between text-xs">
+      <div className="grid grid-cols-3 text-xs">
         <span style={{ color: '#6b5f7e' }}>{display.low}</span>
-        <span className="font-serif font-medium" style={{ color: '#f0ecf9' }}>{display.label}</span>
-        <span style={{ color: '#6b5f7e' }}>{display.high}</span>
+        <span className="font-serif font-medium text-center" style={{ color: '#f0ecf9' }}>{display.label}</span>
+        <span className="text-right" style={{ color: '#6b5f7e' }}>{display.high}</span>
       </div>
       <div
         className="h-2 rounded-full overflow-hidden relative"
@@ -89,23 +90,30 @@ export default function Analytics({ refreshTrigger }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let cancelled = false
     setLoading(true)
-    getAnalytics()
-      .then(setAnalytics)
-      .catch(console.error)
-      .finally(() => setLoading(false))
+
+    const dataPromise = getAnalytics().catch((err) => {
+      console.error(err)
+      return null
+    })
+    const minDelay = new Promise((resolve) => setTimeout(resolve, 1000))
+
+    Promise.all([dataPromise, minDelay]).then(([data]) => {
+      if (cancelled) return
+      if (data !== null) setAnalytics(data)
+      setLoading(false)
+    })
+
+    return () => { cancelled = true }
   }, [refreshTrigger])
 
-  if (loading) {
+  // Initial load — no data yet, show full loading state
+  if (loading && analytics === null) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-        >
-          <Loader2 className="w-8 h-8" style={{ color: '#8b5cf6' }} />
-        </motion.div>
-        <p className="text-sm mt-3 font-serif italic" style={{ color: '#6b5f7e' }}>
+        <HeartLoader size={52} />
+        <p className="text-sm mt-4 font-serif italic" style={{ color: '#6b5f7e' }}>
           Analyzing your patterns...
         </p>
       </div>
@@ -128,71 +136,97 @@ export default function Analytics({ refreshTrigger }) {
     : analytics.trend === 'declining' ? TrendingDown : Minus
 
   return (
-    <div className="space-y-6">
-      {/* Stats Grid */}
-      <div className="grid grid-cols-3 gap-3">
-        <StatCard
-          value={analytics.avg_last_five}
-          label="Avg Last 5"
-          icon={Heart}
-          color="#c084fc"
-          delay={0}
-        />
-        <StatCard
-          value={`${analytics.success_rate}%`}
-          label="Success Rate"
-          icon={Target}
-          color="#8b5cf6"
-          delay={0.1}
-        />
-        <StatCard
-          value={analytics.trend === 'improving' ? 'Rising' : analytics.trend === 'declining' ? 'Falling' : 'Steady'}
-          label="Trend"
-          icon={TrendIcon}
-          color={analytics.trend === 'improving' ? '#4ade80' : analytics.trend === 'declining' ? '#f87171' : '#c084fc'}
-          delay={0.2}
-        />
-      </div>
-
-      {/* Insight Card */}
-      {analytics.preference_summary && (
-        <motion.div
-          className="relative overflow-hidden rounded-2xl p-5 glass-card"
-          style={{
-            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(109, 44, 142, 0.06))',
-            border: '1px solid rgba(139, 92, 246, 0.15)',
-          }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        >
+    <div className="relative">
+      {/* Refresh overlay — shown when reloading with existing data so panel keeps its size */}
+      <AnimatePresence>
+        {loading && (
           <motion.div
-            className="absolute inset-0"
-            style={{ background: 'linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.05), transparent)' }}
-            animate={{ x: ['-100%', '100%'] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
-          />
-          <p className="text-sm leading-relaxed relative" style={{ color: '#f0ecf9' }}>
-            <span className="font-serif font-semibold" style={{ color: '#c084fc' }}>Insight: </span>
-            {analytics.preference_summary}
-          </p>
-        </motion.div>
-      )}
+            className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-2xl gap-3"
+            style={{
+              background: 'rgba(10, 8, 18, 0.55)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <HeartLoader size={44} />
+            <p className="text-xs font-serif italic" style={{ color: '#9a8fad' }}>Updating...</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Dimension Bars */}
-      {analytics.dimension_averages && (
-        <div className="space-y-4">
-          <h4 className="label-editorial">Your Preference Profile</h4>
-          {Object.entries(analytics.dimension_averages).map(([dim, val], i) => (
-            <DimensionBar
-              key={dim}
-              dimension={dim}
-              value={val}
-              delay={0.4 + i * 0.06}
-            />
-          ))}
+      <div
+        className="space-y-6 pb-2"
+        style={{ opacity: loading ? 0.45 : 1, transition: 'opacity 0.3s ease' }}
+      >
+        {/* Stats Grid */}
+        <div className="grid grid-cols-3 gap-3">
+          <StatCard
+            value={analytics.avg_last_five}
+            label="Avg Last 5"
+            icon={Heart}
+            color="#c084fc"
+            delay={0}
+          />
+          <StatCard
+            value={`${analytics.success_rate}%`}
+            label="Success Rate"
+            icon={Target}
+            color="#8b5cf6"
+            delay={0.1}
+          />
+          <StatCard
+            value={analytics.trend === 'improving' ? 'Rising' : analytics.trend === 'declining' ? 'Falling' : 'Steady'}
+            label="Trend"
+            icon={TrendIcon}
+            color={analytics.trend === 'improving' ? '#4ade80' : analytics.trend === 'declining' ? '#f87171' : '#c084fc'}
+            delay={0.2}
+          />
         </div>
-      )}
+
+        {/* Insight Card */}
+        {analytics.preference_summary && (
+          <motion.div
+            className="relative overflow-hidden rounded-2xl p-5 glass-card"
+            style={{
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(109, 44, 142, 0.06))',
+              border: '1px solid rgba(139, 92, 246, 0.15)',
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <motion.div
+              className="absolute inset-0"
+              style={{ background: 'linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.05), transparent)' }}
+              animate={{ x: ['-100%', '100%'] }}
+              transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
+            />
+            <p className="text-sm leading-relaxed relative" style={{ color: '#f0ecf9' }}>
+              <span className="font-serif font-semibold" style={{ color: '#c084fc' }}>Insight: </span>
+              {analytics.preference_summary}
+            </p>
+          </motion.div>
+        )}
+
+        {/* Dimension Bars */}
+        {analytics.dimension_averages && (
+          <div className="space-y-4">
+            <h4 className="label-editorial">Your Preference Profile</h4>
+            {Object.entries(analytics.dimension_averages).map(([dim, val], i) => (
+              <DimensionBar
+                key={dim}
+                dimension={dim}
+                value={val}
+                delay={0.4 + i * 0.06}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

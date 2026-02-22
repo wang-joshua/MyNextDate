@@ -45,8 +45,8 @@ export default function HeartRating({ rating, onChange, size = 20, readonly = fa
               >
                 <Heart
                   size={size}
-                  className="fill-violet-400 drop-shadow-[0_0_8px_rgba(139,92,246,0.6)]"
-                  style={{ color: '#c084fc' }}
+                  className="drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]"
+                  style={{ fill: '#ef4444', color: '#f87171' }}
                 />
               </motion.div>
             )}
@@ -62,8 +62,8 @@ export default function HeartRating({ rating, onChange, size = 20, readonly = fa
               >
                 <Heart
                   size={size}
-                  className="fill-violet-400 drop-shadow-[0_0_8px_rgba(139,92,246,0.6)]"
-                  style={{ color: '#c084fc' }}
+                  className="drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]"
+                  style={{ fill: '#ef4444', color: '#f87171' }}
                 />
               </motion.div>
             )}

@@ -229,11 +229,11 @@ export default function Dashboard() {
 
       {/* ============ SECTION 2: HISTORY + ANALYTICS ============ */}
       <section className="snap-section px-4 sm:px-6 py-8 pt-20">
-        <div className="max-w-6xl mx-auto h-full flex flex-col justify-center">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 max-h-[calc(100vh-8rem)]">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             {/* Left: Date History */}
             <motion.div
-              className="glass-card rounded-3xl p-6 flex flex-col min-h-0"
+              className="glass-card rounded-3xl p-6 flex flex-col"
               initial={{ opacity: 0, x: -30, scale: 0.97 }}
               whileInView={{ opacity: 1, x: 0, scale: 1 }}
               viewport={{ once: true, margin: '-100px' }}
@@ -271,14 +271,14 @@ export default function Dashboard() {
                   Add Date
                 </motion.button>
               </div>
-              <div className="flex-1 min-h-0 overflow-hidden">
+              <div>
                 <DateHistory dates={dates} onUpdate={refresh} />
               </div>
             </motion.div>
 
             {/* Right: Analytics */}
             <motion.div
-              className="glass-card rounded-3xl p-6 flex flex-col min-h-0"
+              className="glass-card rounded-3xl p-6 flex flex-col"
               initial={{ opacity: 0, x: 30, scale: 0.97 }}
               whileInView={{ opacity: 1, x: 0, scale: 1 }}
               viewport={{ once: true, margin: '-100px' }}
@@ -288,7 +288,7 @@ export default function Dashboard() {
                 <BarChart3 className="w-5 h-5" style={{ color: '#6b5f7e' }} />
                 <h2 className="heading-section text-xl">Your Analytics</h2>
               </div>
-              <div className="flex-1 min-h-0 overflow-y-auto">
+              <div>
                 <Analytics refreshTrigger={refreshKey} />
               </div>
             </motion.div>
