@@ -53,7 +53,7 @@ export default function DateHistory({ dates, onUpdate }) {
   }
 
   return (
-    <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
+    <div className="space-y-2 pr-1">
       <AnimatePresence>
         {dates.map((date, i) => (
           <motion.div

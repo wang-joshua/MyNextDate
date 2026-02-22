@@ -42,10 +42,9 @@ export default function Logo({ className = "w-10 h-10" }) {
       <style>{`
         @keyframes sparkle-${uid} {
           0%, 100% { opacity: 0; transform: scale(0); }
-          10% { opacity: 1; transform: scale(1.4); }
-          25% { opacity: 1; transform: scale(1.1); }
-          45% { opacity: 0.9; transform: scale(1.0); }
-          60% { opacity: 0; transform: scale(0); }
+          8% { opacity: 1; transform: scale(1.3); }
+          22% { opacity: 0.9; transform: scale(1.0); }
+          40% { opacity: 0; transform: scale(0); }
         }
       `}</style>
 
