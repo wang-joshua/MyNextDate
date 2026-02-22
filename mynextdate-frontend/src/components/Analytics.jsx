@@ -19,38 +19,38 @@ const DIMENSION_DISPLAY = {
 function StatCard({ value, label, icon: Icon, color, delay = 0, showHearts = false }) {
   return (
     <motion.div
-      className="glass-card rounded-2xl p-5 text-center"
-      initial={{ opacity: 0, y: 30, scale: 0.97 }}
+      className="glass-card rounded-2xl p-4 text-center"
+      initial={{ opacity: 0, y: 20, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{
-        y: -4,
-        boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.1)',
+        y: -3,
+        boxShadow: '0 8px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(139, 92, 246, 0.1)',
         borderColor: 'rgba(139, 92, 246, 0.3)',
       }}
     >
       {showHearts ? (
         <>
-          <div className="flex justify-center gap-1 mb-3">
+          <div className="flex justify-center gap-1 mb-2">
             {[1, 2, 3, 4, 5].map((heartIndex) => {
               const fillAmount = value >= heartIndex ? 1 : value >= heartIndex - 0.5 ? (value % 1) : 0
-              
+
               return (
-                <div key={heartIndex} className="relative" style={{ width: 20, height: 20 }}>
+                <div key={heartIndex} className="relative" style={{ width: 18, height: 18 }}>
                   <Heart
-                    size={20}
+                    size={18}
                     className="absolute inset-0"
                     style={{ color: '#6b5f7e' }}
                   />
-                  
+
                   {fillAmount > 0 && (
                     <div
                       className="absolute inset-0 overflow-hidden"
-                      style={{ width: 20 * fillAmount }}
+                      style={{ width: 18 * fillAmount }}
                     >
                       <Heart
-                        size={20}
-                        className="drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]"
+                        size={18}
+                        className="drop-shadow-[0_0_6px_rgba(239,68,68,0.6)]"
                         style={{ fill: '#ef4444', color: '#f87171' }}
                       />
                     </div>
@@ -71,9 +71,9 @@ function StatCard({ value, label, icon: Icon, color, delay = 0, showHearts = fal
         </>
       ) : (
         <>
-          <Icon className="w-5 h-5 mx-auto mb-2" style={{ color }} />
+          <Icon className="w-5 h-5 mx-auto mb-1.5" style={{ color }} />
           <motion.p
-            className="font-serif text-4xl font-bold"
+            className="font-serif text-3xl font-bold"
             style={{ color }}
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -83,7 +83,7 @@ function StatCard({ value, label, icon: Icon, color, delay = 0, showHearts = fal
           </motion.p>
         </>
       )}
-      <p className="label-editorial mt-2">{label}</p>
+      <p className="label-editorial mt-1.5">{label}</p>
     </motion.div>
   )
 }
@@ -95,7 +95,7 @@ function DimensionBar({ dimension, value, delay = 0 }) {
 
   return (
     <motion.div
-      className="space-y-1.5"
+      className="space-y-1"
       initial={{ opacity: 0, x: -15 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -106,7 +106,7 @@ function DimensionBar({ dimension, value, delay = 0 }) {
         <span className="text-right" style={{ color: '#6b5f7e' }}>{display.high}</span>
       </div>
       <div
-        className="h-2 rounded-full overflow-hidden relative"
+        className="h-1.5 rounded-full overflow-hidden relative"
         style={{ background: 'rgba(10, 8, 18, 0.8)', border: '1px solid rgba(109, 44, 142, 0.08)' }}
       >
         <motion.div
@@ -118,10 +118,10 @@ function DimensionBar({ dimension, value, delay = 0 }) {
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         </motion.div>
         <motion.div
-          className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full"
-          style={{ boxShadow: '0 0 10px rgba(139, 92, 246, 0.4), 0 0 4px white' }}
+          className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-white rounded-full"
+          style={{ boxShadow: '0 0 8px rgba(139, 92, 246, 0.4), 0 0 3px white' }}
           initial={{ left: '0%' }}
-          animate={{ left: `calc(${percentage}% - 6px)` }}
+          animate={{ left: `calc(${percentage}% - 5px)` }}
           transition={{ delay: delay + 0.1, duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
         />
       </div>
@@ -155,9 +155,9 @@ export default function Analytics({ refreshTrigger }) {
   // Initial load — no data yet, show full loading state
   if (loading && analytics === null) {
     return (
-      <div className="flex flex-col items-center justify-center py-16">
-        <HeartLoader size={52} />
-        <p className="text-sm mt-4 font-serif italic" style={{ color: '#6b5f7e' }}>
+      <div className="flex flex-col items-center justify-center py-12">
+        <HeartLoader size={48} />
+        <p className="text-sm mt-3 font-serif italic" style={{ color: '#6b5f7e' }}>
           Analyzing your patterns...
         </p>
       </div>
@@ -166,8 +166,8 @@ export default function Analytics({ refreshTrigger }) {
 
   if (!analytics || analytics.total_dates === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <Heart className="w-12 h-12 mb-3" style={{ color: '#6b5f7e' }} />
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <Heart className="w-11 h-11 mb-2" style={{ color: '#6b5f7e' }} />
         <p className="text-sm mt-1 font-serif italic" style={{ color: '#6b5f7e' }}>
           Rate some dates to unlock insights
         </p>
@@ -202,11 +202,11 @@ export default function Analytics({ refreshTrigger }) {
       </AnimatePresence>
 
       <div
-        className="space-y-6 pb-2"
+        className="space-y-5 pb-1"
         style={{ opacity: loading ? 0.45 : 1, transition: 'opacity 0.3s ease' }}
       >
         {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2">
           <StatCard
             value={analytics.avg_last_five}
             label="Average Score"
@@ -233,12 +233,12 @@ export default function Analytics({ refreshTrigger }) {
         {/* Insight Card */}
         {analytics.preference_summary && (
           <motion.div
-            className="relative overflow-hidden rounded-2xl p-5 glass-card"
+            className="relative overflow-hidden rounded-2xl p-4 glass-card"
             style={{
               background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(109, 44, 142, 0.06))',
               border: '1px solid rgba(139, 92, 246, 0.15)',
             }}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
@@ -257,7 +257,7 @@ export default function Analytics({ refreshTrigger }) {
 
         {/* Dimension Bars */}
         {analytics.dimension_averages && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <h4 className="label-editorial">Your Preference Profile</h4>
             {Object.entries(analytics.dimension_averages).map(([dim, val], i) => (
               <DimensionBar

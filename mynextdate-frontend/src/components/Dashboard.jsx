@@ -251,7 +251,7 @@ export default function Dashboard() {
       </section>
 
       {/* ============ SECTION 2: HISTORY + ANALYTICS ============ */}
-      <section id="section-history" className="snap-section px-4 sm:px-6 py-8 pt-20">
+      <section id="section-history" className="snap-section px-4 sm:px-6 py-8 pt-24">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             {/* Left: Date History */}
