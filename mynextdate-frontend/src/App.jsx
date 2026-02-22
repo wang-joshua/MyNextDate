@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import AuthPage from './components/AuthPage'
@@ -19,6 +20,7 @@ const MIN_SPLASH_MS = 1000
 
 function AppContent() {
   const { user, loading: authLoading } = useAuth()
+  const location = useLocation()
 
   // Track when we first mounted so we can compute the real auth duration.
   const loadStartRef = useRef(Date.now())
@@ -39,25 +41,18 @@ function AppContent() {
     const remaining = total - elapsed
 
     setFillDuration(total)
-    // No cleanup return — intentional. StrictMode double-invoke fires two timers,
-    // both safely call setSplashDone(true); the second is a no-op.
     setTimeout(() => setSplashDone(true), remaining)
   }, [authLoading]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Login splash: fires when user transitions null → User AFTER the initial splash
-  // has already completed.  A ref mirrors splashDone so the effect below doesn't
-  // need splashDone in its deps (which would re-run it on every splash change).
   const splashDoneRef = useRef(false)
   useEffect(() => { splashDoneRef.current = splashDone }, [splashDone])
 
   const prevUserRef = useRef(null)
   useEffect(() => {
     if (prevUserRef.current === null && user !== null && splashDoneRef.current) {
-      // User just logged in from the AuthPage — show a fresh 1-second splash.
       setSplashDone(false)
       setFillDuration(MIN_SPLASH_MS)
-      // No cleanup return — intentional (same StrictMode reasoning as above).
-      // Second run sees prevUserRef already set to user, so condition is false.
       setTimeout(() => setSplashDone(true), MIN_SPLASH_MS)
     }
     prevUserRef.current = user
@@ -73,7 +68,6 @@ function AppContent() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* loop=false: fills once at the speed that matches the actual load time */}
           <HeartLoader size={72} durationMs={fillDuration} loop={false} />
         </motion.div>
         <motion.p
@@ -91,29 +85,55 @@ function AppContent() {
 
   return (
     <AnimatePresence mode="wait">
-      {user ? (
-        <motion.div
-          key="dashboard"
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.98 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10"
-        >
-          <Dashboard />
-        </motion.div>
-      ) : (
-        <motion.div
-          key="auth"
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.98 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10"
-        >
-          <AuthPage />
-        </motion.div>
-      )}
+      <Routes location={location} key={location.pathname}>
+        {/* Public route — redirect to dashboard if already logged in */}
+        <Route
+          path="/login"
+          element={
+            user ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <motion.div
+                key="auth"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="relative z-10"
+              >
+                <AuthPage />
+              </motion.div>
+            )
+          }
+        />
+
+        {/* Protected route — redirect to login if not authenticated */}
+        <Route
+          path="/dashboard"
+          element={
+            user ? (
+              <motion.div
+                key="dashboard"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="relative z-10"
+              >
+                <Dashboard />
+              </motion.div>
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+
+        {/* Default: redirect based on auth state */}
+        <Route
+          path="*"
+          element={<Navigate to={user ? '/dashboard' : '/login'} replace />}
+        />
+      </Routes>
     </AnimatePresence>
   )
 }

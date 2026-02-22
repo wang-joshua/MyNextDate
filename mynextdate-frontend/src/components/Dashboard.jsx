@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { LogOut, Plus, History, BarChart3, ChevronDown } from 'lucide-react'
+import { LogOut, Plus, History, BarChart3 } from 'lucide-react'
 import Logo from './Logo'
 import VideoCards from './VideoCards'
 import { useAuth } from '../context/AuthContext'
@@ -166,30 +166,13 @@ export default function Dashboard() {
               <motion.div className="w-full max-w-xl mt-4" variants={fadeUp}>
                 <RecommendButton onDateAdded={refresh} dateCount={dates.length} onAddDate={() => setShowAddModal(true)} />
               </motion.div>
-
-              {/* Scroll indicator */}
-              <motion.button
-                className="flex items-center gap-2 mt-6 cursor-pointer bg-transparent border-none p-0"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.5, duration: 0.8 }}
-                onClick={() => document.getElementById('section-history')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                <span className="label-editorial" style={{ fontSize: '0.6rem' }}>Scroll to explore</span>
-                <motion.div
-                  animate={{ y: [0, 6, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  <ChevronDown className="w-5 h-5" style={{ color: '#6b5f7e' }} />
-                </motion.div>
-              </motion.button>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* ============ SECTION 2: HISTORY + ANALYTICS ============ */}
-      <section className="snap-section px-4 sm:px-6 py-8 pt-20">
+      <section id="section-history" className="snap-section px-4 sm:px-6 py-8 pt-20">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             {/* Left: Date History */}
