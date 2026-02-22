@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import AuthPage from './components/AuthPage'
 import Dashboard from './components/Dashboard'
-import HeartLoader from './components/HeartLoader'
+import LogoLoader from './components/LogoLoader'
 
 function StarField() {
   const stars = useMemo(() => {
@@ -60,11 +60,7 @@ function AppContent() {
   // Track when we first mounted so we can compute the real auth duration.
   const loadStartRef = useRef(Date.now())
 
-  // fillDuration: how long the ONE-SHOT heart fill animation runs.
-  // Starts at MIN so the heart begins filling immediately on mount.
-  const [fillDuration, setFillDuration] = useState(MIN_SPLASH_MS)
-
-  // splashDone: true only after the fill animation has completed.
+  // splashDone: true only after the minimum splash duration has passed.
   const [splashDone, setSplashDone] = useState(false)
 
   // Initial splash: fires when auth resolves on page load / refresh.
@@ -72,10 +68,7 @@ function AppContent() {
     if (authLoading) return
 
     const elapsed = Date.now() - loadStartRef.current
-    const total = Math.max(elapsed, MIN_SPLASH_MS)
-    const remaining = total - elapsed
-
-    setFillDuration(total)
+    const remaining = Math.max(0, MIN_SPLASH_MS - elapsed)
     setTimeout(() => setSplashDone(true), remaining)
   }, [authLoading]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -87,7 +80,6 @@ function AppContent() {
   useEffect(() => {
     if (prevUserRef.current === null && user !== null && splashDoneRef.current) {
       setSplashDone(false)
-      setFillDuration(MIN_SPLASH_MS)
       setTimeout(() => setSplashDone(true), MIN_SPLASH_MS)
     }
     prevUserRef.current = user
@@ -103,7 +95,7 @@ function AppContent() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          <HeartLoader size={72} durationMs={fillDuration} loop={false} />
+          <LogoLoader size={96} />
         </motion.div>
         <motion.p
           className="mt-6 text-sm font-serif italic"

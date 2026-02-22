@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { LogOut, Plus, History, BarChart3, ArrowLeft } from 'lucide-react'
+import { LogOut, Plus, History, BarChart3, ArrowLeft, Globe } from 'lucide-react'
 import Logo from './Logo'
 import VideoCards from './VideoCards'
 import { useAuth } from '../context/AuthContext'
@@ -99,6 +99,17 @@ export default function Dashboard() {
             <span className="text-sm hidden sm:block" style={{ color: '#6b5f7e' }}>
               {user?.email}
             </span>
+            <motion.button
+              onClick={() => setShowExploreCities(true)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm transition-all"
+              style={{ color: '#9a8fad', border: '1px solid rgba(139,92,246,0.15)' }}
+              title="Explore Cities"
+              whileHover={{ scale: 1.04, color: '#c084fc', borderColor: 'rgba(139,92,246,0.4)', background: 'rgba(139,92,246,0.08)' }}
+              whileTap={{ scale: 0.96 }}
+            >
+              <Globe className="w-4 h-4" />
+              <span className="hidden sm:block">Explore Cities</span>
+            </motion.button>
             <motion.button
               onClick={signOut}
               className="p-2.5 rounded-xl transition-all"
