@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes.recommend import router as recommend_router
 from routes.dates import router as dates_router
 from routes.analytics import router as analytics_router
+from routes.explore import router as explore_router
+from routes.social import router as social_router
 
 app = FastAPI(title="MyNextDate API", version="1.0.0")
 
@@ -17,6 +19,8 @@ app.add_middleware(
 app.include_router(recommend_router)
 app.include_router(dates_router)
 app.include_router(analytics_router)
+app.include_router(explore_router)
+app.include_router(social_router)
 
 
 @app.on_event("startup")
@@ -25,18 +29,50 @@ async def startup():
     import os
     from services.actian_service import get_client, init_collection, seed_activities, ensure_cache
 
+    actian_client = None
     try:
-        client = get_client()
+        actian_client = get_client()
         # Create collection + seed if it's empty
-        init_collection(client)
-        stats = client.describe_collection("date_activities")
+        init_collection(actian_client)
+        stats = actian_client.describe_collection("date_activities")
         count = getattr(stats, "point_count", 0) or getattr(stats, "vectors_count", 0) or 0
         if count == 0:
             activities_path = os.path.join(os.path.dirname(__file__), "data", "activities.json")
-            seed_activities(client, activities_path)
+            seed_activities(actian_client, activities_path)
         ensure_cache()
     except Exception as e:
         print(f"Warning: Startup init failed: {e}")
+
+    # Synthetic couples — pure in-memory, no Actian
+    try:
+        from services.couples_service import load_couples
+        couples_path = os.path.join(os.path.dirname(__file__), "data", "synthetic_couples.json")
+        load_couples(couples_path)
+    except Exception as e:
+        print(f"Warning: Couples load failed: {e}")
+
+    # City activities setup
+    try:
+        from services.city_service import init_city_collection, seed_city_activities, load_city_cache
+        city_path = os.path.join(os.path.dirname(__file__), "data", "city_activities.json")
+        init_city_collection()
+        city_seeded = False
+        if actian_client:
+            try:
+                city_stats = actian_client.describe_collection("city_date_spots")
+                city_count = getattr(city_stats, "point_count", 0) or getattr(city_stats, "vectors_count", 0) or 0
+                if city_count == 0:
+                    seed_city_activities(city_path)
+                    city_seeded = True
+                else:
+                    load_city_cache(city_path)
+                    city_seeded = True
+            except Exception:
+                pass
+        if not city_seeded:
+            load_city_cache(city_path)
+    except Exception as e:
+        print(f"Warning: City activities init failed: {e}")
 
     # Ensure user_locations table exists in Supabase
     await _ensure_location_table()

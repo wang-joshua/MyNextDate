@@ -37,7 +37,7 @@ async def get_recommendations(
     user: dict = Depends(get_current_user),
     skip: str = Query(default=""),
 ):
-    """Compute preference vector and find top 2 matching activities."""
+    """Compute preference vector and find top 3 matching activities."""
     sb = get_supabase()
 
     skip_ids = [int(x) for x in skip.split(",") if x.strip().isdigit()]
@@ -69,7 +69,7 @@ async def get_recommendations(
     pref_vector = apply_repeat_penalty(pref_vector, activity_ids, activity_vectors)
 
     exclude = list(set(activity_ids + skip_ids))
-    recommendations = search_similar(pref_vector, top_k=2, exclude_ids=exclude)
+    recommendations = search_similar(pref_vector, top_k=3, exclude_ids=exclude)
 
     return {
         "recommendations": recommendations,
@@ -121,7 +121,7 @@ async def get_worst_recommendations(user: dict = Depends(get_current_user)):
             rated_dates.append({"activity_id": d["activity_id"], "rating": d["rating"]})
 
     pref_vector = compute_preference_vector(rated_dates, activity_vectors)
-    worst = search_worst(pref_vector, top_k=2)
+    worst = search_worst(pref_vector, top_k=3)
 
     return {
         "recommendations": worst,

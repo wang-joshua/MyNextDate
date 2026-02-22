@@ -1,6 +1,8 @@
 """Browser geolocation + reverse geocoding and local activity trend aggregation."""
 import httpx
+import numpy as np
 from supabase import Client
+from services.actian_service import get_activity_vectors, search_similar
 
 
 # In-memory cache: user_id -> city
@@ -77,9 +79,13 @@ async def _reverse_geocode(lat: float, lng: float) -> tuple[str | None, str | No
 
 async def get_local_trends(city: str, user_id: str, sb: Client) -> dict:
     """
-    Aggregate activity popularity among users in the same city.
-    Excludes the current user's own dates from the trends.
-    Returns top 5 activities with percentages.
+    Aggregate activity taste for users in the same city via Actian Vector AI DB.
+
+    Approach:
+    1. Fetch activity_ids from date_history of local users (Supabase SQL)
+    2. Look up their 9D vectors from the Actian in-memory cache
+    3. Compute the centroid (city taste profile in vector space)
+    4. Run search_similar(centroid) against Actian → top 5 by cosine similarity
     """
     try:
         # Get all user_ids in this city
@@ -92,9 +98,9 @@ async def get_local_trends(city: str, user_id: str, sb: Client) -> dict:
         if not other_user_ids:
             return {"city": city, "total_users": 0, "total_dates": 0, "trends": []}
 
-        # Get all date_history rows for other users in this city
+        # Get activity_id + activity_name for other users' date history
         dates_result = sb.table("date_history").select(
-            "activity_name"
+            "activity_id, activity_name"
         ).in_("user_id", other_user_ids).execute()
 
         dates = dates_result.data or []
@@ -103,23 +109,32 @@ async def get_local_trends(city: str, user_id: str, sb: Client) -> dict:
         if total_dates == 0:
             return {"city": city, "total_users": len(other_user_ids), "total_dates": 0, "trends": []}
 
-        # Count activity frequencies
-        activity_counts: dict[str, int] = {}
-        for d in dates:
-            name = d.get("activity_name", "").strip()
-            if name:
-                activity_counts[name] = activity_counts.get(name, 0) + 1
+        # Collect valid activity_ids (exclude 0 = custom/unmatched dates)
+        activity_ids = [d["activity_id"] for d in dates if d.get("activity_id") and d["activity_id"] != 0]
 
-        # Sort by count descending, take top 5
-        sorted_activities = sorted(activity_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+        if not activity_ids:
+            return {"city": city, "total_users": len(other_user_ids), "total_dates": total_dates, "trends": []}
+
+        # Look up vectors from Actian in-memory cache
+        vectors_map = get_activity_vectors(activity_ids)
+
+        if not vectors_map:
+            return {"city": city, "total_users": len(other_user_ids), "total_dates": total_dates, "trends": []}
+
+        # Compute city taste centroid
+        vectors = np.array(list(vectors_map.values()))
+        centroid = vectors.mean(axis=0).tolist()
+
+        # Search Actian for top 5 activities matching the city's taste profile
+        results = search_similar(centroid, top_k=5)
 
         trends = [
             {
-                "activity_name": name,
-                "count": count,
-                "percentage": round(count / total_dates * 100, 1),
+                "activity_name": r["name"],
+                "count": 0,           # not a raw count — vector-ranked
+                "percentage": round(r["score"] * 100, 1),
             }
-            for name, count in sorted_activities
+            for r in results
         ]
 
         return {

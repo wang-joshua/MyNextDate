@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
-import { motion } from 'framer-motion'
-import { LogOut, Plus, History, BarChart3 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { LogOut, Plus, History, BarChart3, ArrowLeft } from 'lucide-react'
 import Logo from './Logo'
 import VideoCards from './VideoCards'
 import { useAuth } from '../context/AuthContext'
@@ -8,6 +8,7 @@ import RecommendButton from './RecommendButton'
 import DateHistory from './DateHistory'
 import AddDateModal from './AddDateModal'
 import Analytics from './Analytics'
+import ExploreCities from './ExploreCities'
 import { getDateHistory, saveLocation } from '../lib/api'
 
 const fadeUp = {
@@ -28,6 +29,14 @@ export default function Dashboard() {
   const [dates, setDates] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
+  const [heroShrunken, setHeroShrunken] = useState(false)
+  const [showExploreCities, setShowExploreCities] = useState(false)
+  const [recommendKey, setRecommendKey] = useState(0)
+
+  const handleBack = useCallback(() => {
+    setHeroShrunken(false)
+    setRecommendKey((k) => k + 1) // remounts RecommendButton, clearing all recs/trends state
+  }, [])
 
   const refresh = useCallback(() => {
     setRefreshKey((k) => k + 1)
@@ -106,37 +115,80 @@ export default function Dashboard() {
 
       {/* ============ SECTION 1: HERO / RECOMMEND ============ */}
       <section className="snap-section px-4 sm:px-6 pt-20">
-        <div className="max-w-6xl mr-auto ml-8 sm:ml-12 h-full flex items-center">
-          <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-8 lg:gap-12 w-full items-start">
-            {/* Left: Camera roll scrolling media */}
-            <motion.div
-              className="overflow-hidden rounded-3xl"
-              style={{
-                height: '88vh',
-                border: '1px solid rgba(139, 92, 246, 0.15)',
-                boxShadow: '0 8px 40px rgba(109, 44, 142, 0.2), 0 0 60px rgba(139, 92, 246, 0.05)',
-              }}
-              initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <VideoCards mode="inline" />
-            </motion.div>
+        <div className={`${heroShrunken ? 'max-w-5xl mx-auto w-full' : 'max-w-6xl mr-auto ml-8 sm:ml-12'} h-full flex items-${heroShrunken ? 'start pt-6' : 'center'}`}>
+          <motion.div
+            layout
+            className={`grid gap-8 lg:gap-12 w-full items-start ${heroShrunken ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-[1.3fr_1fr]'}`}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {/* Left: Camera roll scrolling media — exits when hero shrinks */}
+            <AnimatePresence>
+              {!heroShrunken && (
+                <motion.div
+                  key="video-col"
+                  className="overflow-hidden rounded-3xl"
+                  style={{
+                    height: '88vh',
+                    border: '1px solid rgba(139, 92, 246, 0.15)',
+                    boxShadow: '0 8px 40px rgba(109, 44, 142, 0.2), 0 0 60px rgba(139, 92, 246, 0.05)',
+                  }}
+                  initial={{ opacity: 0, x: -40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, x: -40 }}
+                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <VideoCards mode="inline" />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Right: Hero text + Recommend button */}
             <motion.div
-              className="flex flex-col items-start gap-4 pt-16"
+              layout
+              className={`flex flex-col items-start gap-4 ${heroShrunken ? 'pt-4' : 'pt-16'}`}
               variants={stagger}
               initial="hidden"
               animate="visible"
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
-              <motion.p className="label-editorial" variants={fadeUp}>
-                Your personal date curator
-              </motion.p>
+              <AnimatePresence>
+                {heroShrunken && (
+                  <motion.button
+                    key="back-btn"
+                    onClick={handleBack}
+                    className="flex items-center gap-1.5 text-sm -mt-1 mb-1"
+                    style={{ color: '#6b5f7e' }}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -8 }}
+                    transition={{ duration: 0.25 }}
+                    whileHover={{ color: '#c084fc' }}
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    Back
+                  </motion.button>
+                )}
+              </AnimatePresence>
+
+              <AnimatePresence>
+                {!heroShrunken && (
+                  <motion.p
+                    key="label"
+                    className="label-editorial"
+                    variants={fadeUp}
+                    exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    Your personal date curator
+                  </motion.p>
+                )}
+              </AnimatePresence>
 
               <motion.h2
-                className="heading-hero text-4xl sm:text-5xl lg:text-6xl"
+                layout
+                className={`heading-hero ${heroShrunken ? 'text-2xl sm:text-3xl' : 'text-4xl sm:text-5xl lg:text-6xl'}`}
                 variants={fadeUp}
+                transition={{ layout: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
               >
                 <span style={{
                   background: 'linear-gradient(135deg, #f0ecf9, #c084fc)',
@@ -155,19 +207,35 @@ export default function Dashboard() {
                 </span>
               </motion.h2>
 
-              <motion.p
-                className="text-lg max-w-md font-serif italic"
-                style={{ color: '#9a8fad' }}
-                variants={fadeUp}
-              >
-                Let AI craft your next unforgettable experience
-              </motion.p>
+              <AnimatePresence>
+                {!heroShrunken && (
+                  <motion.p
+                    key="subtitle"
+                    className="text-lg max-w-md font-serif italic"
+                    style={{ color: '#9a8fad' }}
+                    variants={fadeUp}
+                    exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    Let AI craft your next unforgettable experience
+                  </motion.p>
+                )}
+              </AnimatePresence>
 
-              <motion.div className="w-full max-w-xl mt-4" variants={fadeUp}>
-                <RecommendButton onDateAdded={refresh} dateCount={dates.length} onAddDate={() => setShowAddModal(true)} />
+              <motion.div layout className={`w-full ${heroShrunken ? '' : 'max-w-xl'} mt-4`} variants={fadeUp}>
+                <RecommendButton
+                  key={recommendKey}
+                  onDateAdded={refresh}
+                  dateCount={dates.length}
+                  onAddDate={() => setShowAddModal(true)}
+                  onSearch={setHeroShrunken}
+                  onExploreCities={() => setShowExploreCities(true)}
+                />
               </motion.div>
+
+
             </motion.div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -245,6 +313,12 @@ export default function Dashboard() {
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
         onDateAdded={refresh}
+      />
+
+      {/* Explore Cities Overlay */}
+      <ExploreCities
+        isOpen={showExploreCities}
+        onClose={() => setShowExploreCities(false)}
       />
     </div>
   )

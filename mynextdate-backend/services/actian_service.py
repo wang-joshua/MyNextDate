@@ -163,6 +163,47 @@ def get_all_activities() -> list[dict]:
     ]
 
 
+def seed_single_activity(name: str, description: str, vector: list[float]) -> int:
+    """Append a new activity to activities.json, update caches, and upsert to Actian."""
+    import os
+    _warm_cache()
+
+    activities_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "data", "activities.json"
+    )
+
+    with open(activities_path) as f:
+        activities = json.load(f)
+
+    new_id = max(a["id"] for a in activities) + 1 if activities else 200
+
+    new_entry = {"id": new_id, "name": name, "description": description, "vector": vector}
+    activities.append(new_entry)
+
+    with open(activities_path, "w") as f:
+        json.dump(activities, f, indent=2)
+
+    # Update in-memory caches immediately
+    _vector_cache[new_id] = vector
+    _payload_cache[new_id] = {"name": name, "description": description}
+
+    # Upsert to Actian
+    try:
+        client = get_client()
+        client.batch_upsert(
+            COLLECTION_NAME,
+            [new_id],
+            [vector],
+            [{"name": name, "description": description}]
+        )
+    except Exception as e:
+        print(f"Warning: Actian upsert for new activity failed: {e}")
+
+    print(f"Seeded new activity id={new_id}: {name}")
+    return new_id
+
+
 def store_custom_date_vector(date_record_id: str, vector: list[float]):
     """Store a Groq-generated vector for a custom date (activity_id=0)."""
     _custom_date_vectors[date_record_id] = vector

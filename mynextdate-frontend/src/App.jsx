@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { AuthProvider, useAuth } from './context/AuthContext'
@@ -6,9 +6,44 @@ import AuthPage from './components/AuthPage'
 import Dashboard from './components/Dashboard'
 import HeartLoader from './components/HeartLoader'
 
+function StarField() {
+  const stars = useMemo(() => {
+    return Array.from({ length: 80 }, (_, i) => ({
+      id: i,
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      size: `${1 + Math.random()}px`,
+      opacity: 0.15 + Math.random() * 0.5,
+      dur: `${3 + Math.random() * 5}s`,
+      delay: `${-Math.random() * 8}s`,
+    }))
+  }, [])
+
+  return (
+    <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+      {stars.map((s) => (
+        <div
+          key={s.id}
+          className="star"
+          style={{
+            top: s.top,
+            left: s.left,
+            width: s.size,
+            height: s.size,
+            '--star-opacity': s.opacity,
+            '--star-dur': s.dur,
+            '--star-delay': s.delay,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 function AmbientBackground() {
   return (
     <div className="ambient-bg">
+      <StarField />
       <div className="ambient-orb ambient-orb-1" />
       <div className="ambient-orb ambient-orb-2" />
       <div className="ambient-orb ambient-orb-3" />

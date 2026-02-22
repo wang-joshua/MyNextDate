@@ -21,6 +21,21 @@
 }
 
 /* ============================================
+   STAR FIELD
+   ============================================ */
+@keyframes twinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: calc(var(--star-opacity) * 0.08); transform: scale(0.5); }
+}
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  animation: twinkle var(--star-dur) ease-in-out infinite var(--star-delay);
+  pointer-events: none;
+}
+
+/* ============================================
    BASE
    ============================================ */
 * { box-sizing: border-box; }
@@ -168,7 +183,7 @@ input:focus, textarea:focus {
    SCROLL SNAP
    ============================================ */
 .snap-container {
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y proximity;
   overflow-y: auto;
   height: 100vh;
 }

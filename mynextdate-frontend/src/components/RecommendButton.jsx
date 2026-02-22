@@ -1,20 +1,22 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, HeartCrack, Loader2, Plus, Heart, X, ChevronDown, MapPin } from 'lucide-react'
+import { Sparkles, HeartCrack, Loader2, Plus, Heart, X, ChevronDown, MapPin, Globe, RefreshCw } from 'lucide-react'
 import { getRecommendations, getWorstRecommendations, addDate, getLocalTrends } from '../lib/api'
+import SimilarCouples from './SimilarCouples'
 
-export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate }) {
+export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate, onSearch, onExploreCities }) {
   const [recs, setRecs] = useState(null)
   const [loading, setLoading] = useState(false)
   const [mode, setMode] = useState(null)
   const [adding, setAdding] = useState(null)
+  const [chosenId, setChosenId] = useState(null)
   const [showPulse, setShowPulse] = useState(false)
   const [skippedIds, setSkippedIds] = useState([])
   const [needsHistory, setNeedsHistory] = useState(false)
   const [localTrends, setLocalTrends] = useState(null)
   const SCROLL_EXIT_MS = 850
 
-  const handleRecommend = async (breakup = false) => {
+  const handleRecommend = async (breakup = false, extraSkips = []) => {
     if (dateCount === 0) {
       setNeedsHistory(true)
       return
@@ -23,6 +25,9 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
     setLoading(true)
     setShowPulse(true)
     const newMode = breakup ? 'breakup' : 'good'
+
+    // Collapse the hero layout before fetching
+    onSearch?.(true)
 
     // Hide existing recommendations immediately so the scroll hint disappears
     setRecs(null)
@@ -34,13 +39,19 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
 
     setMode(newMode)
     try {
-      const currentSkipped = [...skippedIds]
+      const currentSkipped = [...skippedIds, ...extraSkips]
       const [data, trendsData] = await Promise.all([
         breakup ? getWorstRecommendations() : getRecommendations(currentSkipped),
         getLocalTrends().catch(() => null),
       ])
 
-      if (trendsData) setLocalTrends(trendsData)
+      if (trendsData) {
+        setLocalTrends(trendsData)
+        // Cache the user's city for ExploreCities default selection
+        if (trendsData.city) {
+          localStorage.setItem('userCity', trendsData.city)
+        }
+      }
 
       // Wait for the scroll indicator to fully fade out before showing recs
       setTimeout(() => {
@@ -60,14 +71,19 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
   }
 
   const handleAddDate = async (activityId) => {
+    setChosenId(activityId)
     setAdding(activityId)
     try {
       await addDate(activityId)
-      // Remove the added date from recommendations
-      setRecs((prev) => prev?.filter((r) => r.id !== activityId) || null)
+      // Vanish all remaining cards — clean slate after a choice is made
+      setRecs(null)
+      setChosenId(null)
       onDateAdded?.()
+      // Wait for the exit animation to finish before scrolling to history
+      setTimeout(() => document.getElementById('section-history')?.scrollIntoView({ behavior: 'smooth' }), 500)
     } catch (err) {
       console.error(err)
+      setChosenId(null)
     }
     setAdding(null)
   }
@@ -144,8 +160,8 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
         </div>
       </div>
 
-      {/* Results float as overlay — no layout shift */}
-      <div className="absolute left-0 right-0 z-10" style={{ top: 'calc(100% + 1rem)' }}>
+      {/* Results flow in-document below the button */}
+      <div className="mt-4">
         <AnimatePresence>
           {needsHistory && (
             <motion.div
@@ -181,28 +197,32 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
         <AnimatePresence mode="wait">
           {recs && recs.length > 0 && (
             <motion.div
-              className="flex gap-3"
+              className="w-full"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              exit={{ opacity: 0, scale: 0.97, y: -8 }}
               transition={{ duration: 0.4 }}
             >
               <div className="w-full">
                 <h3 className="label-editorial mb-3">
                   {mode === 'breakup' ? 'Worst Possible Dates' : 'Recommended For You'}
                 </h3>
-                <div className="flex gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   <AnimatePresence>
                     {recs.map((rec, i) => (
                       <motion.div
                         key={rec.id}
                         layout
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20, height: 0, marginBottom: 0, padding: 0 }}
-                        transition={{ delay: 0.2 + i * 0.15, type: 'spring', stiffness: 300, damping: 25 }}
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={
+                          chosenId === rec.id
+                            ? { opacity: 0, scale: 1.04, y: -12 }
+                            : { opacity: 0, scale: 0.88, y: 8 }
+                        }
+                        transition={{ delay: 0.2 + i * 0.1, type: 'spring', stiffness: 300, damping: 25 }}
                         whileHover={{ scale: 1.01, y: -2 }}
-                        className={`min-w-[380px] p-6 rounded-2xl transition-all duration-300 ${
+                        className={`p-6 rounded-2xl transition-all duration-300 ${
                           mode === 'breakup'
                             ? 'bg-red-950/20 border border-red-500/20 hover:border-red-500/40'
                             : 'glass-card'
@@ -260,6 +280,21 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
                   </AnimatePresence>
                 </div>
               </div>
+
+              {/* Refresh — get a fresh batch skipping current suggestions */}
+              <motion.button
+                onClick={() => handleRecommend(mode === 'breakup', recs.map((r) => r.id))}
+                disabled={loading}
+                className="flex items-center gap-1.5 text-xs mt-3"
+                style={{ color: '#4a3f5c' }}
+                whileHover={{ color: '#c084fc' }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7 }}
+              >
+                <RefreshCw className="w-3 h-3" />
+                Try different ideas
+              </motion.button>
             </motion.div>
           )}
         </AnimatePresence>
@@ -318,9 +353,31 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate 
                   </motion.div>
                 ))}
               </div>
+
+              {/* Explore Cities CTA */}
+              <motion.button
+                onClick={onExploreCities}
+                className="mt-5 flex items-center gap-2 text-sm font-medium px-4 py-2.5 rounded-xl w-full justify-center"
+                style={{
+                  background: 'rgba(139, 92, 246, 0.08)',
+                  border: '1px solid rgba(139, 92, 246, 0.2)',
+                  color: '#c084fc',
+                }}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9, duration: 0.4 }}
+                whileHover={{ scale: 1.02, background: 'rgba(139, 92, 246, 0.15)', boxShadow: '0 0 20px rgba(139, 92, 246, 0.15)' }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Globe className="w-4 h-4" />
+                Explore other cities →
+              </motion.button>
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Social discovery — only show after first recommend click */}
+        {localTrends && <SimilarCouples />}
       </div>
 
       {/* Scroll indicator: only show when not loading and there are no recommendations */}

@@ -123,3 +123,25 @@ export async function getAnalytics() {
   if (!res.ok) throw new Error('Failed to get analytics')
   return res.json()
 }
+
+export async function getCities() {
+  const res = await fetch('/api/explore/cities')
+  if (!res.ok) throw new Error('Failed to get cities')
+  return res.json()
+}
+
+export async function getSimilarCouples() {
+  const res = await fetch('/api/social/similar', { headers: await authHeaders() })
+  if (!res.ok) throw new Error('Failed to get similar couples')
+  return res.json()
+}
+
+export async function searchCity(body) {
+  const res = await fetch('/api/explore/search', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) throw new Error('Failed to search city activities')
+  return res.json()
+}

@@ -36,12 +36,45 @@ Description: "{description}"
 """
 
 
+ACTIVITY_ENTRY_PROMPT = """Given a raw date activity description from a user, generate a canonical entry for a date activity database.
+
+Return ONLY valid JSON with these exact fields:
+- "name": a 3-5 word title (title case, like a proper venue/activity name)
+- "description": one romantic sentence describing the experience (15-25 words)
+
+User input: "{user_text}"
+
+Example:
+Input: "axe throwing at urban axes downtown"
+Output: {{"name": "Axe Throwing Night Out", "description": "Bond over friendly competition and laughter at a vibrant urban axe throwing venue."}}
+
+Respond with ONLY the JSON object. No markdown, no extra text."""
+
+
+async def generate_activity_entry(user_text: str) -> dict:
+    """Generate canonical activity name and description from user-provided text."""
+    prompt = ACTIVITY_ENTRY_PROMPT.format(user_text=user_text)
+    response = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.3,
+    )
+    text = response.choices[0].message.content.strip()
+    if "```" in text:
+        text = text.split("```")[1]
+        if text.startswith("json"):
+            text = text[4:]
+        text = text.strip()
+    result = json.loads(text)
+    return result
+
+
 async def text_to_vector(description: str) -> list[float]:
     """Convert a text description to a 9D vector using Groq."""
     prompt = PROMPT_TEMPLATE.format(description=description)
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="llama-3.1-8b-instant",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.1,
     )

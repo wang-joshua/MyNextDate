@@ -1,3 +1,4 @@
+import asyncio
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from middleware.auth import get_current_user
@@ -95,10 +96,26 @@ async def add_custom_date(body: AddCustomDateRequest, user: dict = Depends(get_c
     if record.get("id"):
         store_custom_date_vector(record["id"], query_vector)
 
+    # Non-blocking: generate canonical entry and seed into global activity pool
+    asyncio.create_task(_seed_activity_background(body.name.strip(), query_vector))
+
     return {
         "date": record,
         "matched_activity": body.name.strip(),
     }
+
+
+async def _seed_activity_background(user_text: str, vector: list[float]):
+    """Background task: canonicalize activity name and seed into global pool."""
+    try:
+        from services.text_to_vector import generate_activity_entry
+        from services.actian_service import seed_single_activity
+        entry = await generate_activity_entry(user_text)
+        name = entry.get("name", user_text)
+        description = entry.get("description", "")
+        seed_single_activity(name, description, vector)
+    except Exception as e:
+        print(f"Background activity seed failed: {e}")
 
 
 @router.post("/dates/describe")
