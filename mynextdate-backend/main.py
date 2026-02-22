@@ -74,8 +74,9 @@ async def startup():
     except Exception as e:
         print(f"Warning: City activities init failed: {e}")
 
-    # Ensure user_locations table exists in Supabase
+    # Ensure tables exist in Supabase
     await _ensure_location_table()
+    await _ensure_custom_activities_table()
 
 
 async def _ensure_location_table():
@@ -128,6 +129,26 @@ async def _ensure_location_table():
         print("    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()")
         print("  );")
         print("  CREATE INDEX IF NOT EXISTS idx_user_locations_city ON user_locations(city);")
+
+
+async def _ensure_custom_activities_table():
+    """Check custom_activities table exists. Print SQL if it needs manual creation."""
+    from supabase import create_client
+    from config import SUPABASE_URL, SUPABASE_SERVICE_KEY
+
+    try:
+        sb = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+        sb.table("custom_activities").select("id").limit(1).execute()
+        print("custom_activities table ready.")
+    except Exception:
+        print("Note: custom_activities table not found. Please create it in Supabase SQL Editor:")
+        print("  CREATE TABLE IF NOT EXISTS custom_activities (")
+        print("    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,")
+        print("    name TEXT NOT NULL,")
+        print("    vector JSONB NOT NULL,")
+        print("    created_by UUID NOT NULL,")
+        print("    created_at TIMESTAMP WITH TIME ZONE DEFAULT now()")
+        print("  );")
 
 
 @app.get("/api/health")
