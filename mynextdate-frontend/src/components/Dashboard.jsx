@@ -224,7 +224,7 @@ export default function Dashboard() {
                   style={{ color: '#9a8fad' }}
                   variants={fadeUp}
                 >
-                  Let AI craft your next unforgettable experience
+                  Let AI craft your next unforgettable memory
                 </motion.p>
               )}
 

@@ -1,0 +1,7 @@
+mynextdate-frontend/node_modules
+mynextdate-frontend/dist
+mynextdate-backend/venv
+mynextdate-backend/__pycache__
+.git
+.DS_Store
+*.pyc

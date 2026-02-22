@@ -8,4 +8,6 @@ RUN pip install --no-cache-dir actiancortex-0.1.0b1-py3-none-any.whl -r requirem
 
 COPY mynextdate-backend/ .
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+EXPOSE 8000
+
+CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 2

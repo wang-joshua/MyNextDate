@@ -20,24 +20,24 @@ services:
       - mynextdate-backend/.env
     environment:
       - ACTIAN_HOST=vectoraidb:50051
+      - PORT=8000
     depends_on:
       - vectoraidb
-    volumes:
-      - ./mynextdate-backend:/app
     restart: unless-stopped
 
   frontend:
     build:
       context: ./mynextdate-frontend
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY}
     ports:
-      - "5173:5173"
-    env_file:
-      - mynextdate-frontend/.env
+      - "80:80"
+    environment:
+      - PORT=80
+      - BACKEND_URL=http://backend:8000
     depends_on:
       - backend
-    volumes:
-      - ./mynextdate-frontend:/app
-      - /app/node_modules
     restart: unless-stopped
 
 volumes:

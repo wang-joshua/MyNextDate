@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.recommend import router as recommend_router
@@ -8,9 +10,13 @@ from routes.social import router as social_router
 
 app = FastAPI(title="MyNextDate API", version="1.0.0")
 
+_default_origins = ["http://localhost:5173", "http://localhost:3000", "http://localhost:80", "http://localhost"]
+_origins_env = os.environ.get("ALLOWED_ORIGINS")
+allowed_origins = [o.strip() for o in _origins_env.split(",") if o.strip()] if _origins_env else _default_origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
