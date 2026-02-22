@@ -1,9 +1,9 @@
-"""Social discovery — find couples with similar taste profiles."""
+"""Social discovery — find real users with similar taste profiles."""
 from fastapi import APIRouter, Depends
 from middleware.auth import get_current_user
 from services.actian_service import get_activity_vectors, get_custom_date_vectors, ensure_cache
 from services.preference_engine import compute_preference_vector
-from services.couples_service import find_similar_couples, get_trending_for_similar
+from services.couples_service import find_similar_users, get_trending_for_similar
 from supabase import create_client
 from config import SUPABASE_URL, SUPABASE_SERVICE_KEY
 
@@ -23,8 +23,8 @@ def get_supabase():
 async def get_similar_couples(user: dict = Depends(get_current_user)):
     """
     Compute the user's 9D preference vector from their history,
-    find the top-5 synthetic couples with closest vectors (cosine),
-    and return what those couples love that the user hasn't tried.
+    find real users with closest taste profiles,
+    and return what those users love that the current user hasn't tried.
     """
     sb = get_supabase()
     result = (
@@ -65,18 +65,30 @@ async def get_similar_couples(user: dict = Depends(get_current_user)):
 
     user_vector = compute_preference_vector(rated_dates, activity_vectors)
 
-    similar = find_similar_couples(user_vector, top_k=5)
+    similar = find_similar_users(user["id"], user_vector, sb, top_k=5)
 
     # Suggest activities the user hasn't tried yet
     done_ids = {d["activity_id"] for d in dates if d["activity_id"] != 0}
     they_love = get_trending_for_similar(
-        [c["id"] for c in similar],
+        similar,
         exclude_ids=done_ids,
         top_k=5,
     )
 
+    # Strip internal data before returning
+    clean_similar = [
+        {
+            "id": u["id"],
+            "persona": u["persona"],
+            "city": u["city"],
+            "total_dates": u["total_dates"],
+            "match_score": u["match_score"],
+        }
+        for u in similar
+    ]
+
     return {
-        "similar_couples": similar,
+        "similar_couples": clean_similar,
         "they_love": they_love,
         "needs_more_dates": False,
     }

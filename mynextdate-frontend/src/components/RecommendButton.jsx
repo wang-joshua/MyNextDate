@@ -109,11 +109,11 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate,
           )}
         </AnimatePresence>
 
-        <div className="flex gap-3 relative">
+        <div className="relative">
           <motion.button
             onClick={() => handleRecommend(false)}
             disabled={loading}
-            className="flex-1 py-5 rounded-2xl font-bold text-lg text-white disabled:opacity-50 flex items-center justify-center gap-3 relative overflow-hidden tracking-wide"
+            className="w-full py-5 rounded-2xl font-bold text-lg text-white disabled:opacity-50 flex items-center justify-center gap-3 relative overflow-hidden tracking-wide"
             style={{
               background: 'linear-gradient(135deg, #8b5cf6, #6d2c8e, #4c1d95)',
               backgroundSize: '200% 200%',
@@ -138,24 +138,6 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate,
               <Sparkles className="w-6 h-6" />
             )}
             <span className="relative">What's My Next Date?</span>
-          </motion.button>
-
-          <motion.button
-            onClick={() => handleRecommend(true)}
-            disabled={loading}
-            title="Secret breakup button"
-            className="px-5 py-5 rounded-2xl transition-all duration-300"
-            style={{ background: 'rgba(17, 14, 26, 0.8)', border: '1px solid rgba(109, 44, 142, 0.15)', color: '#6b5f7e' }}
-            whileHover={{ scale: 1.05, borderColor: 'rgba(239, 68, 68, 0.3)', color: '#f87171', background: 'rgba(127, 29, 29, 0.2)' }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {loading && mode === 'breakup' ? (
-              <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
-                <Loader2 className="w-6 h-6" />
-              </motion.span>
-            ) : (
-              <HeartCrack className="w-6 h-6" />
-            )}
           </motion.button>
         </div>
       </div>
@@ -380,24 +362,40 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate,
         {localTrends && <SimilarCouples />}
       </div>
 
-      {/* Scroll indicator: only show when not loading and there are no recommendations */}
+      {/* Scroll indicator + hidden breakup link */}
       <AnimatePresence>
         {(!loading && (!recs || recs.length === 0)) && (
           <motion.div
-            className="flex items-center gap-2 mt-6 cursor-pointer"
+            className="flex flex-col items-center gap-3 mt-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ delay: 0.6, duration: 0.8 }}
-            onClick={() => document.getElementById('section-history')?.scrollIntoView({ behavior: 'smooth' })}
           >
-            <span className="label-editorial" style={{ fontSize: '0.6rem' }}>Scroll to explore</span>
-            <motion.div
-              animate={{ y: [0, 6, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            <div
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => document.getElementById('section-history')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              <ChevronDown className="w-5 h-5" style={{ color: '#6b5f7e' }} />
-            </motion.div>
+              <span className="label-editorial" style={{ fontSize: '0.6rem' }}>Scroll to explore</span>
+              <motion.div
+                animate={{ y: [0, 6, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <ChevronDown className="w-5 h-5" style={{ color: '#6b5f7e' }} />
+              </motion.div>
+            </div>
+            <motion.button
+              onClick={() => handleRecommend(true)}
+              disabled={loading}
+              className="text-xs cursor-pointer"
+              style={{ color: '#2a2435', letterSpacing: '0.05em' }}
+              whileHover={{ color: '#f87171' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 2, duration: 1 }}
+            >
+              {loading && mode === 'breakup' ? 'finding the worst...' : 'or plan a breakup?'}
+            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>
