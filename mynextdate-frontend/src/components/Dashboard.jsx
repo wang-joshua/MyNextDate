@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { LogOut, Plus, History, BarChart3, ChevronDown } from 'lucide-react'
 import Logo from './Logo'
+import VideoCards from './VideoCards'
 import { useAuth } from '../context/AuthContext'
 import RecommendButton from './RecommendButton'
 import DateHistory from './DateHistory'
@@ -93,79 +94,26 @@ export default function Dashboard() {
 
       {/* ============ SECTION 1: HERO / RECOMMEND ============ */}
       <section className="snap-section px-4 sm:px-6 pt-20">
-        <div className="max-w-6xl mx-auto h-full flex items-center">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 w-full items-center">
-            {/* Left: Photo + Video stacked */}
+        <div className="max-w-6xl mr-auto ml-8 sm:ml-12 h-full flex items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-8 lg:gap-12 w-full items-start">
+            {/* Left: Camera roll scrolling media */}
             <motion.div
-              className="flex flex-col gap-4"
+              className="overflow-hidden rounded-3xl"
+              style={{
+                height: '88vh',
+                border: '1px solid rgba(139, 92, 246, 0.15)',
+                boxShadow: '0 8px 40px rgba(109, 44, 142, 0.2), 0 0 60px rgba(139, 92, 246, 0.05)',
+              }}
               initial={{ opacity: 0, x: -40 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             >
-              {/* Photo card */}
-              <motion.div
-                className="relative overflow-hidden rounded-3xl"
-                style={{
-                  aspectRatio: '16 / 10',
-                  border: '1px solid rgba(139, 92, 246, 0.15)',
-                  boxShadow: '0 8px 40px rgba(109, 44, 142, 0.2), 0 0 60px rgba(139, 92, 246, 0.05)',
-                }}
-                whileHover={{ scale: 1.02, boxShadow: '0 12px 50px rgba(109, 44, 142, 0.3)' }}
-                transition={{ duration: 0.4 }}
-              >
-                <img
-                  src="https://images.unsplash.com/photo-1529543544282-ea27407ff201?w=800&q=80"
-                  alt="Couple enjoying a date"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    filter: 'saturate(0.8) brightness(0.85)',
-                  }}
-                />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,8,18,0.6) 0%, transparent 50%)' }} />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(109,44,142,0.2), transparent 60%)' }} />
-              </motion.div>
-
-              {/* Video card */}
-              <motion.div
-                className="relative overflow-hidden rounded-3xl"
-                style={{
-                  aspectRatio: '16 / 10',
-                  border: '1px solid rgba(139, 92, 246, 0.15)',
-                  boxShadow: '0 8px 40px rgba(109, 44, 142, 0.2), 0 0 60px rgba(139, 92, 246, 0.05)',
-                }}
-                whileHover={{ scale: 1.02, boxShadow: '0 12px 50px rgba(109, 44, 142, 0.3)' }}
-                transition={{ duration: 0.4 }}
-              >
-                <video
-                  src="/bg-video.mp4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    filter: 'saturate(0.7) brightness(0.8)',
-                  }}
-                />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,8,18,0.6) 0%, transparent 50%)' }} />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(109,44,142,0.2), transparent 60%)' }} />
-                {/* Play indicator */}
-                <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#8b5cf6', boxShadow: '0 0 12px rgba(139,92,246,0.6)', animation: 'pulse 2s infinite' }} />
-                  <span style={{ color: 'rgba(240,236,249,0.6)', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                    Now playing
-                  </span>
-                </div>
-              </motion.div>
+              <VideoCards mode="inline" />
             </motion.div>
 
             {/* Right: Hero text + Recommend button */}
             <motion.div
-              className="flex flex-col items-start gap-4"
+              className="flex flex-col items-start gap-4 pt-16"
               variants={stagger}
               initial="hidden"
               animate="visible"
