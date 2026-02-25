@@ -35,6 +35,10 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate,
       await new Promise(resolve => setTimeout(resolve, 300))
     }
 
+    // Reset skip accumulation when switching between good/breakup mode
+    if (mode && mode !== newMode) {
+      setSkippedIds([])
+    }
     setMode(newMode)
     try {
       const currentSkipped = [...skippedIds, ...extraSkips]
@@ -51,7 +55,9 @@ export default function RecommendButton({ onDateAdded, dateCount = 0, onAddDate,
       }
 
       setRecs(data.recommendations)
-      setSkippedIds([])
+      // Accumulate all skipped/shown IDs so refresh never repeats
+      const newRecIds = data.recommendations.map((r) => r.id)
+      setSkippedIds((prev) => [...new Set([...prev, ...extraSkips, ...newRecIds])])
       setLoading(false)
       setTimeout(() => setShowPulse(false), 600)
     } catch (err) {

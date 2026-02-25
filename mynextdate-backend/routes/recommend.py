@@ -70,7 +70,7 @@ async def get_recommendations(
 
     exclude = list(set(activity_ids + skip_ids))
     json_recs = search_similar(pref_vector, top_k=3, exclude_ids=exclude)
-    custom_recs = search_custom_activities(pref_vector, sb, top_k=3)
+    custom_recs = search_custom_activities(pref_vector, sb, top_k=3, exclude_ids=exclude, exclude_user_id=user["id"])
 
     # Merge, deduplicate by name, sort by score, take top 3
     seen_names = set()
@@ -137,7 +137,7 @@ async def get_worst_recommendations(user: dict = Depends(get_current_user)):
 
     # Also search custom activities with inverted preference
     inverse_pref = [round(1.0 - v, 4) for v in pref_vector]
-    custom_worst = search_custom_activities(inverse_pref, sb, top_k=3)
+    custom_worst = search_custom_activities(inverse_pref, sb, top_k=3, exclude_user_id=user["id"])
 
     seen_names = set()
     worst = []

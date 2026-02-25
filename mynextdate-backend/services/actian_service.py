@@ -1,4 +1,5 @@
 import json
+import random
 import numpy as np
 from cortex import CortexClient, DistanceMetric
 from cortex.transport.pool import PoolConfig
@@ -121,6 +122,8 @@ def search_similar(query_vector: list[float], top_k: int = 2, exclude_ids: list[
         if v_norm == 0:
             continue
         similarity = float(np.dot(query, v) / (query_norm * v_norm))
+        # Small jitter to shuffle closely-scored results on refresh
+        similarity += random.uniform(0, 0.03)
         # Boost score if user's text has keyword overlap with activity name/description
         if text_query:
             payload = _payload_cache.get(aid, {})
@@ -228,10 +231,18 @@ def save_custom_activity(name: str, vector: list[float], user_id: str, sb) -> di
         return None
 
 
-def search_custom_activities(query_vector: list[float], sb, top_k: int = 3, text_query: str | None = None) -> list[dict]:
+def search_custom_activities(
+    query_vector: list[float],
+    sb,
+    top_k: int = 3,
+    text_query: str | None = None,
+    exclude_ids: list | None = None,
+    exclude_user_id: str | None = None,
+    min_similarity: float = 0.65,
+) -> list[dict]:
     """Search user-created custom activities from Supabase by vector similarity."""
     try:
-        result = sb.table("custom_activities").select("id, name, vector").execute()
+        result = sb.table("custom_activities").select("id, name, vector, created_by").execute()
         rows = result.data or []
     except Exception as e:
         print(f"Failed to fetch custom activities: {e}")
@@ -240,6 +251,7 @@ def search_custom_activities(query_vector: list[float], sb, top_k: int = 3, text
     if not rows:
         return []
 
+    exclude_set = set(exclude_ids) if exclude_ids else set()
     query = np.array(query_vector)
     query_norm = np.linalg.norm(query)
     if query_norm == 0:
@@ -247,6 +259,12 @@ def search_custom_activities(query_vector: list[float], sb, top_k: int = 3, text
 
     scored = []
     for row in rows:
+        # Skip excluded IDs (already shown/done)
+        if row["id"] in exclude_set:
+            continue
+        # Skip the current user's own custom activities
+        if exclude_user_id and row.get("created_by") == exclude_user_id:
+            continue
         vec = row.get("vector")
         if not vec:
             continue
@@ -255,6 +273,11 @@ def search_custom_activities(query_vector: list[float], sb, top_k: int = 3, text
         if v_norm == 0:
             continue
         similarity = float(np.dot(query, v) / (query_norm * v_norm))
+        # Only include activities above the minimum similarity threshold
+        if similarity < min_similarity:
+            continue
+        # Small jitter to shuffle closely-scored results on refresh
+        similarity += random.uniform(0, 0.03)
         if text_query:
             boost = _keyword_boost(text_query, row.get("name", ""), "")
             similarity += boost
